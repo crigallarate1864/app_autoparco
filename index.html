@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Autoparco - Segnalazione Difetti</title>
+    <title>Segnalazioni Autoparco CRI Gallarate</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
         body {
@@ -185,7 +185,7 @@
 <body>
 
     <div class="container">
-        <h1>🚗 Autoparco - Difetti e Danni</h1>
+        <h1>🚗 Segnalazioni autoparco CRI Gallarate</h1>
         <p class="subtitle">Dati aggiornati in tempo reale</p>
         
         <a href="https://forms.gle/oBhFEMTXRkrYGaBD9" class="btn-nuova-segnalazione" target="_blank">➕ Inserisci Nuova Segnalazione</a>
@@ -218,7 +218,15 @@
         function mostraDifetti(dati) {
             listaDifettiDiv.innerHTML = ''; 
 
-            const difettiValidi = dati.filter(riga => riga['Sigla radio'] && riga['Sigla radio'].trim() !== '');
+            // Filtro aggiornato: prende la riga se ha la sigla radio E SE non contiene la parola "Risolto"
+            const difettiValidi = dati.filter(riga => {
+                const haSigla = riga['Sigla radio'] && riga['Sigla radio'].trim() !== '';
+                
+                // Cerca la parola "Risolto" (ignorando maiuscole/minuscole) in qualsiasi colonna di quella riga
+                const eRisolto = Object.values(riga).some(val => typeof val === 'string' && val.trim().toLowerCase() === 'risolto');
+                
+                return haSigla && !eRisolto;
+            });
 
             if (difettiValidi.length === 0) {
                 listaDifettiDiv.innerHTML = '<p style="text-align: center; color: #2fb344; font-weight: bold; padding: 20px;">Nessun difetto segnalato. Tutti i mezzi sono operativi! ✨</p>';
