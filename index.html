@@ -1,1 +1,103 @@
-<h1>Ciao, questa è la mia nuova app!</h1>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Mia Web App</title>
+    <style>
+        /* Qui c'è il CSS: gestisce lo stile, i colori e il layout */
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .app-container {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #102a43;
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+
+        p {
+            color: #627d98;
+            line-height: 1.5;
+        }
+
+        .btn {
+            background-color: #0070f3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: #0051a8;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        #messaggio-azione {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #0070f3;
+            min-height: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <h1>La mia App! ✨</h1>
+        <p>Questa è un'interfaccia moderna di base. Prova a interagire con il pulsante qui sotto.</p>
+        
+        <button id="pulsanteMagico" class="btn">Toccami</button>
+        
+        <div id="messaggio-azione"></div>
+    </div>
+
+    <script>
+        // Impostiamo un contatore a zero
+        let contatore = 0;
+        
+        // Colleghiamo gli elementi HTML al nostro codice
+        const pulsante = document.getElementById('pulsanteMagico');
+        const messaggio = document.getElementById('messaggio-azione');
+
+        // Diciamo all'app cosa fare quando il pulsante viene cliccato
+        pulsante.addEventListener('click', () => {
+            contatore++;
+            
+            if (contatore === 1) {
+                messaggio.textContent = "Hai cliccato 1 volta!";
+            } else {
+                messaggio.textContent = `Hai cliccato ${contatore} volte!`;
+            }
+        });
+    </script>
+
+</body>
+</html>
