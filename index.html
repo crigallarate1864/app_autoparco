@@ -157,7 +157,7 @@
     </div>
 
     <script>
-        // NUOVO Link CSV aggiornato
+        // Link CSV aggiornato
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?output=csv';
         
         const listaDifettiDiv = document.getElementById('listaDifetti');
@@ -177,7 +177,8 @@
         function mostraDifetti(dati) {
             listaDifettiDiv.innerHTML = ''; 
 
-            const difettiValidi = dati.filter(riga => riga['Sigla Radio'] && riga['Sigla Radio'].trim() !== '');
+            // ATTENZIONE: Ora usa "Sigla radio" con la "r" minuscola
+            const difettiValidi = dati.filter(riga => riga['Sigla radio'] && riga['Sigla radio'].trim() !== '');
 
             if (difettiValidi.length === 0) {
                 listaDifettiDiv.innerHTML = '<p style="text-align: center; color: #2fb344; font-weight: bold; padding: 20px;">Nessun difetto segnalato. Tutti i mezzi sono operativi! ✨</p>';
@@ -188,9 +189,7 @@
             const raggruppati = {};
             
             difettiValidi.reverse().forEach(difetto => {
-                // Prende la stringa completa (es. "VA11-33 | Peugeot Boxer")
-                const siglaCompleta = difetto['Sigla Radio'].trim();
-                // Estrae solo i primi 7 caratteri (es. "VA11-33")
+                const siglaCompleta = difetto['Sigla radio'].trim();
                 const siglaCorta = siglaCompleta.substring(0, 7);
                 
                 if (!raggruppati[siglaCorta]) {
@@ -227,7 +226,8 @@
                 `;
 
                 listaDifettiMezzo.forEach(difetto => {
-                    const tipologia = difetto['Tipologia difetto'] || 'Generico';
+                    // ATTENZIONE: Ora usa "Tipologia Difetto" con la "D" maiuscola
+                    const tipologia = difetto['Tipologia Difetto'] || 'Generico';
                     
                     if (!coloriTipologia[tipologia]) {
                         coloriTipologia[tipologia] = palette[indiceColore % palette.length];
@@ -243,9 +243,9 @@
                         fotoHtml = `<a href="${difetto['Foto']}" target="_blank" class="foto-link">📷 Vedi Foto</a>`;
                     }
 
-                    // Aggiusto se la colonna della data si chiama diversamente in base al nuovo form
-                    const dataInserimento = difetto['Informazioni cronologiche'] || difetto['Timestamp'] || difetto['ID Segnalazione'] || '';
+                    const dataInserimento = difetto['Informazioni cronologiche'] || '';
 
+                    // ATTENZIONE: Ora usa "Cognome e Nome segnalatore"
                     card.innerHTML = `
                         <div class="difetto-header">
                             <span class="tipologia-badge" style="background-color: ${colore.bg}; color: ${colore.text};">${tipologia}</span>
@@ -254,7 +254,7 @@
                         <div class="descrizione">${difetto['Descrizione difetto']}</div>
                         
                         <div class="footer-card">
-                            <span>👤 Segnalatore: <strong>${difetto['Autista segnalatore'] || 'Non specificato'}</strong></span>
+                            <span>👤 Segnalatore: <strong>${difetto['Cognome e Nome segnalatore'] || 'Non specificato'}</strong></span>
                             ${fotoHtml}
                         </div>
                     `;
