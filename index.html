@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Segnalazioni Autoparco CRI Gallarate</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d64545">
+    <link rel="apple-touch-icon" href="icona.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
         body {
@@ -33,9 +40,30 @@
             font-size: 0.9rem;
             margin-bottom: 20px;
         }
+
+        /* STILE DEL NUOVO BOTTONE DI INSTALLAZIONE */
+        #btn-installa {
+            display: none; /* Nascosto di default, si accende solo se serve */
+            background-color: #1976d2; /* Blu per distinguerlo */
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: none;
+            width: 100%;
+        }
+        #btn-installa:hover {
+            background-color: #115293;
+        }
+
         .btn-nuova-segnalazione {
             display: block;
-            background-color: #d64545;
+            background-color: #d64545; /* Rosso CRI */
             color: white;
             text-align: center;
             text-decoration: none;
@@ -62,7 +90,7 @@
             border: 2px solid #e2e8f0;
             border-radius: 10px;
             margin-bottom: 15px;
-            overflow: hidden; /* Mantiene arrotondati gli angoli anche quando aperto */
+            overflow: hidden;
         }
         .veicolo-titolo {
             background: #ffffff;
@@ -72,7 +100,7 @@
             align-items: center;
             padding: 15px;
             font-size: 1.2rem;
-            cursor: pointer; /* Fa capire che è cliccabile */
+            cursor: pointer;
             transition: background-color 0.2s;
             margin: 0;
             border-bottom: 2px solid transparent;
@@ -85,7 +113,6 @@
             background-color: #f1f5f9;
         }
         
-        /* Contenitore interno della parte sinistra del titolo (freccia + icona + nome) */
         .titolo-sinistra {
             display: flex;
             align-items: center;
@@ -93,11 +120,10 @@
             font-weight: bold;
         }
         
-        /* Freccia di espansione */
         .icona-freccia {
             font-size: 0.9rem;
             color: #64748b;
-            transition: transform 0.3s ease; /* Animazione rotazione */
+            transition: transform 0.3s ease;
         }
         .icona-freccia.ruotata {
             transform: rotate(180deg);
@@ -112,17 +138,15 @@
             font-weight: bold;
         }
 
-        /* Contenitore a scomparsa per le schede dei difetti */
         .difetti-container {
-            display: none; /* Nascosto di default */
+            display: none;
             padding: 15px;
             background: #f8fafc;
         }
         .difetti-container.mostra {
-            display: block; /* Mostrato quando ha la classe .mostra */
+            display: block;
         }
 
-        /* Stili per le singole schede difetto */
         .difetto-card {
             background: #fff;
             border: 1px solid #e4e7eb;
@@ -132,7 +156,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         .difetto-card:last-child {
-            margin-bottom: 0; /* Rimuove lo spazio sotto l'ultima scheda */
+            margin-bottom: 0;
         }
         .difetto-header {
             display: flex;
@@ -188,6 +212,8 @@
         <h1>🚗 Segnalazioni autoparco CRI Gallarate</h1>
         <p class="subtitle">Dati aggiornati in tempo reale</p>
         
+        <button id="btn-installa">📲 Installa App sul Telefono</button>
+
         <a href="https://forms.gle/oBhFEMTXRkrYGaBD9" class="btn-nuova-segnalazione" target="_blank">➕ Inserisci Nuova Segnalazione</a>
 
         <hr>
@@ -198,9 +224,51 @@
     </div>
 
     <script>
-        // Link CSV aggiornato
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?output=csv';
+        // --- LOGICA INSTALLAZIONE APP (PWA) ---
+        let promptInstallazione;
+        const btnInstalla = document.getElementById('btn-installa');
+
+        // 1. Registra il Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        // 2. Rileva Android (Chrome) e mostra il bottone
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            promptInstallazione = e;
+            btnInstalla.style.display = 'block'; // Mostra il bottone
+        });
+
+        // 3. Rileva iPhone/iPad (Safari)
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
         
+        if (isIOS && !isStandalone) {
+            btnInstalla.style.display = 'block'; // Mostra il bottone
+            btnInstalla.textContent = "📲 Come installare su iPhone";
+        }
+
+        // 4. Cosa succede quando si clicca il bottone
+        btnInstalla.addEventListener('click', async () => {
+            if (promptInstallazione) {
+                // Utente Android: avvia l'installazione automatica
+                promptInstallazione.prompt();
+                const { outcome } = await promptInstallazione.userChoice;
+                if (outcome === 'accepted') {
+                    btnInstalla.style.display = 'none';
+                }
+                promptInstallazione = null;
+            } else if (isIOS) {
+                // Utente Apple: mostra le istruzioni per anziani
+                alert("Per installare l'app su iPhone:\n\n1️⃣ Tocca l'icona 'Condividi' (il quadrato con la freccia in alto) in basso sullo schermo.\n2️⃣ Scorri in basso e tocca 'Aggiungi alla schermata Home' ➕.\n3️⃣ Conferma toccando 'Aggiungi' in alto a destra.");
+            }
+        });
+        // --- FINE LOGICA APP ---
+
+
+        // --- LOGICA DATI E GRAFICA (INVARIATA) ---
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?output=csv';
         const listaDifettiDiv = document.getElementById('listaDifetti');
 
         Papa.parse(csvUrl, {
@@ -218,13 +286,9 @@
         function mostraDifetti(dati) {
             listaDifettiDiv.innerHTML = ''; 
 
-            // Filtro aggiornato: prende la riga se ha la sigla radio E SE non contiene la parola "Risolto"
             const difettiValidi = dati.filter(riga => {
                 const haSigla = riga['Sigla radio'] && riga['Sigla radio'].trim() !== '';
-                
-                // Cerca la parola "Risolto" (ignorando maiuscole/minuscole) in qualsiasi colonna di quella riga
                 const eRisolto = Object.values(riga).some(val => typeof val === 'string' && val.trim().toLowerCase() === 'risolto');
-                
                 return haSigla && !eRisolto;
             });
 
@@ -233,7 +297,6 @@
                 return;
             }
 
-            // 1. RAGGRUPPIAMO I DIFETTI (Leggendo solo i primi 7 caratteri della Sigla)
             const raggruppati = {};
             
             difettiValidi.reverse().forEach(difetto => {
@@ -246,7 +309,6 @@
                 raggruppati[siglaCorta].push(difetto);
             });
 
-            // 2. PREPARIAMO I COLORI PER LE TIPOLOGIE
             const palette = [
                 { bg: '#ffe3e3', text: '#d64545' }, 
                 { bg: '#e3f2fd', text: '#1976d2' }, 
@@ -260,17 +322,14 @@
             const coloriTipologia = {};
             let indiceColore = 0;
 
-            // 3. CREIAMO LA GRAFICA PER OGNI MEZZO (A Fisarmonica)
             for (const [sigla, listaDifettiMezzo] of Object.entries(raggruppati)) {
                 
                 const veicoloDiv = document.createElement('div');
                 veicoloDiv.className = 'veicolo-group';
                 
-                // Creiamo l'intestazione cliccabile
                 const veicoloTitolo = document.createElement('div');
                 veicoloTitolo.className = 'veicolo-titolo';
                 
-                // Impostiamo il testo e le icone per l'intestazione
                 veicoloTitolo.innerHTML = `
                     <div class="titolo-sinistra">
                         <span class="icona-freccia">▼</span>
@@ -279,22 +338,16 @@
                     <span class="badge-conteggio">${listaDifettiMezzo.length}</span>
                 `;
 
-                // Creiamo il contenitore per i difetti (nascosto di default)
                 const difettiContainer = document.createElement('div');
                 difettiContainer.className = 'difetti-container';
 
-                // Logica del click per espandere/comprimere
                 veicoloTitolo.addEventListener('click', () => {
-                    // Alterna la visibilità del contenitore dei difetti
                     difettiContainer.classList.toggle('mostra');
-                    // Alterna il colore di fondo e la linea del titolo
                     veicoloTitolo.classList.toggle('aperto');
-                    // Ruota la freccia
                     const freccia = veicoloTitolo.querySelector('.icona-freccia');
                     freccia.classList.toggle('ruotata');
                 });
 
-                // Inseriamo i difetti dentro al contenitore nascosto
                 listaDifettiMezzo.forEach(difetto => {
                     const tipologia = difetto['Tipologia Difetto'] || 'Generico';
                     
@@ -329,11 +382,9 @@
                     difettiContainer.appendChild(card);
                 });
 
-                // Assembliamo il tutto: aggiungiamo il titolo e poi il contenitore nascosto
                 veicoloDiv.appendChild(veicoloTitolo);
                 veicoloDiv.appendChild(difettiContainer);
                 
-                // Aggiungiamo il veicolo completo alla lista in pagina
                 listaDifettiDiv.appendChild(veicoloDiv);
             }
         }
