@@ -157,8 +157,8 @@
     </div>
 
     <script>
-        // Link CSV generato da Google Sheets
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?gid=0&single=true&output=csv';
+        // NUOVO Link CSV aggiornato
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?output=csv';
         
         const listaDifettiDiv = document.getElementById('listaDifetti');
 
@@ -243,9 +243,9 @@
                         fotoHtml = `<a href="${difetto['Foto']}" target="_blank" class="foto-link">📷 Vedi Foto</a>`;
                     }
 
-                    const dataInserimento = difetto['Informazioni cronologiche'] || difetto['ID Segnalazione'] || '';
+                    // Aggiusto se la colonna della data si chiama diversamente in base al nuovo form
+                    const dataInserimento = difetto['Informazioni cronologiche'] || difetto['Timestamp'] || difetto['ID Segnalazione'] || '';
 
-                    // Inserito "Segnalatore" nel footer
                     card.innerHTML = `
                         <div class="difetto-header">
                             <span class="tipologia-badge" style="background-color: ${colore.bg}; color: ${colore.text};">${tipologia}</span>
@@ -254,7 +254,7 @@
                         <div class="descrizione">${difetto['Descrizione difetto']}</div>
                         
                         <div class="footer-card">
-                            <span>👤 Segnalatore: <strong>${difetto['Autista segnalatore']}</strong></span>
+                            <span>👤 Segnalatore: <strong>${difetto['Autista segnalatore'] || 'Non specificato'}</strong></span>
                             ${fotoHtml}
                         </div>
                     `;
