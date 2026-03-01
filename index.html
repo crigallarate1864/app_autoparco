@@ -56,32 +56,70 @@
             margin: 20px 0;
         }
         
-        /* Stili per i gruppi di veicoli */
+        /* Stili per i gruppi di veicoli (fisarmonica) */
         .veicolo-group {
             background: #f8fafc;
             border: 2px solid #e2e8f0;
             border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
+            overflow: hidden; /* Mantiene arrotondati gli angoli anche quando aperto */
         }
         .veicolo-titolo {
-            margin-top: 0;
+            background: #ffffff;
             color: #0f172a;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #cbd5e1;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+            padding: 15px;
             font-size: 1.2rem;
+            cursor: pointer; /* Fa capire che è cliccabile */
+            transition: background-color 0.2s;
+            margin: 0;
+            border-bottom: 2px solid transparent;
         }
+        .veicolo-titolo:hover {
+            background-color: #f1f5f9;
+        }
+        .veicolo-titolo.aperto {
+            border-bottom: 2px solid #cbd5e1;
+            background-color: #f1f5f9;
+        }
+        
+        /* Contenitore interno della parte sinistra del titolo (freccia + icona + nome) */
+        .titolo-sinistra {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+        
+        /* Freccia di espansione */
+        .icona-freccia {
+            font-size: 0.9rem;
+            color: #64748b;
+            transition: transform 0.3s ease; /* Animazione rotazione */
+        }
+        .icona-freccia.ruotata {
+            transform: rotate(180deg);
+        }
+
         .badge-conteggio {
-            background: #64748b;
+            background: #d64545;
             color: white;
-            font-size: 0.8rem;
-            padding: 4px 10px;
+            font-size: 0.85rem;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-weight: normal;
+            font-weight: bold;
+        }
+
+        /* Contenitore a scomparsa per le schede dei difetti */
+        .difetti-container {
+            display: none; /* Nascosto di default */
+            padding: 15px;
+            background: #f8fafc;
+        }
+        .difetti-container.mostra {
+            display: block; /* Mostrato quando ha la classe .mostra */
         }
 
         /* Stili per le singole schede difetto */
@@ -92,6 +130,9 @@
             margin-bottom: 10px;
             border-radius: 6px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .difetto-card:last-child {
+            margin-bottom: 0; /* Rimuove lo spazio sotto l'ultima scheda */
         }
         .difetto-header {
             display: flex;
@@ -177,7 +218,6 @@
         function mostraDifetti(dati) {
             listaDifettiDiv.innerHTML = ''; 
 
-            // ATTENZIONE: Ora usa "Sigla radio" con la "r" minuscola
             const difettiValidi = dati.filter(riga => riga['Sigla radio'] && riga['Sigla radio'].trim() !== '');
 
             if (difettiValidi.length === 0) {
@@ -212,21 +252,42 @@
             const coloriTipologia = {};
             let indiceColore = 0;
 
-            // 3. CREIAMO LA GRAFICA PER OGNI MEZZO
+            // 3. CREIAMO LA GRAFICA PER OGNI MEZZO (A Fisarmonica)
             for (const [sigla, listaDifettiMezzo] of Object.entries(raggruppati)) {
                 
                 const veicoloDiv = document.createElement('div');
                 veicoloDiv.className = 'veicolo-group';
                 
-                veicoloDiv.innerHTML = `
-                    <h3 class="veicolo-titolo">
-                        🚐 ${sigla} 
-                        <span class="badge-conteggio">${listaDifettiMezzo.length} segnalazioni</span>
-                    </h3>
+                // Creiamo l'intestazione cliccabile
+                const veicoloTitolo = document.createElement('div');
+                veicoloTitolo.className = 'veicolo-titolo';
+                
+                // Impostiamo il testo e le icone per l'intestazione
+                veicoloTitolo.innerHTML = `
+                    <div class="titolo-sinistra">
+                        <span class="icona-freccia">▼</span>
+                        <span>🚐 ${sigla}</span>
+                    </div>
+                    <span class="badge-conteggio">${listaDifettiMezzo.length}</span>
                 `;
 
+                // Creiamo il contenitore per i difetti (nascosto di default)
+                const difettiContainer = document.createElement('div');
+                difettiContainer.className = 'difetti-container';
+
+                // Logica del click per espandere/comprimere
+                veicoloTitolo.addEventListener('click', () => {
+                    // Alterna la visibilità del contenitore dei difetti
+                    difettiContainer.classList.toggle('mostra');
+                    // Alterna il colore di fondo e la linea del titolo
+                    veicoloTitolo.classList.toggle('aperto');
+                    // Ruota la freccia
+                    const freccia = veicoloTitolo.querySelector('.icona-freccia');
+                    freccia.classList.toggle('ruotata');
+                });
+
+                // Inseriamo i difetti dentro al contenitore nascosto
                 listaDifettiMezzo.forEach(difetto => {
-                    // ATTENZIONE: Ora usa "Tipologia Difetto" con la "D" maiuscola
                     const tipologia = difetto['Tipologia Difetto'] || 'Generico';
                     
                     if (!coloriTipologia[tipologia]) {
@@ -245,7 +306,6 @@
 
                     const dataInserimento = difetto['Informazioni cronologiche'] || '';
 
-                    // ATTENZIONE: Ora usa "Cognome e Nome segnalatore"
                     card.innerHTML = `
                         <div class="difetto-header">
                             <span class="tipologia-badge" style="background-color: ${colore.bg}; color: ${colore.text};">${tipologia}</span>
@@ -258,9 +318,14 @@
                             ${fotoHtml}
                         </div>
                     `;
-                    veicoloDiv.appendChild(card);
+                    difettiContainer.appendChild(card);
                 });
 
+                // Assembliamo il tutto: aggiungiamo il titolo e poi il contenitore nascosto
+                veicoloDiv.appendChild(veicoloTitolo);
+                veicoloDiv.appendChild(difettiContainer);
+                
+                // Aggiungiamo il veicolo completo alla lista in pagina
                 listaDifettiDiv.appendChild(veicoloDiv);
             }
         }
