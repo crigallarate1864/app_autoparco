@@ -15,7 +15,9 @@
     <style>
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f4f8;
+            /* NUOVO SFONDO: Sfumatura da rosso pastello a bianco */
+            background: linear-gradient(135deg, #ffe3e3 0%, #ffffff 100%);
+            background-attachment: fixed; /* Mantiene lo sfondo fermo mentre scorri */
             margin: 0;
             padding: 20px;
             color: #333;
@@ -23,16 +25,26 @@
         .container {
             max-width: 600px;
             margin: 0 auto;
-            background: white;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            
+            /* NUOVO: EFFETTO GLASSMORPHISM (Vetro traslucido) */
+            background: rgba(255, 255, 255, 0.4); /* Bianco semi-trasparente */
+            backdrop-filter: blur(10px); /* Sfocatura dello sfondo dietro il vetro */
+            -webkit-backdrop-filter: blur(10px); /* Supporto Safari */
+            
+            /* Bordero sottile e chiaro per effetto vetro */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            
+            /* Ombra più morbida e diffusa */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
         }
         h1 {
             color: #102a43;
             text-align: center;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             margin-bottom: 5px;
+            font-weight: 800;
         }
         .subtitle {
             text-align: center;
@@ -41,24 +53,28 @@
             margin-bottom: 20px;
         }
 
-        /* STILE DEL NUOVO BOTTONE DI INSTALLAZIONE */
+        /* STILE DEL BOTTONE DI INSTALLAZIONE */
         #btn-installa {
             display: none; /* Nascosto di default, si accende solo se serve */
             background-color: #1976d2; /* Blu per distinguerlo */
             color: white;
             text-align: center;
-            padding: 12px;
+            padding: 14px;
             font-size: 1rem;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 8px;
             margin-bottom: 15px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
             border: none;
             width: 100%;
+            transition: background 0.2s, transform 0.1s;
         }
         #btn-installa:hover {
             background-color: #115293;
+        }
+        #btn-installa:active {
+            transform: scale(0.98); /* Effetto pressione */
         }
 
         .btn-nuova-segnalazione {
@@ -67,62 +83,81 @@
             color: white;
             text-align: center;
             text-decoration: none;
-            padding: 12px;
+            padding: 14px;
             font-size: 1.1rem;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 8px;
             margin-bottom: 20px;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(214, 69, 69, 0.2);
         }
         .btn-nuova-segnalazione:hover {
             background-color: #ba2525;
+            box-shadow: 0 6px 16px rgba(214, 69, 69, 0.3);
         }
+        .btn-nuova-segnalazione:active {
+            transform: scale(0.98);
+        }
+        
         hr {
             border: 0;
             height: 1px;
-            background: #e4e7eb;
-            margin: 20px 0;
+            background: rgba(0, 0, 0, 0.05); /* Linea quasi invisibile */
+            margin: 25px 0;
         }
         
-        /* Stili per i gruppi di veicoli (fisarmonica) */
+        /* Stili per i gruppi di veicoli (fisarmonica con effetto vetro) */
         .veicolo-group {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            /* NUOVO: EFFETTO GLASSMORPHISM anche qui, ma più opaco */
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            
+            /* Bordo bianco semi-trasparente al posto di quello grigio scuro */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
             margin-bottom: 15px;
             overflow: hidden;
+            transition: box-shadow 0.2s;
         }
+        .veicolo-group:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+        
         .veicolo-titolo {
-            background: #ffffff;
+            /* NUOVO: Titolo traslucido */
+            background: rgba(255, 255, 255, 0.5);
             color: #0f172a;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
+            padding: 18px;
             font-size: 1.2rem;
             cursor: pointer;
             transition: background-color 0.2s;
             margin: 0;
-            border-bottom: 2px solid transparent;
+            border-bottom: 1px solid transparent;
         }
         .veicolo-titolo:hover {
-            background-color: #f1f5f9;
+            /* Sfondo leggermente più scuro al passaggio del mouse */
+            background-color: rgba(241, 245, 249, 0.7);
         }
         .veicolo-titolo.aperto {
-            border-bottom: 2px solid #cbd5e1;
-            background-color: #f1f5f9;
+            /* Linea di separazione sottile quando aperto */
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background-color: rgba(241, 245, 249, 0.7);
         }
         
         .titolo-sinistra {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-weight: bold;
+            gap: 12px;
+            font-weight: 700;
         }
         
         .icona-freccia {
             font-size: 0.9rem;
-            color: #64748b;
+            color: #94a3b8;
             transition: transform 0.3s ease;
         }
         .icona-freccia.ruotata {
@@ -141,19 +176,21 @@
         .difetti-container {
             display: none;
             padding: 15px;
-            background: #f8fafc;
+            /* Sfondo interno della tendina leggermente traslucido */
+            background: rgba(248, 250, 252, 0.5);
         }
         .difetti-container.mostra {
             display: block;
         }
 
+        /* Stili per le singole schede difetto (MANTENUTE BIANCHE PER LEGGIBILITÀ) */
         .difetto-card {
-            background: #fff;
-            border: 1px solid #e4e7eb;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            background: #ffffff; /* Bianco pieno per massimo contrasto testo */
+            border: 1px solid #e2e8f0; /* Bordo sottile grigio */
+            padding: 18px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
         }
         .difetto-card:last-child {
             margin-bottom: 0;
@@ -162,33 +199,33 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .data-segnalazione {
             font-size: 0.75rem;
-            color: #829ab1;
+            color: #94a3b8;
         }
         .tipologia-badge {
             display: inline-block;
             font-size: 0.8rem;
-            padding: 4px 10px;
-            border-radius: 12px;
+            padding: 5px 12px;
+            border-radius: 20px;
             font-weight: bold;
         }
         .descrizione {
             color: #334e68;
-            margin-bottom: 10px;
-            line-height: 1.4;
+            margin-bottom: 12px;
+            line-height: 1.5;
             font-size: 0.95rem;
         }
         .footer-card {
             font-size: 0.85rem;
-            color: #627d98;
+            color: #64748b;
             display: flex;
             justify-content: space-between;
-            border-top: 1px dashed #e4e7eb;
-            padding-top: 10px;
-            margin-top: 10px;
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 12px;
+            margin-top: 12px;
         }
         .foto-link {
             color: #0070f3;
@@ -200,7 +237,7 @@
         }
         .loading {
             text-align: center;
-            color: #627d98;
+            color: #64748b;
             font-style: italic;
             padding: 20px;
         }
@@ -267,7 +304,7 @@
         // --- FINE LOGICA APP ---
 
 
-        // --- LOGICA DATI E GRAFICA (INVARIATA) ---
+        // --- LOGICA DATI E GRAFICA ---
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?output=csv';
         const listaDifettiDiv = document.getElementById('listaDifetti');
 
