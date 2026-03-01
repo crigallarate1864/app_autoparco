@@ -55,12 +55,41 @@
             background: #e4e7eb;
             margin: 20px 0;
         }
+        
+        /* Stili per i gruppi di veicoli */
+        .veicolo-group {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+        }
+        .veicolo-titolo {
+            margin-top: 0;
+            color: #0f172a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #cbd5e1;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        .badge-conteggio {
+            background: #64748b;
+            color: white;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: normal;
+        }
+
+        /* Stili per le singole schede difetto */
         .difetto-card {
             background: #fff;
             border: 1px solid #e4e7eb;
-            border-left: 5px solid #d64545;
             padding: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             border-radius: 6px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
@@ -70,32 +99,22 @@
             align-items: center;
             margin-bottom: 10px;
         }
-        .sigla-radio {
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #102a43;
-            background: #f0f4f8;
-            padding: 4px 10px;
-            border-radius: 4px;
-        }
-        .id-segnalazione {
-            font-size: 0.8rem;
+        .data-segnalazione {
+            font-size: 0.75rem;
             color: #829ab1;
         }
-        .tipologia {
+        .tipologia-badge {
             display: inline-block;
-            background: #ffe3e3;
-            color: #d64545;
             font-size: 0.8rem;
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 12px;
             font-weight: bold;
-            margin-bottom: 10px;
         }
         .descrizione {
             color: #334e68;
             margin-bottom: 10px;
             line-height: 1.4;
+            font-size: 0.95rem;
         }
         .footer-card {
             font-size: 0.85rem;
@@ -128,73 +147,122 @@
         <h1>🚗 Autoparco - Difetti e Danni</h1>
         <p class="subtitle">Dati aggiornati in tempo reale</p>
         
-        <a href="https://forms.gle/ni9kx8HeVWc4vwbS8" class="btn-nuova-segnalazione" target="_blank">➕ Inserisci Nuova Segnalazione</a>
+        <a href="https://forms.gle/oBhFEMTXRkrYGaBD9" class="btn-nuova-segnalazione" target="_blank">➕ Inserisci Nuova Segnalazione</a>
 
         <hr>
 
-        <h2>Mezzi con anomalie:</h2>
         <div id="listaDifetti">
             <div class="loading">Caricamento dati dal database... ⏳</div>
         </div>
     </div>
 
     <script>
-        // Il tuo link diretto al CSV
+        // Link CSV generato da Google Sheets
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?gid=0&single=true&output=csv';
+        
         const listaDifettiDiv = document.getElementById('listaDifetti');
 
-        // Usiamo PapaParse per leggere il CSV
         Papa.parse(csvUrl, {
             download: true,
-            header: true, // Dice a PapaParse che la prima riga contiene i nomi delle colonne
+            header: true, 
             complete: function(results) {
                 const dati = results.data;
                 mostraDifetti(dati);
             },
             error: function(err) {
-                listaDifettiDiv.innerHTML = '<p style="color: red;">Errore nel caricamento dei dati. Controlla il link del file.</p>';
+                listaDifettiDiv.innerHTML = '<p style="color: red; text-align: center;">Errore nel caricamento. Controlla il link del file CSV.</p>';
             }
         });
 
         function mostraDifetti(dati) {
-            listaDifettiDiv.innerHTML = ''; // Puliamo la scritta "Caricamento..."
+            listaDifettiDiv.innerHTML = ''; 
 
-            // Filtriamo righe vuote (a volte Google Sheets lascia righe vuote in fondo)
             const difettiValidi = dati.filter(riga => riga['Sigla Radio'] && riga['Sigla Radio'].trim() !== '');
 
             if (difettiValidi.length === 0) {
-                listaDifettiDiv.innerHTML = '<p style="text-align: center; color: #2fb344; font-weight: bold;">Nessun difetto segnalato. Tutti i mezzi sono operativi! ✨</p>';
+                listaDifettiDiv.innerHTML = '<p style="text-align: center; color: #2fb344; font-weight: bold; padding: 20px;">Nessun difetto segnalato. Tutti i mezzi sono operativi! ✨</p>';
                 return;
             }
 
-            // Invertiamo l'array così le segnalazioni più recenti (in fondo al foglio) appaiono per prime in alto
+            // 1. RAGGRUPPIAMO I DIFETTI (Leggendo solo i primi 7 caratteri della Sigla)
+            const raggruppati = {};
+            
             difettiValidi.reverse().forEach(difetto => {
-                const card = document.createElement('div');
-                card.className = 'difetto-card';
+                // Prende la stringa completa (es. "VA11-33 | Peugeot Boxer")
+                const siglaCompleta = difetto['Sigla Radio'].trim();
+                // Estrae solo i primi 7 caratteri (es. "VA11-33")
+                const siglaCorta = siglaCompleta.substring(0, 7);
                 
-                // Gestione della foto (se presente, creiamo un link cliccabile)
-                let fotoHtml = '';
-                if (difetto['Foto'] && difetto['Foto'].trim() !== '') {
-                    fotoHtml = `<a href="${difetto['Foto']}" target="_blank" class="foto-link">📷 Vedi Foto</a>`;
-                } else {
-                    fotoHtml = `<span>Nessuna foto</span>`;
+                if (!raggruppati[siglaCorta]) {
+                    raggruppati[siglaCorta] = [];
                 }
-
-                card.innerHTML = `
-                    <div class="difetto-header">
-                        <span class="sigla-radio">${difetto['Sigla Radio']}</span>
-                        <span class="id-segnalazione">ID: ${difetto['ID Segnalazione']}</span>
-                    </div>
-                    <div class="tipologia">${difetto['Tipologia difetto']}</div>
-                    <div class="descrizione">${difetto['Descrizione difetto']}</div>
-                    
-                    <div class="footer-card">
-                        <span>👤 Autista: <strong>${difetto['Autista segnalatore']}</strong></span>
-                        ${fotoHtml}
-                    </div>
-                `;
-                listaDifettiDiv.appendChild(card);
+                raggruppati[siglaCorta].push(difetto);
             });
+
+            // 2. PREPARIAMO I COLORI PER LE TIPOLOGIE
+            const palette = [
+                { bg: '#ffe3e3', text: '#d64545' }, 
+                { bg: '#e3f2fd', text: '#1976d2' }, 
+                { bg: '#fff3e0', text: '#f57c00' }, 
+                { bg: '#e8f5e9', text: '#388e3c' }, 
+                { bg: '#f3e5f5', text: '#7b1fa2' }, 
+                { bg: '#e0f7fa', text: '#0097a7' }, 
+                { bg: '#fff9c4', text: '#fbc02d' }  
+            ];
+            
+            const coloriTipologia = {};
+            let indiceColore = 0;
+
+            // 3. CREIAMO LA GRAFICA PER OGNI MEZZO
+            for (const [sigla, listaDifettiMezzo] of Object.entries(raggruppati)) {
+                
+                const veicoloDiv = document.createElement('div');
+                veicoloDiv.className = 'veicolo-group';
+                
+                veicoloDiv.innerHTML = `
+                    <h3 class="veicolo-titolo">
+                        🚐 ${sigla} 
+                        <span class="badge-conteggio">${listaDifettiMezzo.length} segnalazioni</span>
+                    </h3>
+                `;
+
+                listaDifettiMezzo.forEach(difetto => {
+                    const tipologia = difetto['Tipologia difetto'] || 'Generico';
+                    
+                    if (!coloriTipologia[tipologia]) {
+                        coloriTipologia[tipologia] = palette[indiceColore % palette.length];
+                        indiceColore++;
+                    }
+                    const colore = coloriTipologia[tipologia];
+
+                    const card = document.createElement('div');
+                    card.className = 'difetto-card';
+                    
+                    let fotoHtml = '<span>Nessuna foto</span>';
+                    if (difetto['Foto'] && difetto['Foto'].trim() !== '') {
+                        fotoHtml = `<a href="${difetto['Foto']}" target="_blank" class="foto-link">📷 Vedi Foto</a>`;
+                    }
+
+                    const dataInserimento = difetto['Informazioni cronologiche'] || difetto['ID Segnalazione'] || '';
+
+                    // Inserito "Segnalatore" nel footer
+                    card.innerHTML = `
+                        <div class="difetto-header">
+                            <span class="tipologia-badge" style="background-color: ${colore.bg}; color: ${colore.text};">${tipologia}</span>
+                            <span class="data-segnalazione">${dataInserimento}</span>
+                        </div>
+                        <div class="descrizione">${difetto['Descrizione difetto']}</div>
+                        
+                        <div class="footer-card">
+                            <span>👤 Segnalatore: <strong>${difetto['Autista segnalatore']}</strong></span>
+                            ${fotoHtml}
+                        </div>
+                    `;
+                    veicoloDiv.appendChild(card);
+                });
+
+                listaDifettiDiv.appendChild(veicoloDiv);
+            }
         }
     </script>
 
