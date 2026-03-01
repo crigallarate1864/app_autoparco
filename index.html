@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App Autoparco - Segnalazione Difetti</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -13,7 +14,7 @@
             color: #333;
         }
         .container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
             background: white;
             padding: 20px;
@@ -24,159 +25,177 @@
             color: #102a43;
             text-align: center;
             font-size: 1.5rem;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
             margin-bottom: 5px;
-            font-weight: bold;
-            color: #486581;
         }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #bcccdc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-family: inherit;
+        .subtitle {
+            text-align: center;
+            color: #627d98;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
         }
-        button {
+        .btn-nuova-segnalazione {
+            display: block;
             background-color: #d64545;
             color: white;
-            border: none;
+            text-align: center;
+            text-decoration: none;
             padding: 12px;
-            width: 100%;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: bold;
             border-radius: 6px;
-            cursor: pointer;
-            margin-top: 10px;
+            margin-bottom: 20px;
+            transition: background 0.2s;
         }
-        button:hover {
+        .btn-nuova-segnalazione:hover {
             background-color: #ba2525;
         }
         hr {
             border: 0;
             height: 1px;
             background: #e4e7eb;
-            margin: 25px 0;
+            margin: 20px 0;
         }
         .difetto-card {
-            background: #fff3f3;
-            border-left: 4px solid #d64545;
+            background: #fff;
+            border: 1px solid #e4e7eb;
+            border-left: 5px solid #d64545;
             padding: 15px;
             margin-bottom: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .difetto-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .sigla-radio {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #102a43;
+            background: #f0f4f8;
+            padding: 4px 10px;
             border-radius: 4px;
         }
-        .difetto-targa {
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: #102a43;
-        }
-        .difetto-data {
+        .id-segnalazione {
             font-size: 0.8rem;
             color: #829ab1;
-            margin-bottom: 8px;
         }
-        .btn-risolto {
-            background-color: #2fb344;
-            padding: 6px 10px;
+        .tipologia {
+            display: inline-block;
+            background: #ffe3e3;
+            color: #d64545;
             font-size: 0.8rem;
-            margin-top: 10px;
-            width: auto;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
-        .btn-risolto:hover {
-            background-color: #238c34;
+        .descrizione {
+            color: #334e68;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .footer-card {
+            font-size: 0.85rem;
+            color: #627d98;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px dashed #e4e7eb;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        .foto-link {
+            color: #0070f3;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .foto-link:hover {
+            text-decoration: underline;
+        }
+        .loading {
+            text-align: center;
+            color: #627d98;
+            font-style: italic;
+            padding: 20px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🚗 Registro Difetti Autoparco</h1>
+        <h1>🚗 Autoparco - Difetti e Danni</h1>
+        <p class="subtitle">Dati aggiornati in tempo reale</p>
         
-        <form id="formDifetti">
-            <div class="form-group">
-                <label for="targa">Targa o Nome Veicolo</label>
-                <input type="text" id="targa" placeholder="Es. AB123CD oppure Furgone 1" required>
-            </div>
-            <div class="form-group">
-                <label for="descrizione">Descrizione del difetto</label>
-                <textarea id="descrizione" rows="3" placeholder="Es. Specchietto destro graffiato, spia motore accesa..." required></textarea>
-            </div>
-            <button type="submit">Segnala Difetto</button>
-        </form>
+        <a href="#" class="btn-nuova-segnalazione" target="_blank">➕ Inserisci Nuova Segnalazione</a>
 
         <hr>
 
-        <h2>Difetti Segnalati:</h2>
+        <h2>Mezzi con anomalie:</h2>
         <div id="listaDifetti">
-            </div>
+            <div class="loading">Caricamento dati dal database... ⏳</div>
+        </div>
     </div>
 
     <script>
-        // Carichiamo i difetti salvati in memoria, o creiamo una lista vuota
-        let difetti = JSON.parse(localStorage.getItem('autoparco_difetti')) || [];
+        // Il tuo link diretto al CSV
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?gid=0&single=true&output=csv';
         const listaDifettiDiv = document.getElementById('listaDifetti');
-        const form = document.getElementById('formDifetti');
 
-        // Funzione per mostrare i difetti a schermo
-        function aggiornaLista() {
-            listaDifettiDiv.innerHTML = ''; // Puliamo la lista
-            
-            if (difetti.length === 0) {
-                listaDifettiDiv.innerHTML = '<p style="color: #829ab1; text-align: center;">Nessun difetto segnalato. Tutti i mezzi sono perfetti! ✨</p>';
+        // Usiamo PapaParse per leggere il CSV
+        Papa.parse(csvUrl, {
+            download: true,
+            header: true, // Dice a PapaParse che la prima riga contiene i nomi delle colonne
+            complete: function(results) {
+                const dati = results.data;
+                mostraDifetti(dati);
+            },
+            error: function(err) {
+                listaDifettiDiv.innerHTML = '<p style="color: red;">Errore nel caricamento dei dati. Controlla il link del file.</p>';
+            }
+        });
+
+        function mostraDifetti(dati) {
+            listaDifettiDiv.innerHTML = ''; // Puliamo la scritta "Caricamento..."
+
+            // Filtriamo righe vuote (a volte Google Sheets lascia righe vuote in fondo)
+            const difettiValidi = dati.filter(riga => riga['Sigla Radio'] && riga['Sigla Radio'].trim() !== '');
+
+            if (difettiValidi.length === 0) {
+                listaDifettiDiv.innerHTML = '<p style="text-align: center; color: #2fb344; font-weight: bold;">Nessun difetto segnalato. Tutti i mezzi sono operativi! ✨</p>';
                 return;
             }
 
-            // Creiamo la "scheda" per ogni difetto
-            difetti.forEach((difetto, index) => {
+            // Invertiamo l'array così le segnalazioni più recenti (in fondo al foglio) appaiono per prime in alto
+            difettiValidi.reverse().forEach(difetto => {
                 const card = document.createElement('div');
                 card.className = 'difetto-card';
+                
+                // Gestione della foto (se presente, creiamo un link cliccabile)
+                let fotoHtml = '';
+                if (difetto['Foto'] && difetto['Foto'].trim() !== '') {
+                    fotoHtml = `<a href="${difetto['Foto']}" target="_blank" class="foto-link">📷 Vedi Foto</a>`;
+                } else {
+                    fotoHtml = `<span>Nessuna foto</span>`;
+                }
+
                 card.innerHTML = `
-                    <div class="difetto-targa">${difetto.targa}</div>
-                    <div class="difetto-data">${difetto.data}</div>
-                    <div class="difetto-descrizione">${difetto.descrizione}</div>
-                    <button class="btn-risolto" onclick="rimuoviDifetto(${index})">Segna come Riparato ✔️</button>
+                    <div class="difetto-header">
+                        <span class="sigla-radio">${difetto['Sigla Radio']}</span>
+                        <span class="id-segnalazione">ID: ${difetto['ID Segnalazione']}</span>
+                    </div>
+                    <div class="tipologia">${difetto['Tipologia difetto']}</div>
+                    <div class="descrizione">${difetto['Descrizione difetto']}</div>
+                    
+                    <div class="footer-card">
+                        <span>👤 Autista: <strong>${difetto['Autista segnalatore']}</strong></span>
+                        ${fotoHtml}
+                    </div>
                 `;
                 listaDifettiDiv.appendChild(card);
             });
         }
-
-        // Cosa succede quando clicchiamo "Segnala Difetto"
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); // Evita che la pagina si ricarichi
-
-            const targaInput = document.getElementById('targa').value;
-            const descrizioneInput = document.getElementById('descrizione').value;
-            const dataOggi = new Date().toLocaleString('it-IT');
-
-            const nuovoDifetto = {
-                targa: targaInput,
-                descrizione: descrizioneInput,
-                data: dataOggi
-            };
-
-            difetti.push(nuovoDifetto); // Aggiungiamo alla lista
-            localStorage.setItem('autoparco_difetti', JSON.stringify(difetti)); // Salviamo in memoria
-            
-            form.reset(); // Svuotiamo i campi del modulo
-            aggiornaLista(); // Aggiorniamo la visualizzazione
-        });
-
-        // Funzione per eliminare un difetto riparato
-        window.rimuoviDifetto = function(index) {
-            if(confirm('Confermi che questo difetto è stato riparato?')) {
-                difetti.splice(index, 1); // Rimuove dalla lista
-                localStorage.setItem('autoparco_difetti', JSON.stringify(difetti)); // Aggiorna la memoria
-                aggiornaLista();
-            }
-        };
-
-        // Mostriamo la lista appena si apre l'app
-        aggiornaLista();
     </script>
 
 </body>
