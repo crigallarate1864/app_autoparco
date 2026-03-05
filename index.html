@@ -381,8 +381,8 @@
                     card.className = 'difetto-card';
                     
                     // --- MODIFICA RICERCA ALLEGATO QUI ---
-                    // Cerca il link in più colonne possibili in caso il nome sul foglio sia cambiato
-                    const allegato = difetto['Foto'] || difetto['Allegato'] || difetto['Allegati'] || difetto['Foto o PDF'] || difetto['Documento'] || difetto['File'] || '';
+                    // Ora legge esattamente la colonna "Foto o file"
+                    const allegato = difetto['Foto o file'] || difetto['Foto'] || difetto['Allegato'] || difetto['Allegati'] || difetto['Foto o PDF'] || difetto['Documento'] || difetto['File'] || '';
                     
                     let fotoHtml = '<span>Nessun allegato</span>';
                     if (allegato && allegato.trim() !== '') {
