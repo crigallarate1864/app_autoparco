@@ -380,10 +380,15 @@
                     const card = document.createElement('div');
                     card.className = 'difetto-card';
                     
-                    // --- MODIFICA TESTO QUI ---
+                    // --- MODIFICA RICERCA ALLEGATO QUI ---
+                    // Cerca il link in più colonne possibili in caso il nome sul foglio sia cambiato
+                    const allegato = difetto['Foto'] || difetto['Allegato'] || difetto['Allegati'] || difetto['Foto o PDF'] || difetto['Documento'] || difetto['File'] || '';
+                    
                     let fotoHtml = '<span>Nessun allegato</span>';
-                    if (difetto['Foto'] && difetto['Foto'].trim() !== '') {
-                        fotoHtml = `<a href="${difetto['Foto']}" target="_blank" class="foto-link">📎 Apri Allegato</a>`;
+                    if (allegato && allegato.trim() !== '') {
+                        // Se ci sono più file, Google mette una virgola. Qui prendiamo il primo link pulito.
+                        const linkPulito = allegato.split(',')[0].trim();
+                        fotoHtml = `<a href="${linkPulito}" target="_blank" class="foto-link">📎 Apri Allegato</a>`;
                     }
 
                     const dataInserimento = difetto['Informazioni cronologiche'] || '';
