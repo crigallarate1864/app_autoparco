@@ -15,9 +15,9 @@
     <style>
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            /* NUOVO SFONDO: Sfumatura da rosso pastello a bianco */
+            /* SFONDO: Sfumatura da rosso pastello a bianco */
             background: linear-gradient(135deg, #ffe3e3 0%, #ffffff 100%);
-            background-attachment: fixed; /* Mantiene lo sfondo fermo mentre scorri */
+            background-attachment: fixed; 
             margin: 0;
             padding: 20px;
             color: #333;
@@ -28,15 +28,12 @@
             padding: 20px;
             border-radius: 16px;
             
-            /* NUOVO: EFFETTO GLASSMORPHISM (Vetro traslucido) */
-            background: rgba(255, 255, 255, 0.4); /* Bianco semi-trasparente */
-            backdrop-filter: blur(10px); /* Sfocatura dello sfondo dietro il vetro */
-            -webkit-backdrop-filter: blur(10px); /* Supporto Safari */
+            /* EFFETTO GLASSMORPHISM */
+            background: rgba(255, 255, 255, 0.4); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
             
-            /* Bordero sottile e chiaro per effetto vetro */
             border: 1px solid rgba(255, 255, 255, 0.2);
-            
-            /* Ombra più morbida e diffusa */
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
         }
         h1 {
@@ -55,8 +52,8 @@
 
         /* STILE DEL BOTTONE DI INSTALLAZIONE */
         #btn-installa {
-            display: none; /* Nascosto di default, si accende solo se serve */
-            background-color: #1976d2; /* Blu per distinguerlo */
+            display: none; 
+            background-color: #1976d2; 
             color: white;
             text-align: center;
             padding: 14px;
@@ -74,12 +71,12 @@
             background-color: #115293;
         }
         #btn-installa:active {
-            transform: scale(0.98); /* Effetto pressione */
+            transform: scale(0.98); 
         }
 
         .btn-nuova-segnalazione {
             display: block;
-            background-color: #d64545; /* Rosso CRI */
+            background-color: #d64545; 
             color: white;
             text-align: center;
             text-decoration: none;
@@ -102,18 +99,16 @@
         hr {
             border: 0;
             height: 1px;
-            background: rgba(0, 0, 0, 0.05); /* Linea quasi invisibile */
+            background: rgba(0, 0, 0, 0.05); 
             margin: 25px 0;
         }
         
-        /* Stili per i gruppi di veicoli (fisarmonica con effetto vetro) */
+        /* Stili per i gruppi di veicoli */
         .veicolo-group {
-            /* NUOVO: EFFETTO GLASSMORPHISM anche qui, ma più opaco */
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
             
-            /* Bordo bianco semi-trasparente al posto di quello grigio scuro */
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
             margin-bottom: 15px;
@@ -125,7 +120,6 @@
         }
         
         .veicolo-titolo {
-            /* NUOVO: Titolo traslucido */
             background: rgba(255, 255, 255, 0.5);
             color: #0f172a;
             display: flex;
@@ -139,11 +133,9 @@
             border-bottom: 1px solid transparent;
         }
         .veicolo-titolo:hover {
-            /* Sfondo leggermente più scuro al passaggio del mouse */
             background-color: rgba(241, 245, 249, 0.7);
         }
         .veicolo-titolo.aperto {
-            /* Linea di separazione sottile quando aperto */
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             background-color: rgba(241, 245, 249, 0.7);
         }
@@ -176,17 +168,15 @@
         .difetti-container {
             display: none;
             padding: 15px;
-            /* Sfondo interno della tendina leggermente traslucido */
             background: rgba(248, 250, 252, 0.5);
         }
         .difetti-container.mostra {
             display: block;
         }
 
-        /* Stili per le singole schede difetto (MANTENUTE BIANCHE PER LEGGIBILITÀ) */
         .difetto-card {
-            background: #ffffff; /* Bianco pieno per massimo contrasto testo */
-            border: 1px solid #e2e8f0; /* Bordo sottile grigio */
+            background: #ffffff; 
+            border: 1px solid #e2e8f0; 
             padding: 18px;
             margin-bottom: 12px;
             border-radius: 8px;
@@ -265,31 +255,26 @@
         let promptInstallazione;
         const btnInstalla = document.getElementById('btn-installa');
 
-        // 1. Registra il Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js');
         }
 
-        // 2. Rileva Android (Chrome) e mostra il bottone
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             promptInstallazione = e;
-            btnInstalla.style.display = 'block'; // Mostra il bottone
+            btnInstalla.style.display = 'block'; 
         });
 
-        // 3. Rileva iPhone/iPad (Safari)
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
         
         if (isIOS && !isStandalone) {
-            btnInstalla.style.display = 'block'; // Mostra il bottone
+            btnInstalla.style.display = 'block'; 
             btnInstalla.textContent = "📲 Come installare su iPhone";
         }
 
-        // 4. Cosa succede quando si clicca il bottone
         btnInstalla.addEventListener('click', async () => {
             if (promptInstallazione) {
-                // Utente Android: avvia l'installazione automatica
                 promptInstallazione.prompt();
                 const { outcome } = await promptInstallazione.userChoice;
                 if (outcome === 'accepted') {
@@ -297,11 +282,9 @@
                 }
                 promptInstallazione = null;
             } else if (isIOS) {
-                // Utente Apple: mostra le istruzioni per anziani
                 alert("Per installare l'app su iPhone:\n\n1️⃣ Tocca l'icona 'Condividi' (il quadrato con la freccia in alto) in basso sullo schermo.\n2️⃣ Scorri in basso e tocca 'Aggiungi alla schermata Home' ➕.\n3️⃣ Conferma toccando 'Aggiungi' in alto a destra.");
             }
         });
-        // --- FINE LOGICA APP ---
 
 
         // --- LOGICA DATI E GRAFICA ---
@@ -397,9 +380,10 @@
                     const card = document.createElement('div');
                     card.className = 'difetto-card';
                     
-                    let fotoHtml = '<span>Nessuna foto</span>';
+                    // --- MODIFICA TESTO QUI ---
+                    let fotoHtml = '<span>Nessun allegato</span>';
                     if (difetto['Foto'] && difetto['Foto'].trim() !== '') {
-                        fotoHtml = `<a href="${difetto['Foto']}" target="_blank" class="foto-link">📷 Vedi Foto</a>`;
+                        fotoHtml = `<a href="${difetto['Foto']}" target="_blank" class="foto-link">📎 Apri Allegato</a>`;
                     }
 
                     const dataInserimento = difetto['Informazioni cronologiche'] || '';
