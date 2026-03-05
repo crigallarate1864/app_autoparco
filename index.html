@@ -15,39 +15,42 @@
     <style>
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            /* SFONDO: Sfumatura da rosso pastello a bianco */
             background: linear-gradient(135deg, #ffe3e3 0%, #ffffff 100%);
             background-attachment: fixed; 
             margin: 0;
             padding: 20px;
             color: #333;
+            -webkit-font-smoothing: antialiased; /* Rende i testi più nitidi sugli schermi HD */
         }
         .container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
-            border-radius: 16px;
+            padding: 25px 20px;
+            border-radius: 20px; /* Bordi leggermente più morbidi */
             
-            /* EFFETTO GLASSMORPHISM */
-            background: rgba(255, 255, 255, 0.4); 
-            backdrop-filter: blur(10px); 
-            -webkit-backdrop-filter: blur(10px); 
+            /* EFFETTO GLASSMORPHISM PREMIUM */
+            background: rgba(255, 255, 255, 0.45); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
             
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.6); /* Bordo più luminoso per effetto riflesso */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.8);
         }
         h1 {
             color: #102a43;
             text-align: center;
-            font-size: 1.6rem;
+            font-size: 1.7rem;
+            margin-top: 0;
             margin-bottom: 5px;
             font-weight: 800;
+            letter-spacing: -0.5px; /* Testo leggermente più compatto e moderno */
         }
         .subtitle {
             text-align: center;
             color: #627d98;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            font-weight: 500;
         }
 
         /* STILE DEL BOTTONE DI INSTALLAZIONE */
@@ -56,22 +59,31 @@
             background-color: #1976d2; 
             color: white;
             text-align: center;
-            padding: 14px;
-            font-size: 1rem;
+            padding: 15px;
+            font-size: 1.05rem;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 15px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.25);
             border: none;
             width: 100%;
-            transition: background 0.2s, transform 0.1s;
+            transition: all 0.3s ease;
         }
         #btn-installa:hover {
             background-color: #115293;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.35);
         }
         #btn-installa:active {
-            transform: scale(0.98); 
+            transform: scale(0.97); 
+        }
+
+        /* ANIMAZIONE RESPIRO PER IL BOTTONE PRINCIPALE */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(214, 69, 69, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(214, 69, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(214, 69, 69, 0); }
         }
 
         .btn-nuova-segnalazione {
@@ -80,77 +92,82 @@
             color: white;
             text-align: center;
             text-decoration: none;
-            padding: 14px;
-            font-size: 1.1rem;
+            padding: 15px;
+            font-size: 1.15rem;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 20px;
-            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(214, 69, 69, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(214, 69, 69, 0.3);
+            animation: pulse-red 2.5s infinite; /* Attiva l'effetto respiro */
         }
         .btn-nuova-segnalazione:hover {
             background-color: #ba2525;
-            box-shadow: 0 6px 16px rgba(214, 69, 69, 0.3);
+            transform: translateY(-2px); /* Si solleva leggermente al passaggio del mouse */
+            animation: none; /* Disattiva il respiro quando ci passi sopra */
         }
         .btn-nuova-segnalazione:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
         
         hr {
             border: 0;
             height: 1px;
-            background: rgba(0, 0, 0, 0.05); 
-            margin: 25px 0;
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.08), transparent); /* Linea sfumata ai lati */
+            margin: 30px 0;
         }
         
         /* Stili per i gruppi di veicoli */
         .veicolo-group {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 14px;
             margin-bottom: 15px;
             overflow: hidden;
-            transition: box-shadow 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
         }
         .veicolo-group:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
         }
         
         .veicolo-titolo {
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.4);
             color: #0f172a;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px;
-            font-size: 1.2rem;
+            padding: 20px;
+            font-size: 1.25rem;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.3s ease;
             margin: 0;
             border-bottom: 1px solid transparent;
         }
         .veicolo-titolo:hover {
-            background-color: rgba(241, 245, 249, 0.7);
+            background-color: rgba(241, 245, 249, 0.8);
         }
         .veicolo-titolo.aperto {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            background-color: rgba(241, 245, 249, 0.7);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            background-color: rgba(241, 245, 249, 0.8);
         }
         
         .titolo-sinistra {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             font-weight: 700;
+            letter-spacing: -0.3px;
         }
         
         .icona-freccia {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #94a3b8;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Rotazione più fluida e naturale */
         }
         .icona-freccia.ruotata {
             transform: rotate(180deg);
@@ -159,77 +176,105 @@
         .badge-conteggio {
             background: #d64545;
             color: white;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             padding: 4px 12px;
             border-radius: 20px;
             font-weight: bold;
+            box-shadow: 0 2px 8px rgba(214, 69, 69, 0.3); /* Leggera ombra sul numeretto */
+        }
+
+        /* ANIMAZIONE INGRESSO TENDINA */
+        @keyframes fadeSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .difetti-container {
             display: none;
             padding: 15px;
-            background: rgba(248, 250, 252, 0.5);
+            background: rgba(248, 250, 252, 0.4);
         }
         .difetti-container.mostra {
             display: block;
+            animation: fadeSlideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; /* Avvia l'animazione di scivolamento */
         }
 
         .difetto-card {
             background: #ffffff; 
-            border: 1px solid #e2e8f0; 
-            padding: 18px;
-            margin-bottom: 12px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(226, 232, 240, 0.8); 
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease;
         }
         .difetto-card:last-child {
             margin-bottom: 0;
         }
+        .difetto-card:hover {
+            transform: scale(1.01); /* Leggero ingrandimento toccando la card */
+        }
+
         .difetto-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
         .data-segnalazione {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: #94a3b8;
+            font-weight: 500;
         }
         .tipologia-badge {
             display: inline-block;
-            font-size: 0.8rem;
-            padding: 5px 12px;
+            font-size: 0.85rem;
+            padding: 6px 14px;
             border-radius: 20px;
             font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05); /* Ombra morbida sui badge */
         }
         .descrizione {
             color: #334e68;
-            margin-bottom: 12px;
-            line-height: 1.5;
-            font-size: 0.95rem;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 1rem;
         }
         .footer-card {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #64748b;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             border-top: 1px dashed #e2e8f0;
-            padding-top: 12px;
-            margin-top: 12px;
+            padding-top: 15px;
+            margin-top: 15px;
         }
         .foto-link {
             color: #0070f3;
             text-decoration: none;
             font-weight: bold;
+            background: rgba(0, 112, 243, 0.1); /* Sfondo colorato per farlo sembrare un bottoncino */
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
         }
         .foto-link:hover {
-            text-decoration: underline;
+            text-decoration: none;
+            background: rgba(0, 112, 243, 0.2);
         }
         .loading {
             text-align: center;
             color: #64748b;
             font-style: italic;
-            padding: 20px;
+            padding: 30px;
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -380,13 +425,10 @@
                     const card = document.createElement('div');
                     card.className = 'difetto-card';
                     
-                    // --- MODIFICA RICERCA ALLEGATO QUI ---
-                    // Ora legge esattamente la colonna "Foto o file"
                     const allegato = difetto['Foto o file'] || difetto['Foto'] || difetto['Allegato'] || difetto['Allegati'] || difetto['Foto o PDF'] || difetto['Documento'] || difetto['File'] || '';
                     
                     let fotoHtml = '<span>Nessun allegato</span>';
                     if (allegato && allegato.trim() !== '') {
-                        // Se ci sono più file, Google mette una virgola. Qui prendiamo il primo link pulito.
                         const linkPulito = allegato.split(',')[0].trim();
                         fotoHtml = `<a href="${linkPulito}" target="_blank" class="foto-link">📎 Apri Allegato</a>`;
                     }
