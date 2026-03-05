@@ -387,7 +387,11 @@
             const coloriTipologia = {};
             let indiceColore = 0;
 
-            for (const [sigla, listaDifettiMezzo] of Object.entries(raggruppati)) {
+            // --- NUOVA MODIFICA: Ordina le sigle alfabeticamente prima di disegnarle ---
+            const sigleOrdinate = Object.keys(raggruppati).sort();
+
+            for (const sigla of sigleOrdinate) {
+                const listaDifettiMezzo = raggruppati[sigla];
                 
                 const veicoloDiv = document.createElement('div');
                 veicoloDiv.className = 'veicolo-group';
