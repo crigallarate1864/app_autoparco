@@ -20,20 +20,20 @@
             margin: 0;
             padding: 20px;
             color: #333;
-            -webkit-font-smoothing: antialiased; /* Rende i testi più nitidi sugli schermi HD */
+            -webkit-font-smoothing: antialiased; 
         }
         .container {
             max-width: 600px;
             margin: 0 auto;
             padding: 25px 20px;
-            border-radius: 20px; /* Bordi leggermente più morbidi */
+            border-radius: 20px; 
             
             /* EFFETTO GLASSMORPHISM PREMIUM */
             background: rgba(255, 255, 255, 0.45); 
             backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px); 
             
-            border: 1px solid rgba(255, 255, 255, 0.6); /* Bordo più luminoso per effetto riflesso */
+            border: 1px solid rgba(255, 255, 255, 0.6); 
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.8);
         }
         h1 {
@@ -43,7 +43,7 @@
             margin-top: 0;
             margin-bottom: 5px;
             font-weight: 800;
-            letter-spacing: -0.5px; /* Testo leggermente più compatto e moderno */
+            letter-spacing: -0.5px; 
         }
         .subtitle {
             text-align: center;
@@ -99,12 +99,12 @@
             margin-bottom: 20px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(214, 69, 69, 0.3);
-            animation: pulse-red 2.5s infinite; /* Attiva l'effetto respiro */
+            animation: pulse-red 2.5s infinite; 
         }
         .btn-nuova-segnalazione:hover {
             background-color: #ba2525;
-            transform: translateY(-2px); /* Si solleva leggermente al passaggio del mouse */
-            animation: none; /* Disattiva il respiro quando ci passi sopra */
+            transform: translateY(-2px); 
+            animation: none; 
         }
         .btn-nuova-segnalazione:active {
             transform: scale(0.97);
@@ -113,7 +113,7 @@
         hr {
             border: 0;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.08), transparent); /* Linea sfumata ai lati */
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.08), transparent); 
             margin: 30px 0;
         }
         
@@ -167,7 +167,7 @@
         .icona-freccia {
             font-size: 0.95rem;
             color: #94a3b8;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Rotazione più fluida e naturale */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         .icona-freccia.ruotata {
             transform: rotate(180deg);
@@ -180,7 +180,7 @@
             padding: 4px 12px;
             border-radius: 20px;
             font-weight: bold;
-            box-shadow: 0 2px 8px rgba(214, 69, 69, 0.3); /* Leggera ombra sul numeretto */
+            box-shadow: 0 2px 8px rgba(214, 69, 69, 0.3); 
         }
 
         /* ANIMAZIONE INGRESSO TENDINA */
@@ -202,7 +202,7 @@
         }
         .difetti-container.mostra {
             display: block;
-            animation: fadeSlideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; /* Avvia l'animazione di scivolamento */
+            animation: fadeSlideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
         }
 
         .difetto-card {
@@ -218,7 +218,7 @@
             margin-bottom: 0;
         }
         .difetto-card:hover {
-            transform: scale(1.01); /* Leggero ingrandimento toccando la card */
+            transform: scale(1.01); 
         }
 
         .difetto-header {
@@ -238,7 +238,7 @@
             padding: 6px 14px;
             border-radius: 20px;
             font-weight: bold;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05); /* Ombra morbida sui badge */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
         }
         .descrizione {
             color: #334e68;
@@ -260,7 +260,7 @@
             color: #0070f3;
             text-decoration: none;
             font-weight: bold;
-            background: rgba(0, 112, 243, 0.1); /* Sfondo colorato per farlo sembrare un bottoncino */
+            background: rgba(0, 112, 243, 0.1); 
             padding: 6px 12px;
             border-radius: 8px;
             transition: background 0.2s;
@@ -387,7 +387,6 @@
             const coloriTipologia = {};
             let indiceColore = 0;
 
-            // --- NUOVA MODIFICA: Ordina le sigle alfabeticamente prima di disegnarle ---
             const sigleOrdinate = Object.keys(raggruppati).sort();
 
             for (const sigla of sigleOrdinate) {
@@ -439,12 +438,37 @@
 
                     const dataInserimento = difetto['Informazioni cronologiche'] || '';
 
+                    // NUOVA LOGICA: COSTRUZIONE INTELLIGENTE DELLA DESCRIZIONE
+                    let problemi = [];
+                    if (difetto['Difetto motore e meccanica ⚙️']) problemi.push('<strong>Motore/Meccanica:</strong> ' + difetto['Difetto motore e meccanica ⚙️']);
+                    if (difetto['Elettrico e Dispositivi di Emergenza 🚑']) problemi.push('<strong>Elettrico/Emergenza:</strong> ' + difetto['Elettrico e Dispositivi di Emergenza 🚑']);
+                    if (difetto['Carrozzeria e vetri']) problemi.push('<strong>Carrozzeria:</strong> ' + difetto['Carrozzeria e vetri']);
+                    if (difetto['Vano Sanitario e Interni']) problemi.push('<strong>Vano Sanitario:</strong> ' + difetto['Vano Sanitario e Interni']);
+                    if (difetto['Dotazioni di Bordo e Documenti']) problemi.push('<strong>Dotazioni/Documenti:</strong> ' + difetto['Dotazioni di Bordo e Documenti']);
+                    if (difetto['Descrizione difetto']) problemi.push('<strong>Descrizione:</strong> ' + difetto['Descrizione difetto']); // Recupera i difetti vecchi
+                    
+                    // Cerca dinamicamente tutte le colonne che contengono la parola "dettagli" (anche con errori di battitura)
+                    let noteAggiuntive = [];
+                    for (const key in difetto) {
+                        if (key.toLowerCase().includes('dettagli') && difetto[key].trim() !== '') {
+                            noteAggiuntive.push(difetto[key].trim());
+                        }
+                    }
+
+                    let descrizioneFinale = problemi.join('<br>');
+                    if (noteAggiuntive.length > 0) {
+                        descrizioneFinale += '<br><br><span style="color: #64748b; font-size: 0.9rem;"><em>📝 Note: ' + noteAggiuntive.join(' - ') + '</em></span>';
+                    }
+                    if (descrizioneFinale === '') {
+                        descrizioneFinale = 'Nessun dettaglio fornito.';
+                    }
+
                     card.innerHTML = `
                         <div class="difetto-header">
                             <span class="tipologia-badge" style="background-color: ${colore.bg}; color: ${colore.text};">${tipologia}</span>
                             <span class="data-segnalazione">${dataInserimento}</span>
                         </div>
-                        <div class="descrizione">${difetto['Descrizione difetto']}</div>
+                        <div class="descrizione">${descrizioneFinale}</div>
                         
                         <div class="footer-card">
                             <span>👤 Segnalatore: <strong>${difetto['Cognome e Nome segnalatore'] || 'Non specificato'}</strong></span>
