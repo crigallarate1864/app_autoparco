@@ -221,10 +221,13 @@
             transform: scale(1.01); 
         }
 
+        /* --- FIX LAYOUT MOBILE --- */
         .difetto-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start; /* Permette alla data di scendere se non c'è spazio */
+            flex-wrap: wrap; /* Rende elastico il contenitore su schermi piccoli */
+            gap: 10px; /* Crea uno spazietto sicuro tra bollino e data in caso di a capo */
             margin-bottom: 14px;
         }
         .data-segnalazione {
@@ -246,11 +249,12 @@
             line-height: 1.6;
             font-size: 1rem;
         }
+        /* --- RIMOSSO NOME SEGNALATORE E ALLINEATO ALLEGATO --- */
         .footer-card {
             font-size: 0.9rem;
             color: #64748b;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end; /* Allinea l'allegato tutto a destra */
             align-items: center;
             border-top: 1px dashed #e2e8f0;
             padding-top: 15px;
@@ -438,16 +442,14 @@
 
                     const dataInserimento = difetto['Informazioni cronologiche'] || '';
 
-                    // NUOVA LOGICA: COSTRUZIONE INTELLIGENTE DELLA DESCRIZIONE
                     let problemi = [];
                     if (difetto['Difetto motore e meccanica ⚙️']) problemi.push('<strong>Motore/Meccanica:</strong> ' + difetto['Difetto motore e meccanica ⚙️']);
                     if (difetto['Elettrico e Dispositivi di Emergenza 🚑']) problemi.push('<strong>Elettrico/Emergenza:</strong> ' + difetto['Elettrico e Dispositivi di Emergenza 🚑']);
                     if (difetto['Carrozzeria e vetri']) problemi.push('<strong>Carrozzeria:</strong> ' + difetto['Carrozzeria e vetri']);
                     if (difetto['Vano Sanitario e Interni']) problemi.push('<strong>Vano Sanitario:</strong> ' + difetto['Vano Sanitario e Interni']);
                     if (difetto['Dotazioni di Bordo e Documenti']) problemi.push('<strong>Dotazioni/Documenti:</strong> ' + difetto['Dotazioni di Bordo e Documenti']);
-                    if (difetto['Descrizione difetto']) problemi.push('<strong>Descrizione:</strong> ' + difetto['Descrizione difetto']); // Recupera i difetti vecchi
+                    if (difetto['Descrizione difetto']) problemi.push('<strong>Descrizione:</strong> ' + difetto['Descrizione difetto']); 
                     
-                    // Cerca dinamicamente tutte le colonne che contengono la parola "dettagli" (anche con errori di battitura)
                     let noteAggiuntive = [];
                     for (const key in difetto) {
                         if (key.toLowerCase().includes('dettagli') && difetto[key].trim() !== '') {
@@ -463,6 +465,7 @@
                         descrizioneFinale = 'Nessun dettaglio fornito.';
                     }
 
+                    // --- HTML MODIFICATO PER RIMUOVERE NOME E GESTIRE GLI SPAZI ---
                     card.innerHTML = `
                         <div class="difetto-header">
                             <span class="tipologia-badge" style="background-color: ${colore.bg}; color: ${colore.text};">${tipologia}</span>
@@ -471,7 +474,6 @@
                         <div class="descrizione">${descrizioneFinale}</div>
                         
                         <div class="footer-card">
-                            <span>👤 Segnalatore: <strong>${difetto['Cognome e Nome segnalatore'] || 'Non specificato'}</strong></span>
                             ${fotoHtml}
                         </div>
                     `;
