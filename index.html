@@ -6,296 +6,345 @@
     <title>Segnalazioni Autoparco CRI Gallarate</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#d64545">
-    <link rel="apple-touch-icon" href="icona.png">
+    <meta name="theme-color" content="#d64545"> <link rel="apple-touch-icon" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
+        :root {
+            --cri-red: #d64545;
+            --cri-red-dark: #ba2525;
+            --bg-color: #f4f7f6;
+            --text-color: #333333;
+            --text-muted: #757575;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #ffe3e3 0%, #ffffff 100%);
-            background-attachment: fixed; 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Font più istituzionale */
+            background-color: var(--bg-color);
             margin: 0;
             padding: 20px;
-            color: #333;
-            -webkit-font-smoothing: antialiased; 
+            color: var(--text-color);
+            line-height: 1.5;
         }
+
         .container {
-            max-width: 600px;
+            max-width: 650px; /* Leggermente più largo per un look più desktop-friendly su schermi grandi */
             margin: 0 auto;
-            padding: 25px 20px;
-            border-radius: 20px; 
-            
-            /* EFFETTO GLASSMORPHISM PREMIUM */
-            background: rgba(255, 255, 255, 0.45); 
-            backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px); 
-            
-            border: 1px solid rgba(255, 255, 255, 0.6); 
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.8);
-        }
-        h1 {
-            color: #102a43;
-            text-align: center;
-            font-size: 1.7rem;
-            margin-top: 0;
-            margin-bottom: 5px;
-            font-weight: 800;
-            letter-spacing: -0.5px; 
-        }
-        .subtitle {
-            text-align: center;
-            color: #627d98;
-            font-size: 0.95rem;
-            margin-bottom: 25px;
-            font-weight: 500;
+            background-color: transparent; /* Rimosso il box container principale per un look più pulito */
         }
 
-        /* STILE DEL BOTTONE DI INSTALLAZIONE */
-        #btn-installa {
-            display: none; 
-            background-color: #1976d2; 
-            color: white;
+        /* HEADER CON LOGO */
+        .app-header {
             text-align: center;
-            padding: 15px;
-            font-size: 1.05rem;
-            font-weight: bold;
-            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .app-logo {
+            max-width: 120px; /* Regola la dimensione del logo */
+            height: auto;
             margin-bottom: 15px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.25);
-            border: none;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-        #btn-installa:hover {
-            background-color: #115293;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.35);
-        }
-        #btn-installa:active {
-            transform: scale(0.97); 
         }
 
-        /* ANIMAZIONE RESPIRO PER IL BOTTONE PRINCIPALE */
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(214, 69, 69, 0.4); }
-            70% { box-shadow: 0 0 0 12px rgba(214, 69, 69, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(214, 69, 69, 0); }
+        h1 {
+            color: var(--cri-red);
+            font-size: 1.8rem;
+            margin: 0 0 5px 0;
+            font-weight: 700;
         }
 
-        .btn-nuova-segnalazione {
-            display: block;
-            background-color: #d64545; 
-            color: white;
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        /* BOTTONI */
+        .btn {
+            display: inline-block;
+            font-weight: 600;
             text-align: center;
             text-decoration: none;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .btn-primary {
+            background-color: var(--cri-red);
+            color: white;
             padding: 15px;
-            font-size: 1.15rem;
-            font-weight: bold;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(214, 69, 69, 0.3);
-            animation: pulse-red 2.5s infinite; 
+            font-size: 1.1rem;
+            box-shadow: var(--shadow-sm);
         }
-        .btn-nuova-segnalazione:hover {
-            background-color: #ba2525;
-            transform: translateY(-2px); 
-            animation: none; 
+
+        .btn-primary:hover {
+            background-color: var(--cri-red-dark);
+            box-shadow: var(--shadow-md);
         }
-        .btn-nuova-segnalazione:active {
-            transform: scale(0.97);
+
+        #btn-installa {
+            display: none; /* Nascosto di default */
+            background-color: #555; /* Colore neutro per l'installazione */
+            color: white;
+            padding: 12px;
+            font-size: 1rem;
+            margin-bottom: 15px;
         }
         
+        #btn-installa:hover {
+            background-color: #333;
+        }
+
+        .action-bar {
+            margin-bottom: 25px;
+        }
+
         hr {
             border: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.08), transparent); 
-            margin: 30px 0;
+            border-top: 1px solid var(--border-color);
+            margin: 25px 0;
         }
         
-        /* Stili per i gruppi di veicoli */
+        /* GRUPPI VEICOLI (FISARMONICA) */
         .veicolo-group {
-            background: rgba(255, 255, 255, 0.55);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            border-radius: 14px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
             margin-bottom: 15px;
             overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            box-shadow: var(--shadow-sm);
         }
-        .veicolo-group:hover {
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            transform: translateY(-1px);
-        }
-        
+
         .veicolo-titolo {
-            background: rgba(255, 255, 255, 0.4);
-            color: #0f172a;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            font-size: 1.25rem;
+            padding: 18px 22px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0;
-            border-bottom: 1px solid transparent;
-        }
-        .veicolo-titolo:hover {
-            background-color: rgba(241, 245, 249, 0.8);
-        }
-        .veicolo-titolo.aperto {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-            background-color: rgba(241, 245, 249, 0.8);
+            transition: background-color 0.1s ease-in-out;
+            user-select: none;
         }
         
+        .veicolo-titolo:hover {
+            background-color: #f9f9f9;
+        }
+
         .titolo-sinistra {
             display: flex;
             align-items: center;
-            gap: 14px;
-            font-weight: 700;
-            letter-spacing: -0.3px;
+            gap: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .veicolo-icon {
+            color: var(--cri-red);
+            font-size: 1.3rem;
         }
         
         .icona-freccia {
-            font-size: 0.95rem;
-            color: #94a3b8;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            font-size: 1rem;
+            color: var(--text-muted);
+            transition: transform 0.2s ease-in-out;
         }
+        
         .icona-freccia.ruotata {
             transform: rotate(180deg);
         }
 
         .badge-conteggio {
-            background: #d64545;
+            background-color: var(--cri-red);
             color: white;
-            font-size: 0.9rem;
-            padding: 4px 12px;
+            font-size: 0.85rem;
+            padding: 5px 12px;
             border-radius: 20px;
-            font-weight: bold;
-            box-shadow: 0 2px 8px rgba(214, 69, 69, 0.3); 
+            font-weight: 700;
         }
 
-        /* ANIMAZIONE INGRESSO TENDINA */
-        @keyframes fadeSlideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
+        /* CONTENITORE DIFETTI */
         .difetti-container {
-            display: none;
-            padding: 15px;
-            background: rgba(248, 250, 252, 0.4);
+            display: none; /* Nascosto */
+            padding: 0 22px 20px 22px;
+            border-top: 1px solid var(--border-color);
+            background-color: #fafafa;
         }
+        
         .difetti-container.mostra {
             display: block;
-            animation: fadeSlideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
         }
 
+        /* SCHEDA SINGOLO DIFETTO */
         .difetto-card {
-            background: #ffffff; 
-            border: 1px solid rgba(226, 232, 240, 0.8); 
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-            transition: transform 0.2s ease;
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-top: 15px;
+            padding: 18px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            position: relative; /* Per posizionare il bordo laterale */
         }
-        .difetto-card:last-child {
-            margin-bottom: 0;
-        }
-        .difetto-card:hover {
-            transform: scale(1.01); 
+        
+        /* Bordo laterale colorato basato sulla tipologia */
+        .difetto-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+            background-color: #ccc; /* Colore di default */
         }
 
-        /* --- FIX LAYOUT MOBILE --- */
         .difetto-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start; /* Permette alla data di scendere se non c'è spazio */
-            flex-wrap: wrap; /* Rende elastico il contenitore su schermi piccoli */
-            gap: 10px; /* Crea uno spazietto sicuro tra bollino e data in caso di a capo */
-            margin-bottom: 14px;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
         }
+        
+        .tipologia-badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        
         .data-segnalazione {
             font-size: 0.8rem;
-            color: #94a3b8;
-            font-weight: 500;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
-        .tipologia-badge {
-            display: inline-block;
-            font-size: 0.85rem;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: bold;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05); 
-        }
+
         .descrizione {
-            color: #334e68;
+            font-size: 0.95rem;
+            color: var(--text-color);
             margin-bottom: 15px;
-            line-height: 1.6;
-            font-size: 1rem;
         }
-        /* --- RIMOSSO NOME SEGNALATORE E ALLINEATO ALLEGATO --- */
+        
+        .problema-item {
+            margin-bottom: 8px;
+        }
+        
+        .problema-item strong {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .note-aggiuntive {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border-left: 2px solid #ddd;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .note-icon {
+            color: #aaa;
+            margin-top: 2px;
+        }
+
         .footer-card {
             font-size: 0.9rem;
-            color: #64748b;
+            color: var(--text-muted);
             display: flex;
-            justify-content: flex-end; /* Allinea l'allegato tutto a destra */
-            align-items: center;
-            border-top: 1px dashed #e2e8f0;
-            padding-top: 15px;
+            justify-content: flex-end; /* Allineato a destra */
             margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
         }
-        .foto-link {
-            color: #0070f3;
+        
+        .allegato-link {
+            color: var(--cri-red);
             text-decoration: none;
-            font-weight: bold;
-            background: rgba(0, 112, 243, 0.1); 
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             padding: 6px 12px;
-            border-radius: 8px;
-            transition: background 0.2s;
+            background-color: #fff1f1;
+            border-radius: 4px;
+            border: 1px solid #ffdada;
+            transition: background-color 0.1s ease-in-out;
         }
-        .foto-link:hover {
-            text-decoration: none;
-            background: rgba(0, 112, 243, 0.2);
+        
+        .allegato-link:hover {
+            background-color: #ffeaea;
         }
-        .loading {
-            text-align: center;
-            color: #64748b;
+        
+        .no-allegato {
+            color: #bbb;
             font-style: italic;
-            padding: 30px;
-            font-size: 1.1rem;
+            font-size: 0.85rem;
         }
+
+        .loading, .errore, .nessun-difetto {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px 20px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .nessun-difetto {
+            color: #2e7d32; /* Verde per confermare che tutto è ok */
+            font-weight: 600;
+        }
+
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>🚗 Segnalazioni autoparco CRI Gallarate</h1>
-        <p class="subtitle">Dati aggiornati in tempo reale</p>
+        <header class="app-header">
+            <img src="logo.png" alt="Logo CRI Gallarate" class="app-logo">
+            <h1>🚗 Segnalazioni autoparco CRI Gallarate</h1>
+            <p class="subtitle">Dati aggiornati in tempo reale</p>
+        </header>
         
-        <button id="btn-installa">📲 Installa App sul Telefono</button>
-
-        <a href="https://forms.gle/oBhFEMTXRkrYGaBD9" class="btn-nuova-segnalazione" target="_blank">➕ Inserisci Nuova Segnalazione</a>
+        <div class="action-bar">
+            <a href="https://forms.gle/oBhFEMTXRkrYGaBD9" class="btn btn-primary btn-nuova-segnalazione" target="_blank">
+                <i class="fas fa-plus-circle"></i> ➕ Inserisci Nuova Segnalazione
+            </a>
+        </div>
+        
+        <button id="btn-installa" class="btn">
+            <i class="fas fa-download"></i> 📲 Installa App sul Telefono
+        </button>
 
         <hr>
 
         <div id="listaDifetti">
-            <div class="loading">Caricamento dati dal database... ⏳</div>
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Caricamento dati dal database... ⏳
+            </div>
         </div>
     </div>
 
@@ -319,7 +368,7 @@
         
         if (isIOS && !isStandalone) {
             btnInstalla.style.display = 'block'; 
-            btnInstalla.textContent = "📲 Come installare su iPhone";
+            btnInstalla.innerHTML = '<i class="fas fa-info-circle"></i> 📲 Come installare su iPhone';
         }
 
         btnInstalla.addEventListener('click', async () => {
@@ -340,6 +389,16 @@
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?output=csv';
         const listaDifettiDiv = document.getElementById('listaDifetti');
 
+        // Palette colori professionale per tipologie (usata per i bordi laterali)
+        const paletteTipologie = {
+            'Elettrico': '#1976D2',      // Blu
+            'Meccanica': '#F57C00',      // Arancione
+            'Carrozzeria': '#D32F2F',    // Rosso
+            'Interni': '#388E3C',        // Verde
+            'Dotazioni': '#7B1FA2',      // Viola
+            'Generico': '#757575'        // Grigio
+        };
+
         Papa.parse(csvUrl, {
             download: true,
             header: true, 
@@ -348,7 +407,7 @@
                 mostraDifetti(dati);
             },
             error: function(err) {
-                listaDifettiDiv.innerHTML = '<p style="color: red; text-align: center;">Errore nel caricamento. Controlla il link del file CSV.</p>';
+                listaDifettiDiv.innerHTML = '<div class="errore"><i class="fas fa-exclamation-triangle"></i> Errore nel caricamento. Controlla il link del file CSV.</div>';
             }
         });
 
@@ -362,7 +421,7 @@
             });
 
             if (difettiValidi.length === 0) {
-                listaDifettiDiv.innerHTML = '<p style="text-align: center; color: #2fb344; font-weight: bold; padding: 20px;">Nessun difetto segnalato. Tutti i mezzi sono operativi! ✨</p>';
+                listaDifettiDiv.innerHTML = '<div class="nessun-difetto"><i class="fas fa-check-circle"></i> Nessun difetto segnalato. Tutti i mezzi sono operativi! ✨</div>';
                 return;
             }
 
@@ -378,19 +437,6 @@
                 raggruppati[siglaCorta].push(difetto);
             });
 
-            const palette = [
-                { bg: '#ffe3e3', text: '#d64545' }, 
-                { bg: '#e3f2fd', text: '#1976d2' }, 
-                { bg: '#fff3e0', text: '#f57c00' }, 
-                { bg: '#e8f5e9', text: '#388e3c' }, 
-                { bg: '#f3e5f5', text: '#7b1fa2' }, 
-                { bg: '#e0f7fa', text: '#0097a7' }, 
-                { bg: '#fff9c4', text: '#fbc02d' }  
-            ];
-            
-            const coloriTipologia = {};
-            let indiceColore = 0;
-
             const sigleOrdinate = Object.keys(raggruppati).sort();
 
             for (const sigla of sigleOrdinate) {
@@ -404,10 +450,12 @@
                 
                 veicoloTitolo.innerHTML = `
                     <div class="titolo-sinistra">
-                        <span class="icona-freccia">▼</span>
-                        <span>🚐 ${sigla}</span>
+                        <i class="fas fa-ambulance veicolo-icon"></i> 🚐 ${sigla}
                     </div>
-                    <span class="badge-conteggio">${listaDifettiMezzo.length}</span>
+                    <div>
+                        <span class="badge-conteggio">${listaDifettiMezzo.length}</span>
+                        <i class="fas fa-chevron-down icona-freccia"></i>
+                    </div>
                 `;
 
                 const difettiContainer = document.createElement('div');
@@ -415,66 +463,63 @@
 
                 veicoloTitolo.addEventListener('click', () => {
                     difettiContainer.classList.toggle('mostra');
-                    veicoloTitolo.classList.toggle('aperto');
                     const freccia = veicoloTitolo.querySelector('.icona-freccia');
                     freccia.classList.toggle('ruotata');
                 });
 
                 listaDifettiMezzo.forEach(difetto => {
-                    const tipologia = difetto['Tipologia Difetto'] || 'Generico';
-                    
-                    if (!coloriTipologia[tipologia]) {
-                        coloriTipologia[tipologia] = palette[indiceColore % palette.length];
-                        indiceColore++;
-                    }
-                    const colore = coloriTipologia[tipologia];
+                    const tipologiaRaw = difetto['Tipologia Difetto'] || 'Generico';
+                    const tipologiaKey = Object.keys(paletteTipologie).find(key => tipologiaRaw.includes(key)) || 'Generico';
+                    const coloreTipologia = paletteTipologie[tipologiaKey];
 
                     const card = document.createElement('div');
                     card.className = 'difetto-card';
                     
+                    // Applica il colore del bordo laterale
+                    card.style.borderLeftColor = coloreTipologia;
+
                     const allegato = difetto['Foto o file'] || difetto['Foto'] || difetto['Allegato'] || difetto['Allegati'] || difetto['Foto o PDF'] || difetto['Documento'] || difetto['File'] || '';
                     
-                    let fotoHtml = '<span>Nessun allegato</span>';
+                    let allegatoHtml = '<span class="no-allegato">Nessun allegato</span>';
                     if (allegato && allegato.trim() !== '') {
                         const linkPulito = allegato.split(',')[0].trim();
-                        fotoHtml = `<a href="${linkPulito}" target="_blank" class="foto-link">📎 Apri Allegato</a>`;
+                        allegatoHtml = `<a href="${linkPulito}" target="_blank" class="allegato-link"><i class="fas fa-paperclip"></i> 📎 Apri Allegato</a>`;
                     }
 
                     const dataInserimento = difetto['Informazioni cronologiche'] || '';
 
                     let problemi = [];
-                    if (difetto['Difetto motore e meccanica ⚙️']) problemi.push('<strong>Motore/Meccanica:</strong> ' + difetto['Difetto motore e meccanica ⚙️']);
-                    if (difetto['Elettrico e Dispositivi di Emergenza 🚑']) problemi.push('<strong>Elettrico/Emergenza:</strong> ' + difetto['Elettrico e Dispositivi di Emergenza 🚑']);
-                    if (difetto['Carrozzeria e vetri']) problemi.push('<strong>Carrozzeria:</strong> ' + difetto['Carrozzeria e vetri']);
-                    if (difetto['Vano Sanitario e Interni']) problemi.push('<strong>Vano Sanitario:</strong> ' + difetto['Vano Sanitario e Interni']);
-                    if (difetto['Dotazioni di Bordo e Documenti']) problemi.push('<strong>Dotazioni/Documenti:</strong> ' + difetto['Dotazioni di Bordo e Documenti']);
-                    if (difetto['Descrizione difetto']) problemi.push('<strong>Descrizione:</strong> ' + difetto['Descrizione difetto']); 
+                    if (difetto['Difetto motore e meccanica ⚙️']) problemi.push(`<div class="problema-item"><strong>Motore/Meccanica:</strong> ${difetto['Difetto motore e meccanica ⚙️']}</div>`);
+                    if (difetto['Elettrico e Dispositivi di Emergenza 🚑']) problemi.push(`<div class="problema-item"><strong>Elettrico/Emergenza:</strong> ${difetto['Elettrico e Dispositivi di Emergenza 🚑']}</div>`);
+                    if (difetto['Carrozzeria e vetri']) problemi.push(`<div class="problema-item"><strong>Carrozzeria:</strong> ${difetto['Carrozzeria e vetri']}</div>`);
+                    if (difetto['Vano Sanitario e Interni']) problemi.push(`<div class="problema-item"><strong>Vano Sanitario:</strong> ${difetto['Vano Sanitario e Interni']}</div>`);
+                    if (difetto['Dotazioni di Bordo e Documenti']) problemi.push(`<div class="problema-item"><strong>Dotazioni/Documenti:</strong> ${difetto['Dotazioni di Bordo e Documenti']}</div>`);
+                    if (difetto['Descrizione difetto']) problemi.push(`<div class="problema-item"><strong>Descrizione:</strong> ${difetto['Descrizione difetto']}</div>`); 
                     
-                    let noteAggiuntive = [];
+                    let noteAggiuntiveText = [];
                     for (const key in difetto) {
                         if (key.toLowerCase().includes('dettagli') && difetto[key].trim() !== '') {
-                            noteAggiuntive.push(difetto[key].trim());
+                            noteAggiuntiveText.push(difetto[key].trim());
                         }
                     }
 
-                    let descrizioneFinale = problemi.join('<br>');
-                    if (noteAggiuntive.length > 0) {
-                        descrizioneFinale += '<br><br><span style="color: #64748b; font-size: 0.9rem;"><em>📝 Note: ' + noteAggiuntive.join(' - ') + '</em></span>';
+                    let descrizioneFinale = problemi.join('');
+                    if (noteAggiuntiveText.length > 0) {
+                        descrizioneFinale += `<div class="note-aggiuntive"><i class="fas fa-sticky-note note-icon"></i> 📝 Note: ${noteAggiuntiveText.join(' - ')}</div>`;
                     }
                     if (descrizioneFinale === '') {
-                        descrizioneFinale = 'Nessun dettaglio fornito.';
+                        descrizioneFinale = '<div class="problema-item italic">Nessun dettaglio fornito.</div>';
                     }
 
-                    // --- HTML MODIFICATO PER RIMUOVERE NOME E GESTIRE GLI SPAZI ---
                     card.innerHTML = `
                         <div class="difetto-header">
-                            <span class="tipologia-badge" style="background-color: ${colore.bg}; color: ${colore.text};">${tipologia}</span>
-                            <span class="data-segnalazione">${dataInserimento}</span>
+                            <span class="tipologia-badge" style="color: ${coloreTipologia};">${tipologiaRaw}</span>
+                            <span class="data-segnalazione"><i class="far fa-calendar-alt"></i> ${dataInserimento}</span>
                         </div>
                         <div class="descrizione">${descrizioneFinale}</div>
                         
                         <div class="footer-card">
-                            ${fotoHtml}
+                            ${allegatoHtml}
                         </div>
                     `;
                     difettiContainer.appendChild(card);
