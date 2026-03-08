@@ -49,30 +49,32 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.8);
         }
 
-        /* HEADER CON LOGO */
+        /* HEADER CON LOGO PROFESSIONALE E TITOLO ISTITUZIONALE */
         .app-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px; /* Più spaziatura tra header e bottoni */
         }
         
         .app-logo {
-            max-width: 120px;
+            max-width: 200px; /* Logo molto più grande e prominente */
             height: auto;
-            margin-bottom: 15px;
+            margin-bottom: 20px; /* Maggiore spaziatura dal titolo */
         }
 
         h1 {
             color: var(--cri-red);
-            font-size: 1.8rem;
-            margin: 0 0 5px 0;
+            font-size: 2.2rem; /* Titolo più grande e autorevole */
+            margin: 0 0 10px 0; /* Più spaziatura dal sottotitolo */
             font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.5px; /* Testo più compatto e moderno */
         }
 
         .subtitle {
             color: var(--text-muted);
             font-size: 1rem;
             margin: 0;
-            font-weight: 400;
+            font-weight: 300; /* Peso del font più leggero per un sottotitolo sottile */
         }
 
         /* BOTTONI */
@@ -227,6 +229,7 @@
             background-color: #ccc; 
         }
 
+        /* FIX LAYOUT MOBILE */
         .difetto-header {
             display: flex;
             justify-content: space-between;
@@ -280,6 +283,7 @@
             border-left: 3px solid #cbd5e1;
         }
 
+        /* RIMOSSO NOME SEGNALATORE E ALLINEATO ALLEGATO */
         .footer-card {
             font-size: 0.9rem;
             color: var(--text-muted);
@@ -333,7 +337,7 @@
     <div class="container">
         <header class="app-header">
             <img src="logo.png" alt="Logo CRI Gallarate" class="app-logo">
-            <h1>🚗 Segnalazioni autoparco CRI Gallarate</h1>
+            <h1>Segnalazioni Autoparco CRI Gallarate</h1>
             <p class="subtitle">Dati aggiornati in tempo reale</p>
         </header>
         
@@ -518,6 +522,7 @@
                         descrizioneFinale = '<div class="problema-item italic">Nessun dettaglio fornito.</div>';
                     }
 
+                    // HTML MODIFICATO PER RIMUOVERE NOME E GESTIRE GLI SPAZI
                     card.innerHTML = `
                         <div class="difetto-header">
                             <span class="tipologia-badge" style="color: ${coloreTipologia};">${tipologiaRaw}</span>
