@@ -51,7 +51,7 @@
 
         .app-header {
             text-align: center;
-            margin-bottom: 40px; 
+            margin-bottom: 20px; 
         }
         
         .app-logo {
@@ -74,6 +74,27 @@
             font-size: 1rem;
             margin: 0;
             font-weight: 300; 
+        }
+
+        /* LOGIN DISCRETO A DESTRA */
+        .login-container {
+            text-align: right;
+            margin-bottom: 25px;
+        }
+
+        .btn-login-discreet {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            cursor: pointer;
+            padding: 5px;
+            transition: color 0.2s;
+            font-family: inherit;
+        }
+        .btn-login-discreet:hover {
+            color: #475569;
+            text-decoration: underline;
         }
 
         .btn {
@@ -104,20 +125,6 @@
             transform: translateY(-2px);
         }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.7);
-            color: #475569;
-            padding: 12px;
-            font-size: 1rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            margin-top: 10px;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.9);
-            color: #1e293b;
-        }
-
         #btn-installa {
             display: none; 
             background-color: #1976d2; 
@@ -131,13 +138,6 @@
         #btn-installa:hover {
             background-color: #115293;
             transform: translateY(-2px);
-        }
-
-        .action-bar {
-            margin-bottom: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
         }
 
         #admin-panel {
@@ -457,8 +457,7 @@
 <body>
 
     <div id="loading-overlay">
-        <div>⏳ Aggiornamento Database in corso...</div>
-        <div style="font-size: 0.9rem; margin-top: 10px; font-weight: normal;">L'app si aggiornerà automaticamente tra poco.</div>
+        <div>⏳ Elaborazione in corso...</div>
     </div>
 
     <div class="container">
@@ -467,14 +466,17 @@
             <h1>Segnalazioni Autoparco CRI Gallarate</h1>
             <p class="subtitle">Dati aggiornati in tempo reale</p>
         </header>
+
+        <div class="login-container">
+            <button id="btn-login" class="btn-login-discreet">
+                🔒 Accesso Responsabili
+            </button>
+        </div>
         
         <div class="action-bar">
             <a href="https://forms.gle/oBhFEMTXRkrYGaBD9" class="btn btn-primary" target="_blank">
                 ➕ Inserisci Nuova Segnalazione
             </a>
-            <button id="btn-login" class="btn btn-secondary">
-                🔒 Accesso Responsabili
-            </button>
         </div>
         
         <div id="admin-panel">
@@ -505,15 +507,22 @@
     <script>
         // --- CONFIGURAZIONE ---
         const PIN_SEGRETO = "1234"; 
-        
-        // ECCO L'URL UFFICIALE E CORRETTO (/exec) CHE HAI GENERATO
         const URL_API_GOOGLE = "https://script.google.com/macros/s/AKfycbyuZ0BDEIg4gJwCNyIrI52ggwj3mrsi5601ulvJ5HdQF4iSQygkxoWHyi-0aoQy9yjmkg/exec";
         
-        let isAdmin = false;
+        // RECUPERA MEMORIA LOGIN (così non ti slogga mai finché non chiudi la finestra)
+        let isAdmin = sessionStorage.getItem('adminLogged') === 'true';
         let visualizzaSoloRisolti = false;
         let datiGlobali = [];
 
-        // --- FUNZIONE PER AGGIORNARE IL DATABASE ---
+        // All'avvio, se sei loggato, mostra subito il pannello
+        document.addEventListener("DOMContentLoaded", () => {
+            if (isAdmin) {
+                document.getElementById('admin-panel').style.display = 'block';
+                document.getElementById('btn-login').innerHTML = '🔓 Esci da Area Responsabili';
+            }
+        });
+
+        // --- FUNZIONE PER AGGIORNARE IL DATABASE (OTTIMIZZATA) ---
         async function aggiornaStatoDb(timestamp, nuovoStato) {
             if (!confirm(`Vuoi segnare questo difetto come "${nuovoStato}"?`)) return;
 
@@ -524,15 +533,26 @@
                 formData.append('timestamp', timestamp);
                 formData.append('stato', nuovoStato);
 
-                await fetch(URL_API_GOOGLE, {
+                // Manda il dato a Google Sheet
+                fetch(URL_API_GOOGLE, {
                     method: 'POST',
                     body: formData,
                     mode: 'no-cors' 
                 });
                 
+                // Aggiorna l'app "in diretta" senza fare refresh della pagina!
                 setTimeout(() => {
-                    window.location.reload(); 
-                }, 2000);
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    
+                    // Trova il difetto nella memoria del telefono e aggiornalo
+                    let difettoDaAggiornare = datiGlobali.find(d => d['Informazioni cronologiche'] === timestamp);
+                    if(difettoDaAggiornare) {
+                        difettoDaAggiornare['STATUS'] = nuovoStato;
+                    }
+                    
+                    // Ridisegna l'interfaccia (mantenendo il login attivo)
+                    renderizzaInterfaccia(); 
+                }, 1000);
 
             } catch (error) {
                 document.getElementById('loading-overlay').style.display = 'none';
@@ -546,6 +566,7 @@
                 const pinInserito = prompt("🔒 Inserisci il PIN Responsabile Autoparco:");
                 if (pinInserito === PIN_SEGRETO) {
                     isAdmin = true;
+                    sessionStorage.setItem('adminLogged', 'true'); // Salva in memoria
                     document.getElementById('admin-panel').style.display = 'block';
                     document.getElementById('btn-login').innerHTML = '🔓 Esci da Area Responsabili';
                     renderizzaInterfaccia();
@@ -555,6 +576,7 @@
             } else {
                 isAdmin = false;
                 visualizzaSoloRisolti = false;
+                sessionStorage.removeItem('adminLogged'); // Cancella dalla memoria
                 document.getElementById('admin-panel').style.display = 'none';
                 document.getElementById('btn-login').innerHTML = '🔒 Accesso Responsabili';
                 document.getElementById('btn-toggle-risolti').innerHTML = '📂 Visualizza Log Risolti';
