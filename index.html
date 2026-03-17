@@ -49,35 +49,33 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.8);
         }
 
-        /* HEADER CON LOGO PROFESSIONALE E TITOLO ISTITUZIONALE */
         .app-header {
             text-align: center;
-            margin-bottom: 40px; /* Più spaziatura tra header e bottoni */
+            margin-bottom: 40px; 
         }
         
         .app-logo {
-            max-width: 200px; /* Logo molto più grande e prominente */
+            max-width: 200px; 
             height: auto;
-            margin-bottom: 20px; /* Maggiore spaziatura dal titolo */
+            margin-bottom: 20px; 
         }
 
         h1 {
             color: var(--cri-red);
-            font-size: 2.2rem; /* Titolo più grande e autorevole */
-            margin: 0 0 10px 0; /* Più spaziatura dal sottotitolo */
+            font-size: 2.2rem; 
+            margin: 0 0 10px 0; 
             font-weight: 700;
             line-height: 1.2;
-            letter-spacing: -0.5px; /* Testo più compatto e moderno */
+            letter-spacing: -0.5px; 
         }
 
         .subtitle {
             color: var(--text-muted);
             font-size: 1rem;
             margin: 0;
-            font-weight: 300; /* Peso del font più leggero per un sottotitolo sottile */
+            font-weight: 300; 
         }
 
-        /* BOTTONI */
         .btn {
             display: inline-block;
             font-weight: 600;
@@ -89,6 +87,7 @@
             transition: all 0.2s ease-in-out;
             width: 100%;
             box-sizing: border-box;
+            font-family: inherit;
         }
 
         .btn-primary {
@@ -103,6 +102,20 @@
             background-color: var(--cri-red-dark);
             box-shadow: var(--shadow-md);
             transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.7);
+            color: #475569;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e293b;
         }
 
         #btn-installa {
@@ -122,7 +135,75 @@
 
         .action-bar {
             margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
+
+        #admin-panel {
+            display: none;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px dashed #94a3b8;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        #admin-panel h3 {
+            margin-top: 0;
+            color: #1e293b;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .btn-admin-action {
+            background-color: #0f172a;
+            color: white;
+            padding: 12px;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .btn-admin-action:hover {
+            background-color: #334155;
+        }
+
+        /* NUOVI BOTTONI AZIONE DATABASE */
+        .admin-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            width: 100%;
+        }
+
+        .btn-db-carico {
+            background-color: #fef08a;
+            color: #854d0e;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid #eab308;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-db-carico:hover { background-color: #fde047; }
+
+        .btn-db-risolto {
+            background-color: #10b981;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border: 1px solid #059669;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-db-risolto:hover { background-color: #059669; }
 
         hr {
             border: 0;
@@ -131,7 +212,6 @@
             margin: 30px 0;
         }
         
-        /* GRUPPI VEICOLI (FISARMONICA) */
         .veicolo-group {
             background: rgba(255, 255, 255, 0.65);
             backdrop-filter: blur(8px);
@@ -193,7 +273,6 @@
             box-shadow: 0 2px 8px rgba(214, 69, 69, 0.3);
         }
 
-        /* CONTENITORE DIFETTI */
         .difetti-container {
             display: none; 
             padding: 15px 22px 20px 22px;
@@ -205,7 +284,6 @@
             display: block;
         }
 
-        /* SCHEDA SINGOLO DIFETTO */
         .difetto-card {
             background-color: white;
             border: 1px solid rgba(226, 232, 240, 0.8);
@@ -216,7 +294,6 @@
             position: relative; 
         }
         
-        /* Bordo laterale colorato basato sulla tipologia */
         .difetto-card::before {
             content: '';
             position: absolute;
@@ -229,7 +306,14 @@
             background-color: #ccc; 
         }
 
-        /* FIX LAYOUT MOBILE */
+        .difetto-card.risolto {
+            opacity: 0.7;
+            background-color: #f8fafc;
+        }
+        .difetto-card.risolto::before {
+            background-color: #10b981 !important; 
+        }
+
         .difetto-header {
             display: flex;
             justify-content: space-between;
@@ -241,6 +325,13 @@
             border-bottom: 1px solid #f1f5f9;
         }
         
+        .badge-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
         .tipologia-badge {
             font-size: 0.85rem;
             font-weight: 700;
@@ -251,6 +342,24 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         
+        .status-badge-carico {
+            background-color: #fef08a;
+            color: #a16207;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        
+        .status-badge-risolto {
+            background-color: #d1fae5;
+            color: #047857;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
         .data-segnalazione {
             font-size: 0.8rem;
             color: var(--text-muted);
@@ -283,7 +392,6 @@
             border-left: 3px solid #cbd5e1;
         }
 
-        /* RIMOSSO NOME SEGNALATORE E ALLINEATO ALLEGATO */
         .footer-card {
             font-size: 0.9rem;
             color: var(--text-muted);
@@ -292,6 +400,7 @@
             margin-top: 15px;
             padding-top: 12px;
             border-top: 1px dashed #e2e8f0;
+            flex-wrap: wrap;
         }
         
         .allegato-link {
@@ -330,9 +439,29 @@
             font-weight: 600;
         }
 
+        /* OVERLAY CARICAMENTO */
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 1.2rem;
+            color: #1e293b;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+
+    <div id="loading-overlay">
+        <div>⏳ Aggiornamento Database in corso...</div>
+        <div style="font-size: 0.9rem; margin-top: 10px; font-weight: normal;">L'app si aggiornerà automaticamente tra poco.</div>
+    </div>
 
     <div class="container">
         <header class="app-header">
@@ -342,9 +471,22 @@
         </header>
         
         <div class="action-bar">
-            <a href="https://forms.gle/oBhFEMTXRkrYGaBD9" class="btn btn-primary btn-nuova-segnalazione" target="_blank">
+            <a href="https://forms.gle/oBhFEMTXRkrYGaBD9" class="btn btn-primary" target="_blank">
                 ➕ Inserisci Nuova Segnalazione
             </a>
+            <button id="btn-login" class="btn btn-secondary">
+                🔒 Accesso Responsabili
+            </button>
+        </div>
+        
+        <div id="admin-panel">
+            <h3>🛠️ Area Gestione Autoparco</h3>
+            <button id="btn-toggle-risolti" class="btn btn-admin-action">
+                📂 Visualizza Log Risolti
+            </button>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 10px;">
+                I bottoni per modificare lo stato appariranno sotto ogni segnalazione.
+            </p>
         </div>
         
         <button id="btn-installa" class="btn">
@@ -352,6 +494,8 @@
         </button>
 
         <hr>
+
+        <h3 id="titolo-sezione" style="color: #1e293b; margin-bottom: 15px; text-align: center;">Segnalazioni Attive</h3>
 
         <div id="listaDifetti">
             <div class="loading">
@@ -361,7 +505,82 @@
     </div>
 
     <script>
-        // --- LOGICA INSTALLAZIONE APP (PWA) ---
+        // --- CONFIGURAZIONE ---
+        const PIN_SEGRETO = "1234"; // Cambia il PIN se vuoi
+        
+        // ⚠️ INCOLLA QUI L'URL DELLA WEB APP CHE HAI CREATO SU GOOGLE APPS SCRIPT ⚠️
+        const URL_API_GOOGLE = "INCOLLA_QUI_URL_DELLA_WEB_APP";
+        
+        let isAdmin = false;
+        let visualizzaSoloRisolti = false;
+        let datiGlobali = [];
+
+        // --- FUNZIONE PER AGGIORNARE IL DATABASE ---
+        async function aggiornaStatoDb(timestamp, nuovoStato) {
+            if (!confirm(`Vuoi segnare questo difetto come "${nuovoStato}"?`)) return;
+
+            document.getElementById('loading-overlay').style.display = 'flex';
+
+            try {
+                const formData = new URLSearchParams();
+                formData.append('timestamp', timestamp);
+                formData.append('stato', nuovoStato);
+
+                // Effettua la chiamata all'API di Google
+                await fetch(URL_API_GOOGLE, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors' // Google richiede questo per non bloccare il browser
+                });
+                
+                // Essendo no-cors, non possiamo leggere la risposta, ma diamo 2 secondi a Google per elaborare
+                setTimeout(() => {
+                    window.location.reload(); // Ricarica la pagina per vedere le modifiche
+                }, 2000);
+
+            } catch (error) {
+                document.getElementById('loading-overlay').style.display = 'none';
+                alert("❌ Errore di connessione. Riprova più tardi.");
+            }
+        }
+
+        // --- LOGICA LOGIN ---
+        document.getElementById('btn-login').addEventListener('click', () => {
+            if (!isAdmin) {
+                const pinInserito = prompt("🔒 Inserisci il PIN Responsabile Autoparco:");
+                if (pinInserito === PIN_SEGRETO) {
+                    isAdmin = true;
+                    document.getElementById('admin-panel').style.display = 'block';
+                    document.getElementById('btn-login').innerHTML = '🔓 Esci da Area Responsabili';
+                    renderizzaInterfaccia();
+                } else if (pinInserito !== null) {
+                    alert("❌ PIN Errato. Accesso negato.");
+                }
+            } else {
+                isAdmin = false;
+                visualizzaSoloRisolti = false;
+                document.getElementById('admin-panel').style.display = 'none';
+                document.getElementById('btn-login').innerHTML = '🔒 Accesso Responsabili';
+                document.getElementById('btn-toggle-risolti').innerHTML = '📂 Visualizza Log Risolti';
+                renderizzaInterfaccia();
+            }
+        });
+
+        document.getElementById('btn-toggle-risolti').addEventListener('click', () => {
+            visualizzaSoloRisolti = !visualizzaSoloRisolti;
+            const btnToggle = document.getElementById('btn-toggle-risolti');
+            
+            if (visualizzaSoloRisolti) {
+                btnToggle.innerHTML = '🔙 Torna alle Segnalazioni Attive';
+                btnToggle.style.backgroundColor = '#d64545';
+            } else {
+                btnToggle.innerHTML = '📂 Visualizza Log Risolti';
+                btnToggle.style.backgroundColor = '#0f172a';
+            }
+            renderizzaInterfaccia();
+        });
+
+        // --- PWA ---
         let promptInstallazione;
         const btnInstalla = document.getElementById('btn-installa');
 
@@ -392,16 +611,14 @@
                 }
                 promptInstallazione = null;
             } else if (isIOS) {
-                alert("Per installare l'app su iPhone:\n\n1️⃣ Tocca l'icona 'Condividi' (il quadrato con la freccia in alto) in basso sullo schermo.\n2️⃣ Scorri in basso e tocca 'Aggiungi alla schermata Home' ➕.\n3️⃣ Conferma toccando 'Aggiungi' in alto a destra.");
+                alert("Per installare l'app su iPhone:\n\n1️⃣ Tocca l'icona 'Condividi'.\n2️⃣ Scorri in basso e tocca 'Aggiungi alla schermata Home'.");
             }
         });
 
-
-        // --- LOGICA DATI E GRAFICA ---
+        // --- RECUPERO DATI E RENDER ---
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?output=csv';
         const listaDifettiDiv = document.getElementById('listaDifetti');
 
-        // Palette colori professionale per tipologie (usata per i bordi laterali)
         const paletteTipologie = {
             'Elettrico': '#1976D2',      
             'Meccanica': '#F57C00',      
@@ -415,25 +632,34 @@
             download: true,
             header: true, 
             complete: function(results) {
-                const dati = results.data;
-                mostraDifetti(dati);
+                datiGlobali = results.data;
+                renderizzaInterfaccia();
             },
             error: function(err) {
                 listaDifettiDiv.innerHTML = '<div class="errore">Errore nel caricamento. Controlla il link del file CSV.</div>';
             }
         });
 
-        function mostraDifetti(dati) {
+        function renderizzaInterfaccia() {
             listaDifettiDiv.innerHTML = ''; 
+            
+            const titoloSezione = document.getElementById('titolo-sezione');
+            titoloSezione.innerHTML = visualizzaSoloRisolti ? '📂 Log Segnalazioni Risolte' : 'Segnalazioni Attive';
 
-            const difettiValidi = dati.filter(riga => {
+            const difettiValidi = datiGlobali.filter(riga => {
                 const haSigla = riga['Sigla radio'] && riga['Sigla radio'].trim() !== '';
                 const eRisolto = Object.values(riga).some(val => typeof val === 'string' && val.trim().toLowerCase() === 'risolto');
-                return haSigla && !eRisolto;
+                
+                if (visualizzaSoloRisolti) {
+                    return haSigla && eRisolto; 
+                } else {
+                    return haSigla && !eRisolto; 
+                }
             });
 
             if (difettiValidi.length === 0) {
-                listaDifettiDiv.innerHTML = '<div class="nessun-difetto">Nessun difetto segnalato. Tutti i mezzi sono operativi! ✨</div>';
+                const msg = visualizzaSoloRisolti ? "Nessun difetto risolto in archivio." : "Nessun difetto segnalato. Tutti i mezzi sono operativi! ✨";
+                listaDifettiDiv.innerHTML = `<div class="nessun-difetto">${msg}</div>`;
                 return;
             }
 
@@ -483,11 +709,16 @@
                     const tipologiaKey = Object.keys(paletteTipologie).find(key => tipologiaRaw.includes(key)) || 'Generico';
                     const coloreTipologia = paletteTipologie[tipologiaKey];
 
+                    const inCarico = Object.values(difetto).some(val => typeof val === 'string' && (val.trim().toLowerCase() === 'in carico' || val.trim().toLowerCase() === 'preso in carico'));
+
                     const card = document.createElement('div');
                     card.className = 'difetto-card';
                     
-                    // Applica il colore del bordo laterale
-                    card.style.borderLeftColor = coloreTipologia;
+                    if (visualizzaSoloRisolti) {
+                        card.classList.add('risolto');
+                    } else {
+                        card.style.borderLeftColor = coloreTipologia;
+                    }
 
                     const allegato = difetto['Foto o file'] || difetto['Foto'] || difetto['Allegato'] || difetto['Allegati'] || difetto['Foto o PDF'] || difetto['Documento'] || difetto['File'] || '';
                     
@@ -522,16 +753,37 @@
                         descrizioneFinale = '<div class="problema-item italic">Nessun dettaglio fornito.</div>';
                     }
 
-                    // HTML MODIFICATO PER RIMUOVERE NOME E GESTIRE GLI SPAZI
+                    let statusBadgeHtml = '';
+                    if (visualizzaSoloRisolti) {
+                        statusBadgeHtml = `<span class="status-badge-risolto">✅ RISOLTO</span>`;
+                    } else if (inCarico) {
+                        statusBadgeHtml = `<span class="status-badge-carico">🟡 PRESO IN CARICO</span>`;
+                    }
+
+                    // --- NUOVI BOTTONI PER IL DATABASE ---
+                    let bottoniAdminHtml = '';
+                    if (isAdmin) {
+                        bottoniAdminHtml = `
+                            <div class="admin-controls">
+                                ${!visualizzaSoloRisolti && !inCarico ? `<button onclick="aggiornaStatoDb('${dataInserimento}', 'In carico')" class="btn-db-carico">🟡 Prendi in Carico</button>` : ''}
+                                ${!visualizzaSoloRisolti ? `<button onclick="aggiornaStatoDb('${dataInserimento}', 'Risolto')" class="btn-db-risolto">✅ Segna Risolto</button>` : ''}
+                            </div>
+                        `;
+                    }
+
                     card.innerHTML = `
                         <div class="difetto-header">
-                            <span class="tipologia-badge" style="color: ${coloreTipologia};">${tipologiaRaw}</span>
+                            <div class="badge-container">
+                                <span class="tipologia-badge" style="color: ${coloreTipologia};">${tipologiaRaw}</span>
+                                ${statusBadgeHtml}
+                            </div>
                             <span class="data-segnalazione">${dataInserimento}</span>
                         </div>
                         <div class="descrizione">${descrizioneFinale}</div>
                         
-                        <div class="footer-card">
-                            ${allegatoHtml}
+                        <div class="footer-card" style="flex-direction: column; width: 100%;">
+                            <div style="align-self: flex-end;">${allegatoHtml}</div>
+                            ${bottoniAdminHtml}
                         </div>
                     `;
                     difettiContainer.appendChild(card);
