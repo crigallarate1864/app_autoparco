@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Segnalazioni Autoparco CRI Gallarate</title>
     
     <link rel="manifest" href="manifest.json">
@@ -22,15 +22,20 @@
             --text-muted: #64748b;
         }
 
+        /* AGGIUNTO FONT-SIZE 16PX PER FORZARE LE PROPORZIONI CORRETTE SU SMARTPHONE */
+        html {
+            font-size: 16px; 
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             background-attachment: fixed;
             margin: 0;
-            padding: 0; /* Tolto padding per fare edge-to-edge su mobile */
+            padding: 0; 
             color: var(--text-color);
             -webkit-font-smoothing: antialiased;
-            padding-bottom: 90px; /* Spazio per il bottone fluttuante */
+            padding-bottom: 90px; 
         }
 
         .container {
@@ -42,12 +47,12 @@
         /* HEADER ELEGANTE */
         .app-header {
             text-align: center;
-            margin-bottom: 25px; 
+            margin-bottom: 15px; 
             padding-top: 10px;
         }
         
         .app-logo {
-            max-width: 160px; /* Misura perfetta per smartphone */
+            max-width: 160px; 
             height: auto;
             margin-bottom: 15px; 
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
@@ -67,6 +72,28 @@
             font-size: 0.95rem;
             margin: 0;
             font-weight: 400; 
+        }
+
+        /* LOGIN DISCRETO SPOSTATO IN ALTO */
+        .login-container {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .btn-login-discreet {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid #cbd5e1;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 20px;
+            cursor: pointer;
+            padding: 8px 16px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .btn-login-discreet:active {
+            background: #e2e8f0;
         }
 
         /* PULSANTE FLUTTUANTE (FAB) IN BASSO */
@@ -89,7 +116,7 @@
             padding: 16px 20px;
             font-size: 1.1rem;
             font-weight: 700;
-            border-radius: 50px; /* Effetto pillola */
+            border-radius: 50px; 
             box-shadow: 0 8px 25px rgba(214, 69, 69, 0.4);
             border: 2px solid rgba(255,255,255,0.2);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -98,31 +125,6 @@
         
         .btn-fab:active {
             transform: scale(0.96);
-        }
-
-        /* LOGIN DISCRETO A FONDO PAGINA */
-        .login-container {
-            text-align: center;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            padding-top: 20px;
-            border-top: 1px dashed #cbd5e1;
-        }
-
-        .btn-login-discreet {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid #cbd5e1;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            font-weight: 600;
-            border-radius: 20px;
-            cursor: pointer;
-            padding: 8px 16px;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-        .btn-login-discreet:active {
-            background: #e2e8f0;
         }
 
         /* BOTTONE INSTALLAZIONE */
@@ -140,7 +142,7 @@
             width: 100%;
         }
 
-        /* PANNELLO ADMIN (Glassmorphism raffinato) */
+        /* PANNELLO ADMIN */
         #admin-panel {
             display: none;
             background: rgba(255, 255, 255, 0.7);
@@ -171,7 +173,7 @@
             width: 100%;
         }
 
-        /* GRUPPI VEICOLI (Schede morbide) */
+        /* GRUPPI VEICOLI */
         .veicolo-group {
             background: #ffffff;
             border-radius: 16px;
@@ -242,7 +244,6 @@
         }
         .difetto-card:last-child { margin-bottom: 0; }
         
-        /* Bordo laterale colorato */
         .difetto-card::before {
             content: '';
             position: absolute;
@@ -362,7 +363,6 @@
             text-align: right;
         }
 
-        /* BOTTONI DATABASE (Più grandi per il tocco) */
         .admin-controls {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -445,6 +445,12 @@
             <h1>Segnalazioni Autoparco</h1>
             <p class="subtitle">CRI Gallarate • Dati in tempo reale</p>
         </header>
+
+        <div class="login-container">
+            <button id="btn-login" class="btn-login-discreet">
+                🔒 Accesso Responsabili
+            </button>
+        </div>
         
         <button id="btn-installa">
             📲 Installa App sul Telefono
@@ -467,19 +473,13 @@
                 Caricamento dati in corso... ⏳
             </div>
         </div>
-
-        <div class="login-container">
-            <button id="btn-login" class="btn-login-discreet">
-                🔒 Accesso Responsabili
-            </button>
-        </div>
     </div>
 
     <script>
         // --- CONFIGURAZIONE ---
         const PIN_SEGRETO = "1234"; 
         
-        // ⚠️ IL TUO LINK ESATTO! ⚠️
+        // IL TUO LINK ESATTO PER LE API
         const URL_API_GOOGLE = "https://script.google.com/macros/s/AKfycbyuZ0BDEIg4gJwCNyIrI52ggwj3mrsi5601ulvJ5HdQF4iSQygkxoWHyi-0aoQy9yjmkg/exec";
         
         let isAdmin = sessionStorage.getItem('adminLogged') === 'true';
@@ -534,7 +534,6 @@
                     sessionStorage.setItem('adminLogged', 'true'); 
                     document.getElementById('admin-panel').style.display = 'block';
                     document.getElementById('btn-login').innerHTML = '🔓 Esci da Area Responsabili';
-                    window.scrollTo({ top: 0, behavior: 'smooth' }); // Riporta su per far vedere il pannello
                     renderizzaInterfaccia();
                 } else if (pinInserito !== null) {
                     alert("❌ PIN Errato.");
@@ -601,7 +600,7 @@
 
         // --- RECUPERO DATI ---
         const linkBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?output=csv';
-        const csvUrl = linkBase + '&t=' + new Date().getTime(); // Anti-Cache super potente
+        const csvUrl = linkBase + '&t=' + new Date().getTime(); 
 
         const listaDifettiDiv = document.getElementById('listaDifetti');
 
