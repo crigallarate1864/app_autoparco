@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Segnalazioni Autoparco CRI Gallarate</title>
     
     <link rel="manifest" href="manifest.json">
@@ -169,7 +169,6 @@
             background-color: #334155;
         }
 
-        /* NUOVI BOTTONI AZIONE DATABASE */
         .admin-controls {
             display: flex;
             gap: 10px;
@@ -439,7 +438,6 @@
             font-weight: 600;
         }
 
-        /* OVERLAY CARICAMENTO */
         #loading-overlay {
             display: none;
             position: fixed;
@@ -506,10 +504,10 @@
 
     <script>
         // --- CONFIGURAZIONE ---
-        const PIN_SEGRETO = "1234"; // Cambia il PIN se vuoi
+        const PIN_SEGRETO = "1234"; 
         
-        // ⚠️ INCOLLA QUI L'URL DELLA WEB APP CHE HAI CREATO SU GOOGLE APPS SCRIPT ⚠️
-        const URL_API_GOOGLE = "INCOLLA_QUI_URL_DELLA_WEB_APP";
+        // ECCO L'URL UFFICIALE E CORRETTO (/exec) CHE HAI GENERATO
+        const URL_API_GOOGLE = "https://script.google.com/macros/s/AKfycbyuZ0BDEIg4gJwCNyIrI52ggwj3mrsi5601ulvJ5HdQF4iSQygkxoWHyi-0aoQy9yjmkg/exec";
         
         let isAdmin = false;
         let visualizzaSoloRisolti = false;
@@ -526,16 +524,14 @@
                 formData.append('timestamp', timestamp);
                 formData.append('stato', nuovoStato);
 
-                // Effettua la chiamata all'API di Google
                 await fetch(URL_API_GOOGLE, {
                     method: 'POST',
                     body: formData,
-                    mode: 'no-cors' // Google richiede questo per non bloccare il browser
+                    mode: 'no-cors' 
                 });
                 
-                // Essendo no-cors, non possiamo leggere la risposta, ma diamo 2 secondi a Google per elaborare
                 setTimeout(() => {
-                    window.location.reload(); // Ricarica la pagina per vedere le modifiche
+                    window.location.reload(); 
                 }, 2000);
 
             } catch (error) {
@@ -760,7 +756,6 @@
                         statusBadgeHtml = `<span class="status-badge-carico">🟡 PRESO IN CARICO</span>`;
                     }
 
-                    // --- NUOVI BOTTONI PER IL DATABASE ---
                     let bottoniAdminHtml = '';
                     if (isAdmin) {
                         bottoniAdminHtml = `
@@ -796,6 +791,5 @@
             }
         }
     </script>
-
 </body>
 </html>
