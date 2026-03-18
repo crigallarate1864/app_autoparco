@@ -1,18 +1,19 @@
 {
-  "name": "Segnalazioni Autoparco CRI",
-  "short_name": "CRI Autoparco",
+  "name": "ARGO - CRI Gallarate",
+  "short_name": "ARGO",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f0f4f8",
+  "background_color": "#f8fafc",
   "theme_color": "#d64545",
+  "description": "Automezzi Rilevamento Guasti e Operatività",
   "icons": [
     {
-      "src": "icona.png",
+      "src": "logo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icona.png",
+      "src": "logo.png",
       "sizes": "512x512",
       "type": "image/png"
     }
