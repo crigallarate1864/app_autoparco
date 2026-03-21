@@ -231,6 +231,12 @@
             font-weight: 600;
             color: #1e293b;
         }
+        
+        .dettaglio-separator {
+            border: 0;
+            border-top: 1px dashed #cbd5e1;
+            margin: 6px 0;
+        }
 
         .highlight-polizza {
             color: #b45309;
@@ -275,6 +281,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
+        /* Notifica di Copia Riuscita */
         #toast {
             visibility: hidden;
             min-width: 250px;
@@ -324,7 +331,7 @@
         </header>
 
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="🔍 Cerca per targa o sigla (es. VA11-33)...">
+            <input type="text" id="searchInput" placeholder="🔍 Cerca per targa o sigla (es. CRI 105)...">
         </div>
 
         <div id="listaMezzi">
@@ -348,7 +355,7 @@
             download: true,
             header: true, 
             complete: function(results) {
-                // Funzione per ignorare maiuscole e spazi extra
+                // Funzione per estrarre valori flessibile
                 const estraiValore = (riga, paroleChiave, valoreDefault) => {
                     const chiaveTrovata = Object.keys(riga).find(k => 
                         paroleChiave.some(parola => k.toLowerCase().trim().includes(parola))
@@ -362,7 +369,7 @@
                     return sigla !== '';
                 });
 
-                // ORDINAMENTO ALFABETICO / NUMERICO DEI MEZZI
+                // ORDINAMENTO ALFABETICO / NUMERICO
                 tuttiIMezzi.sort((a, b) => {
                     const siglaA = estraiValore(a, ['sigla'], 'Z');
                     const siglaB = estraiValore(b, ['sigla'], 'Z');
@@ -397,14 +404,23 @@
                 const targa = estraiValore(mezzo, ['targa'], 'N/D');
                 const telaio = estraiValore(mezzo, ['telaio', 'vin'], 'N/D');
                 const carburante = estraiValore(mezzo, ['carburante', 'alimentazione'], 'N/D');
+                const statoImmatricolazione = estraiValore(mezzo, ['immatricolazion', 'stato'], 'Italia');
+                
                 const compagnia = estraiValore(mezzo, ['compagnia', 'assicurazion'], 'N/D');
                 const polizza = estraiValore(mezzo, ['polizza'], 'N/D');
                 const scadenza = estraiValore(mezzo, ['scadenza'], 'N/D');
+                const agenzia = estraiValore(mezzo, ['agenzia'], 'N/D');
+                const emailAgenzia = estraiValore(mezzo, ['email', 'mail'], '');
+                
                 const intestatario = estraiValore(mezzo, ['intestatario'], 'CRI Comitato di Gallarate');
                 
                 // Ricerca super blindata per P.IVA o Codice Fiscale
                 let piva = estraiValore(mezzo, ['p.iva', 'piva', 'iva', 'partita', 'fiscale', 'c.f.', 'cf'], '');
                 let piva_cf_text = piva !== '' ? piva : '01625710123'; 
+                
+                // HTML condizionale per l'email
+                let htmlEmail = emailAgenzia !== '' ? `<br><a href="mailto:${emailAgenzia}" style="color: #2563eb; text-decoration: none; font-size: 0.85rem;">📧 ${emailAgenzia}</a>` : '';
+                let testoEmailCopia = emailAgenzia !== '' ? ` - Email: ${emailAgenzia}` : '';
 
                 // CONTENITORE PRINCIPALE (Fisarmonica)
                 const veicoloDiv = document.createElement('div');
@@ -426,14 +442,18 @@
                 const dettagliContainer = document.createElement('div');
                 dettagliContainer.className = 'mezzo-dettagli-container';
 
-                // Testo pronto per la copia con i nuovi campi
-                const testoDaCopiare = `Mezzo: ${sigla} - ${modello}\nTarga: ${targa}\nN. Telaio: ${telaio}\nCarburante: ${carburante}\nAssicurazione: ${compagnia}\nPolizza N°: ${polizza}\nScadenza: ${scadenza}\nIntestatario: ${intestatario}\nCod.Fiscale/P.IVA: ${piva_cf_text}`;
+                // Testo pronto per la copia con tutti i campi
+                const testoDaCopiare = `Mezzo: ${sigla} - ${modello}\nTarga: ${targa}\nStato Immatricolazione: ${statoImmatricolazione}\nN. Telaio: ${telaio}\nCarburante: ${carburante}\nAssicurazione: ${compagnia}\nAgenzia: ${agenzia}${testoEmailCopia}\nPolizza N°: ${polizza}\nScadenza: ${scadenza}\nIntestatario: ${intestatario}\nCod.Fiscale/P.IVA: ${piva_cf_text}`;
 
                 dettagliContainer.innerHTML = `
                     <div class="mezzo-dettagli">
                         <div class="dettaglio-item">
                             <span class="dettaglio-label">Modello Veicolo</span>
                             <span class="dettaglio-valore">${modello}</span>
+                        </div>
+                        <div class="dettaglio-item">
+                            <span class="dettaglio-label">Stato d'Immatricolazione</span>
+                            <span class="dettaglio-valore">${statoImmatricolazione}</span>
                         </div>
                         <div class="dettaglio-item">
                             <span class="dettaglio-label">N. Telaio (VIN)</span>
@@ -443,14 +463,24 @@
                             <span class="dettaglio-label">Alimentazione / Carburante</span>
                             <span class="dettaglio-valore">${carburante}</span>
                         </div>
+                        
+                        <hr class="dettaglio-separator">
+                        
                         <div class="dettaglio-item">
                             <span class="dettaglio-label">Compagnia Assicurativa</span>
                             <span class="dettaglio-valore">${compagnia}</span>
                         </div>
                         <div class="dettaglio-item">
+                            <span class="dettaglio-label">Agenzia e Contatti</span>
+                            <span class="dettaglio-valore">${agenzia}${htmlEmail}</span>
+                        </div>
+                        <div class="dettaglio-item">
                             <span class="dettaglio-label">Numero Polizza / Scadenza</span>
                             <span class="dettaglio-valore"><span class="highlight-polizza">${polizza}</span> (Scade: ${scadenza})</span>
                         </div>
+                        
+                        <hr class="dettaglio-separator">
+                        
                         <div class="dettaglio-item">
                             <span class="dettaglio-label">Intestatario</span>
                             <span class="dettaglio-valore">${intestatario}</span>
@@ -467,7 +497,7 @@
                 btnCopia.className = 'btn-copia';
                 btnCopia.innerHTML = '📄 Copia Dati per CID';
                 btnCopia.onclick = (e) => {
-                    e.stopPropagation(); // Evita che cliccando il bottone si chiuda la fisarmonica
+                    e.stopPropagation(); 
                     copiaDati(testoDaCopiare);
                 };
                 
