@@ -11,11 +11,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    
+
     <style>
         :root {
             --cri-red: #d64545;
@@ -24,406 +22,197 @@
             --font-main: 'Montserrat', sans-serif;
         }
 
-        html { font-size: 16px; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         body {
             font-family: var(--font-main);
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            background-attachment: fixed;
             margin: 0;
-            padding: 0; 
+            padding: 0;
             color: var(--text-color);
-            -webkit-font-smoothing: antialiased;
-            padding-bottom: 50px; 
-            animation: fadeIn 0.4s ease-out forwards; 
         }
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px 15px;
-        }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px 15px; }
 
-        .top-nav {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        
         .btn-back {
             text-decoration: none;
             color: var(--text-muted);
-            font-size: 0.9rem;
             font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            background: rgba(255,255,255,0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 12px;
-            border: 1px solid #cbd5e1;
-            transition: all 0.2s;
         }
 
-        .btn-back:hover, .btn-back:active {
-            background: rgba(255,255,255,0.9);
-            color: #0f172a;
-        }
+        .app-header { text-align: center; margin-bottom: 30px; }
 
-        .app-header {
-            text-align: center;
-            margin-bottom: 30px; 
-            padding-top: 5px;
-        }
-        
-        .app-logo {
-            max-width: 140px; 
-            height: auto;
-            margin-bottom: 15px; 
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
-        }
+        .app-logo { max-width: 140px; margin-bottom: 15px; }
 
-        h1 {
-            color: #ca8a04; 
-            font-size: 1.6rem; 
-            margin: 0 0 5px 0; 
-            font-weight: 800;
-            line-height: 1.2;
-            letter-spacing: -0.5px; 
-        }
+        h1 { color: #ca8a04; font-size: 1.6rem; margin: 0; font-weight: 800; }
 
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin: 0;
-            font-weight: 500; 
-        }
-
-        .search-container {
-            margin-bottom: 20px;
-        }
+        .subtitle { color: var(--text-muted); font-size: 0.9rem; }
 
         #searchInput {
             width: 100%;
             padding: 14px 20px;
-            font-size: 1rem;
             border-radius: 16px;
             border: 1px solid #cbd5e1;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            box-sizing: border-box;
-            font-family: var(--font-main);
-            color: var(--text-color);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-            transition: border-color 0.2s;
-        }
-
-        #searchInput:focus {
-            outline: none;
-            border-color: #ca8a04;
+            margin-bottom: 20px;
         }
 
         .mezzo-card {
-            background-color: #ffffff;
+            background: #fff;
             border-radius: 16px;
             margin-bottom: 15px;
             padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            border: 1px solid #f1f5f9;
-            border-left: 5px solid #facc15; 
-            transition: transform 0.2s ease;
+            border-left: 5px solid #facc15;
         }
 
         .mezzo-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 12px;
-            border-bottom: 1px dashed #e2e8f0;
+            margin-bottom: 10px;
         }
 
-        .mezzo-sigla {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: #0f172a;
-            margin: 0;
-            letter-spacing: -0.5px;
-        }
-
-        .mezzo-targa {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #000;
-            background-color: #f1f5f9;
-            border: 2px solid #94a3b8;
-            padding: 4px 12px;
-            border-radius: 6px;
-            letter-spacing: 1px;
-            font-family: 'Courier New', Courier, monospace; 
-        }
-
-        .mezzo-dettagli {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            font-size: 0.95rem;
-        }
-
-        .dettaglio-item {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .dettaglio-label {
-            font-size: 0.75rem;
-            color: #64748b;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .dettaglio-valore {
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .highlight-polizza {
-            color: #b45309;
-            font-weight: 700;
-            background: #fef3c7;
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: inline-block;
-        }
+        .mezzo-sigla { font-weight: 800; }
+        .mezzo-targa { font-family: monospace; }
 
         .btn-copia {
-            margin-top: 15px;
+            margin-top: 10px;
             width: 100%;
-            padding: 12px;
-            background-color: #f8fafc;
-            border: 1px solid #cbd5e1;
-            color: #475569;
-            font-family: var(--font-main);
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-radius: 10px;
+            padding: 10px;
             cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-copia:active {
-            background-color: #e2e8f0;
-            transform: scale(0.98);
         }
 
         .loading, .errore {
             text-align: center;
-            color: var(--text-muted);
-            padding: 40px 20px;
-            background-color: #ffffff;
+            padding: 30px;
+            background: #fff;
             border-radius: 16px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-        }
-
-        #toast {
-            visibility: hidden;
-            min-width: 250px;
-            margin-left: -125px;
-            background-color: #10b981;
-            color: #fff;
-            text-align: center;
-            border-radius: 30px;
-            padding: 12px;
-            position: fixed;
-            z-index: 1000;
-            left: 50%;
-            bottom: 30px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-        }
-
-        #toast.show {
-            visibility: visible;
-            animation: fadein 0.5s, fadeout 0.5s 2.5s;
-        }
-
-        @keyframes fadein {
-            from {bottom: 0; opacity: 0;}
-            to {bottom: 30px; opacity: 1;}
-        }
-
-        @keyframes fadeout {
-            from {bottom: 30px; opacity: 1;}
-            to {bottom: 0; opacity: 0;}
         }
     </style>
 </head>
+
 <body>
 
-    <div class="container">
-        <div class="top-nav">
-            <a href="index.html" class="btn-back">← Torna all'Hub ARGO</a>
-        </div>
+<div class="container">
 
-        <header class="app-header">
-            <img src="logo.png" alt="Logo CRI Gallarate" class="app-logo">
-            <h1>Dati mezzi per CID</h1>
-            <p class="subtitle">Documenti e polizze per incidenti</p>
-        </header>
+    <a href="index.html" class="btn-back">← Torna all'Hub ARGO</a>
 
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="🔍 Cerca per targa o sigla (es. CRI 105)...">
-        </div>
+    <header class="app-header">
+        <img src="logo.png" class="app-logo">
+        <h1>Dati mezzi per CID</h1>
+        <p class="subtitle">Documenti e polizze</p>
+    </header>
 
-        <div id="listaMezzi">
-            <div class="loading">
-                Caricamento dati dal server... ⏳
-            </div>
-        </div>
+    <input type="text" id="searchInput" placeholder="🔍 Cerca per targa o sigla">
+
+    <div id="listaMezzi">
+        <div class="loading">Caricamento dati dal server... ⏳</div>
     </div>
 
-    <div id="toast">✅ Dati copiati negli appunti!</div>
+</div>
 
-    <script>
-        const URL_CSV_MEZZI = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS62rMPUxxmT0xicMLhQClYoh6uq0U3yqEt6-lzwfBxWC1bvbe1ygrZuqpblxeNbmuRBlYlIN6pPINw/pub?output=csv';
-        const csvUrl = URL_CSV_MEZZI + '&t=' + new Date().getTime(); 
+<div id="toast">✅ Copiato!</div>
 
-        const listaMezziDiv = document.getElementById('listaMezzi');
-        const searchInput = document.getElementById('searchInput');
-        let tuttiIMezzi = [];
+<script>
+const URL_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS62rMPUxxmT0xicMLhQClYoh6uq0U3yqEt6-lzwfBxWC1bvbe1ygrZuqpblxeNbmuRBlYlIN6pPINw/pub?output=csv";
 
-        Papa.parse(csvUrl, {
-            download: true,
-            header: true, 
-            complete: function(results) {
-                // Funzione per ignorare maiuscole e spazi extra nelle colonne Excel
-                const estraiValore = (riga, paroleChiave, valoreDefault) => {
-                    const chiaveTrovata = Object.keys(riga).find(k => 
-                        paroleChiave.some(parola => k.toLowerCase().includes(parola))
-                    );
-                    return (chiaveTrovata && riga[chiaveTrovata] && riga[chiaveTrovata].trim() !== '') ? riga[chiaveTrovata].trim() : valoreDefault;
-                };
+const lista = document.getElementById("listaMezzi");
+const search = document.getElementById("searchInput");
 
-                // Filtro mezzi validi (quelli con una Sigla)
-                tuttiIMezzi = results.data.filter(riga => {
-                    const sigla = estraiValore(riga, ['sigla'], '');
-                    return sigla !== '';
-                });
+let dati = [];
 
-                mostraMezzi(tuttiIMezzi);
-            },
-            error: function(err) {
-                listaMezziDiv.innerHTML = '<div class="errore">Errore di connessione. Verifica che il CSV sia pubblico.</div>';
-            }
-        });
+// funzione robusta per leggere colonne
+function getVal(riga, keys, def = "N/D") {
+    const k = Object.keys(riga).find(x =>
+        keys.some(key => x.toLowerCase().includes(key))
+    );
+    return k && riga[k] ? riga[k].trim() : def;
+}
 
-        function mostraMezzi(mezzi) {
-            listaMezziDiv.innerHTML = ''; 
+// parsing CSV
+Papa.parse(URL_CSV, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
 
-            if (mezzi.length === 0) {
-                listaMezziDiv.innerHTML = '<div class="loading">Nessun mezzo trovato nel database.</div>';
-                return;
-            }
+    complete: function(res) {
+        console.log("CSV:", res);
 
-            // Funzione di utilità come sopra
-            const estraiValore = (riga, paroleChiave, valoreDefault) => {
-                const chiaveTrovata = Object.keys(riga).find(k => 
-                    paroleChiave.some(parola => k.toLowerCase().includes(parola))
-                );
-                return (chiaveTrovata && riga[chiaveTrovata] && riga[chiaveTrovata].trim() !== '') ? riga[chiaveTrovata].trim() : valoreDefault;
-            };
-
-            mezzi.forEach(mezzo => {
-                const sigla = estraiValore(mezzo, ['sigla'], 'N/D');
-                const modello = estraiValore(mezzo, ['modello'], 'N/D');
-                const targa = estraiValore(mezzo, ['targa'], 'N/D');
-                const compagnia = estraiValore(mezzo, ['compagnia', 'assicurazion'], 'N/D');
-                const polizza = estraiValore(mezzo, ['polizza'], 'N/D');
-                const scadenza = estraiValore(mezzo, ['scadenza'], 'N/D');
-                const intestatario = estraiValore(mezzo, ['intestatario'], 'CRI Comitato di Gallarate');
-                const piva = estraiValore(mezzo, ['p.iva', 'piva', 'iva'], '01625710123');
-
-                const card = document.createElement('div');
-                card.className = 'mezzo-card';
-                
-                // Testo pronto per la copia
-                const testoDaCopiare = `Mezzo: ${sigla} - ${modello}\nTarga: ${targa}\nAssicurazione: ${compagnia}\nPolizza N°: ${polizza}\nScadenza: ${scadenza}\nIntestatario: ${intestatario}\nP.IVA: ${piva}`;
-
-                card.innerHTML = `
-                    <div class="mezzo-header">
-                        <h2 class="mezzo-sigla">🚑 ${sigla}</h2>
-                        <div class="mezzo-targa">${targa}</div>
-                    </div>
-                    
-                    <div class="mezzo-dettagli">
-                        <div class="dettaglio-item">
-                            <span class="dettaglio-label">Modello Veicolo</span>
-                            <span class="dettaglio-valore">${modello}</span>
-                        </div>
-                        <div class="dettaglio-item">
-                            <span class="dettaglio-label">Compagnia Assicurativa</span>
-                            <span class="dettaglio-valore">${compagnia}</span>
-                        </div>
-                        <div class="dettaglio-item">
-                            <span class="dettaglio-label">Numero Polizza / Scadenza</span>
-                            <span class="dettaglio-valore"><span class="highlight-polizza">${polizza}</span> (Scade: ${scadenza})</span>
-                        </div>
-                        <div class="dettaglio-item">
-                            <span class="dettaglio-label">Intestatario e P.IVA</span>
-                            <span class="dettaglio-valore" style="font-size: 0.85rem;">${intestatario}<br>P.IVA/C.F. ${piva}</span>
-                        </div>
-                    </div>
-                `;
-                
-                // Creo il bottone a parte per evitare bug con il codice e gli invii a capo
-                const btnCopia = document.createElement('button');
-                btnCopia.className = 'btn-copia';
-                btnCopia.innerHTML = '📄 Copia Dati per CID';
-                btnCopia.onclick = () => copiaDati(testoDaCopiare);
-                
-                card.appendChild(btnCopia);
-                listaMezziDiv.appendChild(card);
-            });
+        if (!res.data || res.data.length === 0) {
+            lista.innerHTML = '<div class="errore">CSV vuoto o non valido</div>';
+            return;
         }
 
-        searchInput.addEventListener('input', (e) => {
-            const termine = e.target.value.toLowerCase();
-            const estraiValore = (riga, paroleChiave) => {
-                const k = Object.keys(riga).find(k => paroleChiave.some(p => k.toLowerCase().includes(p)));
-                return (k && riga[k]) ? riga[k].trim().toLowerCase() : '';
-            };
+        dati = res.data.filter(r => getVal(r, ["sigla"], "") !== "");
 
-            const filtrati = tuttiIMezzi.filter(mezzo => {
-                const sigla = estraiValore(mezzo, ['sigla']);
-                const targa = estraiValore(mezzo, ['targa']);
-                return sigla.includes(termine) || targa.includes(termine);
-            });
-            mostraMezzi(filtrati);
-        });
+        render(dati);
+    },
 
-        function copiaDati(testo) {
-            navigator.clipboard.writeText(testo).then(() => {
-                const toast = document.getElementById("toast");
-                toast.className = "show";
-                setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
-            }).catch(err => {
-                alert("Impossibile copiare i dati in automatico. Copiali manualmente.");
-            });
-        }
-    </script>
+    error: function(err) {
+        console.error(err);
+        lista.innerHTML = '<div class="errore">Errore nel caricamento dati</div>';
+    }
+});
+
+function render(arr) {
+    lista.innerHTML = "";
+
+    if (arr.length === 0) {
+        lista.innerHTML = '<div class="loading">Nessun risultato</div>';
+        return;
+    }
+
+    arr.forEach(m => {
+        const sigla = getVal(m, ["sigla"]);
+        const modello = getVal(m, ["modello"]);
+        const targa = getVal(m, ["targa"]);
+        const compagnia = getVal(m, ["compagnia"]);
+        const polizza = getVal(m, ["polizza"]);
+        const scadenza = getVal(m, ["scadenza"]);
+
+        const testo = `
+Mezzo: ${sigla} - ${modello}
+Targa: ${targa}
+Assicurazione: ${compagnia}
+Polizza: ${polizza}
+Scadenza: ${scadenza}
+        `;
+
+        const card = document.createElement("div");
+        card.className = "mezzo-card";
+
+        card.innerHTML = `
+            <div class="mezzo-header">
+                <div class="mezzo-sigla">🚑 ${sigla}</div>
+                <div class="mezzo-targa">${targa}</div>
+            </div>
+            <div>${modello}</div>
+            <div>${compagnia}</div>
+            <div><b>${polizza}</b> (${scadenza})</div>
+        `;
+
+        const btn = document.createElement("button");
+        btn.className = "btn-copia";
+        btn.innerText = "📄 Copia dati";
+
+        btn.onclick = () => {
+            navigator.clipboard.writeText(testo);
+            alert("Copiato!");
+        };
+
+        card.appendChild(btn);
+        lista.appendChild(card);
+    });
+}
+
+// ricerca
+search.addEventListener("input", e => {
+    const t = e.target.value.toLowerCase();
+
+    const filtrati = dati.filter(m =>
+        getVal(m, ["sigla"]).toLowerCase().includes(t) ||
+        getVal(m, ["targa"]).toLowerCase().includes(t)
+    );
+
+    render(filtrati);
+});
+</script>
+
 </body>
 </html>
