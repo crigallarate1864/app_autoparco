@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <title>ARGO - Dati Mezzi e CID</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d64545">
+    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
+    <style>
+        :root {
+            --cri-red: #d64545;
+            --cri-red-dark: #ba2525;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --font-main: 'Montserrat', sans-serif;
+            --card-yellow: #fef9c3;
+            --card-yellow-border: #fef08a;
+        }
+
+        html { font-size: 16px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0; 
+            color: var(--text-color);
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 50px; 
+            animation: fadeIn 0.4s ease-out forwards; 
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+
+        /* TASTO INDIETRO */
+        .top-nav {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .btn-back {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover, .btn-back:active {
+            background: rgba(255,255,255,0.9);
+            color: #0f172a;
+        }
+
+        /* HEADER */
+        .app-header {
+            text-align: center;
+            margin-bottom: 30px; 
+            padding-top: 5px;
+        }
+        
+        .app-logo {
+            max-width: 140px; 
+            height: auto;
+            margin-bottom: 15px; 
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+        }
+
+        h1 {
+            color: #ca8a04; /* Giallo scuro per richiamare il CID */
+            font-size: 1.6rem; 
+            margin: 0 0 5px 0; 
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.5px; 
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0;
+            font-weight: 500; 
+        }
+
+        /* RICERCA */
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 1rem;
+            border-radius: 16px;
+            border: 1px solid #cbd5e1;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            box-sizing: border-box;
+            font-family: var(--font-main);
+            color: var(--text-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            transition: border-color 0.2s;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: #ca8a04;
+        }
+
+        /* SCHEDA MEZZO (CARD) */
+        .mezzo-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid #f1f5f9;
+            border-left: 5px solid #facc15; 
+            transition: transform 0.2s ease;
+        }
+
+        .mezzo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .mezzo-sigla {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .mezzo-targa {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #000;
+            background-color: #f1f5f9;
+            border: 2px solid #94a3b8;
+            padding: 4px 12px;
+            border-radius: 6px;
+            letter-spacing: 1px;
+            font-family: 'Courier New', Courier, monospace; 
+        }
+
+        .mezzo-dettagli {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            font-size: 0.95rem;
+        }
+
+        .dettaglio-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .dettaglio-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dettaglio-valore {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .highlight-polizza {
+            color: #b45309;
+            font-weight: 700;
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .btn-copia {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            font-family: var(--font-main);
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-copia:active {
+            background-color: #e2e8f0;
+            transform: scale(0.98);
+        }
+
+        .loading, .errore {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px 20px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        /* Notifica di Copia Riuscita */
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #10b981;
+            color: #fff;
+            text-align: center;
+            border-radius: 30px;
+            padding: 12px;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from {bottom: 0; opacity: 0;}
+            to {bottom: 30px; opacity: 1;}
+        }
+
+        @keyframes fadeout {
+            from {bottom: 30px; opacity: 1;}
+            to {bottom: 0; opacity: 0;}
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="top-nav">
+            <a href="index.html" class="btn-back">← Torna all'Hub ARGO</a>
+        </div>
+
+        <header class="app-header">
+            <img src="logo.png" alt="Logo CRI Gallarate" class="app-logo">
+            <h1>Dati Mezzi e CID</h1>
+            <p class="subtitle">Documenti e polizze per incidenti</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="🔍 Cerca per targa o sigla (es. CRI 105)...">
+        </div>
+
+        <div id="listaMezzi">
+            <div class="loading">
+                Caricamento dati dal server... ⏳
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">✅ Dati copiati negli appunti!</div>
+
+    <script>
+        // IL TUO LINK CSV DEI MEZZI
+        const URL_CSV_MEZZI = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS62rMPUxxmT0xicMLhQClYoh6uq0U3yqEt6-lzwfBxWC1bvbe1ygrZuqpblxeNbmuRBlYlIN6pPINw/pub?output=csv';
+        
+        // Aggiungo un timestamp per evitare la cache di Google
+        const csvUrl = URL_CSV_MEZZI + '&t=' + new Date().getTime(); 
+
+        const listaMezziDiv = document.getElementById('listaMezzi');
+        const searchInput = document.getElementById('searchInput');
+        let tuttiIMezzi = [];
+
+        Papa.parse(csvUrl, {
+            download: true,
+            header: true, 
+            complete: function(results) {
+                // Filtra eventuali righe vuote
+                tuttiIMezzi = results.data.filter(riga => riga['Sigla Radio'] && riga['Sigla Radio'].trim() !== '');
+                mostraMezzi(tuttiIMezzi);
+            },
+            error: function(err) {
+                listaMezziDiv.innerHTML = '<div class="errore">Errore di caricamento. Verifica il link del CSV.</div>';
+            }
+        });
+
+        function mostraMezzi(mezzi) {
+            listaMezziDiv.innerHTML = ''; 
+
+            if (mezzi.length === 0) {
+                listaMezziDiv.innerHTML = '<div class="loading">Nessun mezzo trovato.</div>';
+                return;
+            }
+
+            mezzi.forEach(mezzo => {
+                // Protezione contro le colonne vuote o nomi leggermente diversi
+                const sigla = mezzo['Sigla Radio'] || mezzo['Sigla radio'] || 'N/D';
+                const modello = mezzo['Modello'] || 'N/D';
+                const targa = mezzo['Targa'] || 'N/D';
+                const compagnia = mezzo['Compagnia assicurativa'] || mezzo['Compagnia Assicurativa'] || 'N/D';
+                const polizza = mezzo['Numero polizza'] || mezzo['Numero Polizza'] || 'N/D';
+                const scadenza = mezzo['Scadenza assicurazione'] || mezzo['Scadenza Assicurazione'] || 'N/D';
+                const intestatario = mezzo['Intestatario'] || 'CRI Comitato di Gallarate';
+                const piva = mezzo['P.IVA'] || '01625710123';
+
+                const card = document.createElement('div');
+                card.className = 'mezzo-card';
+                
+                // Testo pronto per essere copiato negli appunti
+                const testoDaCopiare = `Mezzo: ${sigla} - ${modello}\nTarga: ${targa}\nAssicurazione: ${compagnia}\nPolizza N°: ${polizza}\nScadenza: ${scadenza}\nIntestatario: ${intestatario}\nP.IVA: ${piva}`;
+
+                card.innerHTML = `
+                    <div class="mezzo-header">
+                        <h2 class="mezzo-sigla">🚑 ${sigla}</h2>
+                        <div class="mezzo-targa">${targa}</div>
+                    </div>
+                    
+                    <div class="mezzo-dettagli">
+                        <div class="dettaglio-item">
+                            <span class="dettaglio-label">Modello Veicolo</span>
+                            <span class="dettaglio-valore">${modello}</span>
+                        </div>
+                        <div class="dettaglio-item">
+                            <span class="dettaglio-label">Compagnia Assicurativa</span>
+                            <span class="dettaglio-valore">${compagnia}</span>
+                        </div>
+                        <div class="dettaglio-item">
+                            <span class="dettaglio-label">Numero Polizza / Scadenza</span>
+                            <span class="dettaglio-valore"><span class="highlight-polizza">${polizza}</span> (Scade: ${scadenza})</span>
+                        </div>
+                        <div class="dettaglio-item">
+                            <span class="dettaglio-label">Intestatario e P.IVA</span>
+                            <span class="dettaglio-valore" style="font-size: 0.85rem;">${intestatario}<br>P.IVA/C.F. ${piva}</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-copia" onclick="copiaDati(\`${testoDaCopiare}\`)">
+                        📄 Copia Dati per CID
+                    </button>
+                `;
+                
+                listaMezziDiv.appendChild(card);
+            });
+        }
+
+        // Funzione per la ricerca in tempo reale
+        searchInput.addEventListener('input', (e) => {
+            const termine = e.target.value.toLowerCase();
+            const filtrati = tuttiIMezzi.filter(mezzo => {
+                const sigla = (mezzo['Sigla Radio'] || '').toLowerCase();
+                const targa = (mezzo['Targa'] || '').toLowerCase();
+                return sigla.includes(termine) || targa.includes(termine);
+            });
+            mostraMezzi(filtrati);
+        });
+
+        // Funzione per copiare negli appunti e mostrare notifica
+        function copiaDati(testo) {
+            navigator.clipboard.writeText(testo).then(() => {
+                const toast = document.getElementById("toast");
+                toast.className = "show";
