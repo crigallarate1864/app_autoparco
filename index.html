@@ -26,7 +26,6 @@
 
         html { font-size: 16px; }
 
-        /* ANIMAZIONE DI COMPARSA FLUIDA (FADE-IN) */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -49,7 +48,6 @@
             padding: 30px 20px;
         }
 
-        /* HEADER */
         .app-header {
             text-align: center;
             margin-bottom: 35px; 
@@ -81,9 +79,8 @@
             letter-spacing: 1px; 
         }
 
-        /* BOTTONE INSTALLAZIONE APP */
         #btn-installa {
-            display: none; /* Nascosto di default, appare solo se installabile */
+            display: none; 
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: white;
             padding: 15px;
@@ -103,7 +100,6 @@
             transform: scale(0.98);
         }
 
-        /* MENU A SCHEDE (CARDS) */
         .menu-grid {
             display: flex;
             flex-direction: column;
@@ -162,9 +158,9 @@
         }
 
         .card-red { border-left: 4px solid #fecaca; }
-        .card-yellow { border-left: 4px solid #fef08a; }
         .card-blue { border-left: 4px solid #bae6fd; }
         .card-green { border-left: 4px solid #bbf7d0; }
+        .card-yellow { border-left: 4px solid #fef08a; }
 
         .footer-note {
             text-align: center;
@@ -175,7 +171,6 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
     </style>
 </head>
 <body>
@@ -201,14 +196,6 @@
                 </div>
             </a>
 
-            <a href="dati_mezzi.html" class="menu-card card-yellow">
-                <div class="menu-icon">📄</div>
-                <div class="menu-content">
-                    <h2>Dati Mezzi e CID</h2>
-                    <p>Targhe, polizze assicurative e dati tecnici per la compilazione rapida del CID.</p>
-                </div>
-            </a>
-
             <a href="https://crigallarate1864.github.io/CRI-Hub" class="menu-card card-blue">
                 <div class="menu-icon">🚑</div>
                 <div class="menu-content">
@@ -225,6 +212,14 @@
                 </div>
             </a>
 
+            <a href="dati_mezzi.html" class="menu-card card-yellow">
+                <div class="menu-icon">📄</div>
+                <div class="menu-content">
+                    <h2>Dati mezzi per CID</h2>
+                    <p>Targhe, polizze assicurative e dati tecnici per la compilazione rapida.</p>
+                </div>
+            </a>
+
         </div>
 
         <div class="footer-note">
@@ -236,11 +231,10 @@
         let promptInstallazione;
         const btnInstalla = document.getElementById('btn-installa');
 
-        // Registrazione del Service Worker (Fondamentale per la PWA)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').catch(error => {
-                    console.log('ServiceWorker registration failed: ', error);
+                    console.log('SW failed: ', error);
                 });
             });
         }
@@ -251,7 +245,6 @@
             btnInstalla.style.display = 'block'; 
         });
 
-        // Gestione specifica per iOS (iPhone/iPad)
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
         
