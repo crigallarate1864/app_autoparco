@@ -143,7 +143,7 @@
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             border: 1px solid #f1f5f9;
-            border-left: 5px solid #facc15; /* Linea gialla distintiva */
+            border-left: 5px solid #facc15; 
             transition: all 0.3s ease;
         }
 
@@ -159,7 +159,7 @@
         }
         
         .mezzo-titolo.aperto {
-            background-color: #fef9c3; /* Sfondo giallino quando aperto */
+            background-color: #fef9c3; 
             border-bottom: 1px dashed #fde047;
         }
 
@@ -275,7 +275,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
-        /* Notifica di Copia Riuscita */
         #toast {
             visibility: hidden;
             min-width: 250px;
@@ -325,7 +324,7 @@
         </header>
 
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="🔍 Cerca per targa o sigla (es. CRI 105)...">
+            <input type="text" id="searchInput" placeholder="🔍 Cerca per targa o sigla (es. VA11-33)...">
         </div>
 
         <div id="listaMezzi">
@@ -352,7 +351,7 @@
                 // Funzione per ignorare maiuscole e spazi extra
                 const estraiValore = (riga, paroleChiave, valoreDefault) => {
                     const chiaveTrovata = Object.keys(riga).find(k => 
-                        paroleChiave.some(parola => k.toLowerCase().includes(parola))
+                        paroleChiave.some(parola => k.toLowerCase().trim().includes(parola))
                     );
                     return (chiaveTrovata && riga[chiaveTrovata] && riga[chiaveTrovata].trim() !== '') ? riga[chiaveTrovata].trim() : valoreDefault;
                 };
@@ -387,7 +386,7 @@
 
             const estraiValore = (riga, paroleChiave, valoreDefault) => {
                 const chiaveTrovata = Object.keys(riga).find(k => 
-                    paroleChiave.some(parola => k.toLowerCase().includes(parola))
+                    paroleChiave.some(parola => k.toLowerCase().trim().includes(parola))
                 );
                 return (chiaveTrovata && riga[chiaveTrovata] && riga[chiaveTrovata].trim() !== '') ? riga[chiaveTrovata].trim() : valoreDefault;
             };
@@ -403,18 +402,9 @@
                 const scadenza = estraiValore(mezzo, ['scadenza'], 'N/D');
                 const intestatario = estraiValore(mezzo, ['intestatario'], 'CRI Comitato di Gallarate');
                 
-                // Ricerca sia "P.IVA" che "Codice Fiscale"
-                let piva = estraiValore(mezzo, ['p.iva', 'piva', 'iva'], '');
-                let cf = estraiValore(mezzo, ['fiscale', 'c.f.', 'cf'], '');
-                let piva_cf_text = '01625710123'; 
-                
-                if(piva !== '' && cf !== '' && piva !== cf) {
-                    piva_cf_text = `P.IVA: ${piva} - C.F.: ${cf}`;
-                } else if (piva !== '') {
-                    piva_cf_text = piva;
-                } else if (cf !== '') {
-                    piva_cf_text = cf;
-                }
+                // Ricerca super blindata per P.IVA o Codice Fiscale
+                let piva = estraiValore(mezzo, ['p.iva', 'piva', 'iva', 'partita', 'fiscale', 'c.f.', 'cf'], '');
+                let piva_cf_text = piva !== '' ? piva : '01625710123'; 
 
                 // CONTENITORE PRINCIPALE (Fisarmonica)
                 const veicoloDiv = document.createElement('div');
