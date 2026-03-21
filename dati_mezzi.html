@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
-    <title>ARGO - Dati Mezzi e CID</title>
+    <title>ARGO - Dati mezzi per CID</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#d64545">
@@ -19,12 +19,9 @@
     <style>
         :root {
             --cri-red: #d64545;
-            --cri-red-dark: #ba2525;
             --text-color: #1e293b;
             --text-muted: #64748b;
             --font-main: 'Montserrat', sans-serif;
-            --card-yellow: #fef9c3;
-            --card-yellow-border: #fef08a;
         }
 
         html { font-size: 16px; }
@@ -52,7 +49,6 @@
             padding: 20px 15px;
         }
 
-        /* TASTO INDIETRO */
         .top-nav {
             margin-bottom: 15px;
             display: flex;
@@ -80,7 +76,6 @@
             color: #0f172a;
         }
 
-        /* HEADER */
         .app-header {
             text-align: center;
             margin-bottom: 30px; 
@@ -95,7 +90,7 @@
         }
 
         h1 {
-            color: #ca8a04; /* Giallo scuro per richiamare il CID */
+            color: #ca8a04; 
             font-size: 1.6rem; 
             margin: 0 0 5px 0; 
             font-weight: 800;
@@ -110,7 +105,6 @@
             font-weight: 500; 
         }
 
-        /* RICERCA */
         .search-container {
             margin-bottom: 20px;
         }
@@ -135,7 +129,6 @@
             border-color: #ca8a04;
         }
 
-        /* SCHEDA MEZZO (CARD) */
         .mezzo-card {
             background-color: #ffffff;
             border-radius: 16px;
@@ -245,7 +238,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
-        /* Notifica di Copia Riuscita */
         #toast {
             visibility: hidden;
             min-width: 250px;
@@ -278,7 +270,6 @@
             from {bottom: 30px; opacity: 1;}
             to {bottom: 0; opacity: 0;}
         }
-
     </style>
 </head>
 <body>
@@ -290,7 +281,7 @@
 
         <header class="app-header">
             <img src="logo.png" alt="Logo CRI Gallarate" class="app-logo">
-            <h1>Dati Mezzi e CID</h1>
+            <h1>Dati mezzi per CID</h1>
             <p class="subtitle">Documenti e polizze per incidenti</p>
         </header>
 
@@ -308,10 +299,7 @@
     <div id="toast">✅ Dati copiati negli appunti!</div>
 
     <script>
-        // IL TUO LINK CSV DEI MEZZI
         const URL_CSV_MEZZI = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS62rMPUxxmT0xicMLhQClYoh6uq0U3yqEt6-lzwfBxWC1bvbe1ygrZuqpblxeNbmuRBlYlIN6pPINw/pub?output=csv';
-        
-        // Aggiungo un timestamp per evitare la cache di Google
         const csvUrl = URL_CSV_MEZZI + '&t=' + new Date().getTime(); 
 
         const listaMezziDiv = document.getElementById('listaMezzi');
@@ -322,12 +310,24 @@
             download: true,
             header: true, 
             complete: function(results) {
-                // Filtra eventuali righe vuote
-                tuttiIMezzi = results.data.filter(riga => riga['Sigla Radio'] && riga['Sigla Radio'].trim() !== '');
+                // Funzione per ignorare maiuscole e spazi extra nelle colonne Excel
+                const estraiValore = (riga, paroleChiave, valoreDefault) => {
+                    const chiaveTrovata = Object.keys(riga).find(k => 
+                        paroleChiave.some(parola => k.toLowerCase().includes(parola))
+                    );
+                    return (chiaveTrovata && riga[chiaveTrovata] && riga[chiaveTrovata].trim() !== '') ? riga[chiaveTrovata].trim() : valoreDefault;
+                };
+
+                // Filtro mezzi validi (quelli con una Sigla)
+                tuttiIMezzi = results.data.filter(riga => {
+                    const sigla = estraiValore(riga, ['sigla'], '');
+                    return sigla !== '';
+                });
+
                 mostraMezzi(tuttiIMezzi);
             },
             error: function(err) {
-                listaMezziDiv.innerHTML = '<div class="errore">Errore di caricamento. Verifica il link del CSV.</div>';
+                listaMezziDiv.innerHTML = '<div class="errore">Errore di connessione. Verifica che il CSV sia pubblico.</div>';
             }
         });
 
@@ -335,25 +335,32 @@
             listaMezziDiv.innerHTML = ''; 
 
             if (mezzi.length === 0) {
-                listaMezziDiv.innerHTML = '<div class="loading">Nessun mezzo trovato.</div>';
+                listaMezziDiv.innerHTML = '<div class="loading">Nessun mezzo trovato nel database.</div>';
                 return;
             }
 
+            // Funzione di utilità come sopra
+            const estraiValore = (riga, paroleChiave, valoreDefault) => {
+                const chiaveTrovata = Object.keys(riga).find(k => 
+                    paroleChiave.some(parola => k.toLowerCase().includes(parola))
+                );
+                return (chiaveTrovata && riga[chiaveTrovata] && riga[chiaveTrovata].trim() !== '') ? riga[chiaveTrovata].trim() : valoreDefault;
+            };
+
             mezzi.forEach(mezzo => {
-                // Protezione contro le colonne vuote o nomi leggermente diversi
-                const sigla = mezzo['Sigla Radio'] || mezzo['Sigla radio'] || 'N/D';
-                const modello = mezzo['Modello'] || 'N/D';
-                const targa = mezzo['Targa'] || 'N/D';
-                const compagnia = mezzo['Compagnia assicurativa'] || mezzo['Compagnia Assicurativa'] || 'N/D';
-                const polizza = mezzo['Numero polizza'] || mezzo['Numero Polizza'] || 'N/D';
-                const scadenza = mezzo['Scadenza assicurazione'] || mezzo['Scadenza Assicurazione'] || 'N/D';
-                const intestatario = mezzo['Intestatario'] || 'CRI Comitato di Gallarate';
-                const piva = mezzo['P.IVA'] || '01625710123';
+                const sigla = estraiValore(mezzo, ['sigla'], 'N/D');
+                const modello = estraiValore(mezzo, ['modello'], 'N/D');
+                const targa = estraiValore(mezzo, ['targa'], 'N/D');
+                const compagnia = estraiValore(mezzo, ['compagnia', 'assicurazion'], 'N/D');
+                const polizza = estraiValore(mezzo, ['polizza'], 'N/D');
+                const scadenza = estraiValore(mezzo, ['scadenza'], 'N/D');
+                const intestatario = estraiValore(mezzo, ['intestatario'], 'CRI Comitato di Gallarate');
+                const piva = estraiValore(mezzo, ['p.iva', 'piva', 'iva'], '01625710123');
 
                 const card = document.createElement('div');
                 card.className = 'mezzo-card';
                 
-                // Testo pronto per essere copiato negli appunti
+                // Testo pronto per la copia
                 const testoDaCopiare = `Mezzo: ${sigla} - ${modello}\nTarga: ${targa}\nAssicurazione: ${compagnia}\nPolizza N°: ${polizza}\nScadenza: ${scadenza}\nIntestatario: ${intestatario}\nP.IVA: ${piva}`;
 
                 card.innerHTML = `
@@ -380,29 +387,43 @@
                             <span class="dettaglio-valore" style="font-size: 0.85rem;">${intestatario}<br>P.IVA/C.F. ${piva}</span>
                         </div>
                     </div>
-
-                    <button class="btn-copia" onclick="copiaDati(\`${testoDaCopiare}\`)">
-                        📄 Copia Dati per CID
-                    </button>
                 `;
                 
+                // Creo il bottone a parte per evitare bug con il codice e gli invii a capo
+                const btnCopia = document.createElement('button');
+                btnCopia.className = 'btn-copia';
+                btnCopia.innerHTML = '📄 Copia Dati per CID';
+                btnCopia.onclick = () => copiaDati(testoDaCopiare);
+                
+                card.appendChild(btnCopia);
                 listaMezziDiv.appendChild(card);
             });
         }
 
-        // Funzione per la ricerca in tempo reale
         searchInput.addEventListener('input', (e) => {
             const termine = e.target.value.toLowerCase();
+            const estraiValore = (riga, paroleChiave) => {
+                const k = Object.keys(riga).find(k => paroleChiave.some(p => k.toLowerCase().includes(p)));
+                return (k && riga[k]) ? riga[k].trim().toLowerCase() : '';
+            };
+
             const filtrati = tuttiIMezzi.filter(mezzo => {
-                const sigla = (mezzo['Sigla Radio'] || '').toLowerCase();
-                const targa = (mezzo['Targa'] || '').toLowerCase();
+                const sigla = estraiValore(mezzo, ['sigla']);
+                const targa = estraiValore(mezzo, ['targa']);
                 return sigla.includes(termine) || targa.includes(termine);
             });
             mostraMezzi(filtrati);
         });
 
-        // Funzione per copiare negli appunti e mostrare notifica
         function copiaDati(testo) {
             navigator.clipboard.writeText(testo).then(() => {
                 const toast = document.getElementById("toast");
                 toast.className = "show";
+                setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+            }).catch(err => {
+                alert("Impossibile copiare i dati in automatico. Copiali manualmente.");
+            });
+        }
+    </script>
+</body>
+</html>
