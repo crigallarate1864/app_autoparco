@@ -26,6 +26,7 @@
 
         html { font-size: 16px; }
 
+        /* ANIMAZIONE DI COMPARSA FLUIDA (FADE-IN) */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -39,7 +40,7 @@
             padding: 0; 
             color: var(--text-color);
             -webkit-font-smoothing: antialiased;
-            animation: fadeIn 0.4s ease-out forwards; 
+            animation: fadeIn 0.4s ease-out forwards;
         }
 
         .container {
@@ -48,14 +49,15 @@
             padding: 30px 20px;
         }
 
+        /* HEADER */
         .app-header {
             text-align: center;
-            margin-bottom: 40px; 
-            padding-top: 15px;
+            margin-bottom: 35px; 
+            padding-top: 20px;
         }
         
         .app-logo {
-            max-width: 160px; 
+            max-width: 170px; 
             height: auto;
             margin-bottom: 20px; 
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
@@ -79,10 +81,33 @@
             letter-spacing: 1px; 
         }
 
+        /* BOTTONE INSTALLAZIONE APP */
+        #btn-installa {
+            display: none; /* Nascosto di default, appare solo se installabile */
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 15px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #btn-installa:active {
+            transform: scale(0.98);
+        }
+
+        /* MENU A SCHEDE (CARDS) */
         .menu-grid {
             display: flex;
             flex-direction: column;
-            gap: 16px; /* Spazio leggermente ridotto per far stare 4 bottoni comodamente */
+            gap: 16px;
         }
 
         .menu-card {
@@ -92,11 +117,11 @@
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.8);
-            border-radius: 20px; 
-            padding: 20px;
+            border-radius: 24px; 
+            padding: 22px;
             text-decoration: none;
             color: var(--text-color);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
             transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
         }
 
@@ -107,22 +132,22 @@
         }
 
         .menu-icon {
-            font-size: 2.2rem;
-            margin-right: 18px;
+            font-size: 2.4rem;
+            margin-right: 20px;
             background: #f1f5f9;
-            width: 65px;
-            height: 65px;
+            width: 70px;
+            height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 16px;
+            border-radius: 18px;
             flex-shrink: 0;
             border: 1px solid #e2e8f0;
         }
 
         .menu-content h2 {
             margin: 0 0 4px 0;
-            font-size: 1.15rem;
+            font-size: 1.25rem;
             font-weight: 700; 
             color: #0f172a;
             letter-spacing: -0.3px;
@@ -130,21 +155,20 @@
 
         .menu-content p {
             margin: 0;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             color: #64748b;
-            line-height: 1.4;
+            line-height: 1.45;
             font-weight: 400; 
         }
 
-        /* Colori per le card */
         .card-red { border-left: 4px solid #fecaca; }
+        .card-yellow { border-left: 4px solid #fef08a; }
         .card-blue { border-left: 4px solid #bae6fd; }
         .card-green { border-left: 4px solid #bbf7d0; }
-        .card-yellow { border-left: 4px solid #fef08a; } /* Nuovo colore per il CID */
 
         .footer-note {
             text-align: center;
-            margin-top: 50px;
+            margin-top: 60px;
             font-size: 0.8rem;
             color: #94a3b8;
             font-weight: 500;
@@ -162,6 +186,10 @@
             <h1>ARGO</h1>
             <p class="subtitle">Automezzi Rilevamento Guasti e Operatività</p>
         </header>
+
+        <button id="btn-installa">
+            📲 Installa App ARGO sul Telefono
+        </button>
 
         <div class="menu-grid">
             
@@ -204,5 +232,46 @@
         </div>
     </div>
 
+    <script>
+        let promptInstallazione;
+        const btnInstalla = document.getElementById('btn-installa');
+
+        // Registrazione del Service Worker (Fondamentale per la PWA)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(error => {
+                    console.log('ServiceWorker registration failed: ', error);
+                });
+            });
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            promptInstallazione = e;
+            btnInstalla.style.display = 'block'; 
+        });
+
+        // Gestione specifica per iOS (iPhone/iPad)
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        
+        if (isIOS && !isStandalone) {
+            btnInstalla.style.display = 'block'; 
+            btnInstalla.innerHTML = '📲 Come installare su iPhone';
+        }
+
+        btnInstalla.addEventListener('click', async () => {
+            if (promptInstallazione) {
+                promptInstallazione.prompt();
+                const { outcome } = await promptInstallazione.userChoice;
+                if (outcome === 'accepted') {
+                    btnInstalla.style.display = 'none';
+                }
+                promptInstallazione = null;
+            } else if (isIOS) {
+                alert("Per installare l'app ARGO su iPhone:\n\n1️⃣ Tocca l'icona 'Condividi' (il quadrato con la freccia in alto) in basso sullo schermo.\n2️⃣ Scorri in basso e tocca 'Aggiungi alla schermata Home' ➕.\n3️⃣ Conferma toccando 'Aggiungi' in alto a destra.");
+            }
+        });
+    </script>
 </body>
 </html>
