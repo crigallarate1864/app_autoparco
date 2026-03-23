@@ -7,7 +7,7 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#d64545">
-    <link rel="apple-touch-icon" href="Icona_app.png">
+    <link rel="apple-touch-icon" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -41,7 +41,6 @@
             padding: 0; 
             color: var(--text-color);
             -webkit-font-smoothing: antialiased;
-            /* Spazio in basso extra per non coprire l'ultimo mezzo con il bottone fluttuante */
             padding-bottom: 120px; 
             animation: fadeIn 0.4s ease-out forwards; 
         }
@@ -88,8 +87,8 @@
         }
         
         .app-logo {
-            /* LOGO INGRANDITO A 220px */
-            max-width: 220px; 
+            /* LOGO RIPRISTINATO E RIMPICCIOLITO (150px) */
+            max-width: 150px; 
             height: auto;
             margin-bottom: 15px; 
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
@@ -132,9 +131,7 @@
             background: #e2e8f0;
         }
 
-        /* =========================================
-           PULSANTE FLUTTUANTE (NUOVA SEGNALAZIONE)
-           ========================================= */
+        /* PULSANTE FLUTTUANTE (NUOVA SEGNALAZIONE) */
         .fab-container {
             position: fixed !important;
             bottom: 35px !important; 
@@ -469,7 +466,7 @@
         </div>
 
         <header class="app-header">
-            <img src="Icona_app.png" alt="Logo CRI Gallarate" class="app-logo">
+            <img src="logo.png" alt="Logo CRI Gallarate" class="app-logo">
             <h1>Segnalazioni</h1>
             <p class="subtitle">Dati aggiornati in tempo reale</p>
         </header>
@@ -501,9 +498,7 @@
 
     <script>
         // --- CONFIGURAZIONE SICUREZZA E API ---
-        // NUOVO PIN INSERITO
         const PIN_SEGRETO = "V3icoli-"; 
-        
         const URL_API_GOOGLE = "https://script.google.com/macros/s/AKfycbyuZ0BDEIg4gJwCNyIrI52ggwj3mrsi5601ulvJ5HdQF4iSQygkxoWHyi-0aoQy9yjmkg/exec";
         
         let isAdmin = sessionStorage.getItem('adminLogged') === 'true';
@@ -566,4 +561,212 @@
                 isAdmin = false;
                 visualizzaSoloRisolti = false;
                 sessionStorage.removeItem('adminLogged'); 
-                document.getElementById('admin-panel').style.display = '
+                document.getElementById('admin-panel').style.display = 'none';
+                document.getElementById('btn-login').innerHTML = '🔒 Accesso Responsabili';
+                document.getElementById('btn-toggle-risolti').innerHTML = '📂 Visualizza Log Risolti';
+                renderizzaInterfaccia();
+            }
+        });
+
+        document.getElementById('btn-toggle-risolti').addEventListener('click', () => {
+            visualizzaSoloRisolti = !visualizzaSoloRisolti;
+            const btnToggle = document.getElementById('btn-toggle-risolti');
+            
+            if (visualizzaSoloRisolti) {
+                btnToggle.innerHTML = '🔙 Torna alle Segnalazioni Attive';
+                btnToggle.style.backgroundColor = '#d64545';
+            } else {
+                btnToggle.innerHTML = '📂 Visualizza Log Risolti';
+                btnToggle.style.backgroundColor = '#1e293b';
+            }
+            renderizzaInterfaccia();
+        });
+
+        // --- RECUPERO DATI E RENDER ---
+        const linkBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?output=csv';
+        const csvUrl = linkBase + '&t=' + new Date().getTime(); 
+
+        const listaDifettiDiv = document.getElementById('listaDifetti');
+
+        const paletteTipologie = {
+            'Elettrico': '#1976D2',      
+            'Meccanica': '#F57C00',      
+            'Carrozzeria': '#D32F2F',    
+            'Interni': '#388E3C',        
+            'Dotazioni': '#7B1FA2',      
+            'Generico': '#64748b'        
+        };
+
+        Papa.parse(csvUrl, {
+            download: true,
+            header: true, 
+            complete: function(results) {
+                datiGlobali = results.data;
+                renderizzaInterfaccia();
+            },
+            error: function(err) {
+                listaDifettiDiv.innerHTML = '<div class="errore">Errore di caricamento. Riprova più tardi.</div>';
+            }
+        });
+
+        function renderizzaInterfaccia() {
+            listaDifettiDiv.innerHTML = ''; 
+            
+            const titoloSezione = document.getElementById('titolo-sezione');
+            titoloSezione.innerHTML = visualizzaSoloRisolti ? '📂 Log Segnalazioni Risolte' : 'Segnalazioni Attive';
+
+            const difettiValidi = datiGlobali.filter(riga => {
+                // Controllo flessibile in caso di differenze tra maiuscole e minuscole nell'intestazione di Google Sheets
+                const colonnaSigla = riga['Sigla radio'] || riga['Sigla Radio'] || '';
+                const haSigla = colonnaSigla.trim() !== '';
+                
+                const eRisolto = Object.values(riga).some(val => typeof val === 'string' && val.trim().toLowerCase() === 'risolto');
+                
+                if (visualizzaSoloRisolti) {
+                    return haSigla && eRisolto; 
+                } else {
+                    return haSigla && !eRisolto; 
+                }
+            });
+
+            if (difettiValidi.length === 0) {
+                const msg = visualizzaSoloRisolti ? "Nessun difetto in archivio." : "Nessun difetto segnalato. Mezzi operativi! ✨";
+                listaDifettiDiv.innerHTML = `<div class="nessun-difetto">${msg}</div>`;
+                return;
+            }
+
+            const raggruppati = {};
+            
+            difettiValidi.reverse().forEach(difetto => {
+                const colonnaSigla = difetto['Sigla radio'] || difetto['Sigla Radio'] || '';
+                const siglaCompleta = colonnaSigla.trim();
+                const siglaCorta = siglaCompleta.substring(0, 7);
+                
+                if (!raggruppati[siglaCorta]) {
+                    raggruppati[siglaCorta] = [];
+                }
+                raggruppati[siglaCorta].push(difetto);
+            });
+
+            const sigleOrdinate = Object.keys(raggruppati).sort();
+
+            for (const sigla of sigleOrdinate) {
+                const listaDifettiMezzo = raggruppati[sigla];
+                
+                const veicoloDiv = document.createElement('div');
+                veicoloDiv.className = 'veicolo-group';
+                
+                const veicoloTitolo = document.createElement('div');
+                veicoloTitolo.className = 'veicolo-titolo';
+                
+                veicoloTitolo.innerHTML = `
+                    <div class="titolo-sinistra">
+                        <span class="icona-freccia">▼</span>
+                        <span>🚑 ${sigla}</span>
+                    </div>
+                    <span class="badge-conteggio">${listaDifettiMezzo.length}</span>
+                `;
+
+                const difettiContainer = document.createElement('div');
+                difettiContainer.className = 'difetti-container';
+
+                veicoloTitolo.addEventListener('click', () => {
+                    difettiContainer.classList.toggle('mostra');
+                    veicoloTitolo.classList.toggle('aperto');
+                    const freccia = veicoloTitolo.querySelector('.icona-freccia');
+                    freccia.classList.toggle('ruotata');
+                });
+
+                listaDifettiMezzo.forEach(difetto => {
+                    const tipologiaRaw = difetto['Tipologia Difetto'] || 'Generico';
+                    const tipologiaKey = Object.keys(paletteTipologie).find(key => tipologiaRaw.includes(key)) || 'Generico';
+                    const coloreTipologia = paletteTipologie[tipologiaKey];
+
+                    const inCarico = Object.values(difetto).some(val => typeof val === 'string' && (val.trim().toLowerCase() === 'in carico' || val.trim().toLowerCase() === 'preso in carico'));
+
+                    const card = document.createElement('div');
+                    card.className = 'difetto-card';
+                    
+                    if (visualizzaSoloRisolti) {
+                        card.classList.add('risolto');
+                    } else {
+                        card.style.borderLeftColor = coloreTipologia;
+                    }
+
+                    const allegato = difetto['Foto o file'] || difetto['Foto'] || difetto['Allegato'] || difetto['Allegati'] || difetto['Foto o PDF'] || difetto['Documento'] || difetto['File'] || '';
+                    
+                    let allegatoHtml = '<span class="no-allegato">Nessun allegato</span>';
+                    if (allegato && allegato.trim() !== '') {
+                        const linkPulito = allegato.split(',')[0].trim();
+                        allegatoHtml = `<a href="${linkPulito}" target="_blank" class="allegato-link">📎 Apri Allegato</a>`;
+                    }
+
+                    const dataInserimento = difetto['Informazioni cronologiche'] || '';
+
+                    let problemi = [];
+                    if (difetto['Difetto motore e meccanica ⚙️']) problemi.push(`<div class="problema-item"><strong>Motore/Meccanica:</strong> ${difetto['Difetto motore e meccanica ⚙️']}</div>`);
+                    if (difetto['Elettrico e Dispositivi di Emergenza 🚑']) problemi.push(`<div class="problema-item"><strong>Elettrico/Emergenza:</strong> ${difetto['Elettrico e Dispositivi di Emergenza 🚑']}</div>`);
+                    if (difetto['Carrozzeria e vetri']) problemi.push(`<div class="problema-item"><strong>Carrozzeria:</strong> ${difetto['Carrozzeria e vetri']}</div>`);
+                    if (difetto['Vano Sanitario e Interni']) problemi.push(`<div class="problema-item"><strong>Vano Sanitario:</strong> ${difetto['Vano Sanitario e Interni']}</div>`);
+                    if (difetto['Dotazioni di Bordo e Documenti']) problemi.push(`<div class="problema-item"><strong>Dotazioni/Documenti:</strong> ${difetto['Dotazioni di Bordo e Documenti']}</div>`);
+                    if (difetto['Descrizione difetto']) problemi.push(`<div class="problema-item"><strong>Descrizione:</strong> ${difetto['Descrizione difetto']}</div>`); 
+                    
+                    let noteAggiuntiveText = [];
+                    for (const key in difetto) {
+                        if (key.toLowerCase().includes('dettagli') && difetto[key].trim() !== '') {
+                            noteAggiuntiveText.push(difetto[key].trim());
+                        }
+                    }
+
+                    let descrizioneFinale = problemi.join('');
+                    if (noteAggiuntiveText.length > 0) {
+                        descrizioneFinale += `<div class="note-aggiuntive">📝 Note: ${noteAggiuntiveText.join(' - ')}</div>`;
+                    }
+                    if (descrizioneFinale === '') {
+                        descrizioneFinale = '<div class="problema-item italic">Nessun dettaglio fornito.</div>';
+                    }
+
+                    let statusBadgeHtml = '';
+                    if (visualizzaSoloRisolti) {
+                        statusBadgeHtml = `<span class="status-badge-risolto">✅ RISOLTO</span>`;
+                    } else if (inCarico) {
+                        statusBadgeHtml = `<span class="status-badge-carico">🟡 PRESO IN CARICO</span>`;
+                    }
+
+                    let bottoniAdminHtml = '';
+                    if (isAdmin) {
+                        bottoniAdminHtml = `
+                            <div class="admin-controls">
+                                ${!visualizzaSoloRisolti && !inCarico ? `<button onclick="aggiornaStatoDb('${dataInserimento}', 'In carico')" class="btn-db-carico">🟡 Prendi in Carico</button>` : ''}
+                                ${!visualizzaSoloRisolti ? `<button onclick="aggiornaStatoDb('${dataInserimento}', 'Risolto')" class="btn-db-risolto">✅ Segna Risolto</button>` : ''}
+                            </div>
+                        `;
+                    }
+
+                    card.innerHTML = `
+                        <div class="difetto-header">
+                            <div class="badge-container">
+                                <span class="tipologia-badge" style="color: ${coloreTipologia}; border-color: ${coloreTipologia}40;">${tipologiaRaw}</span>
+                                ${statusBadgeHtml}
+                            </div>
+                            <span class="data-segnalazione">${dataInserimento}</span>
+                        </div>
+                        <div class="descrizione">${descrizioneFinale}</div>
+                        
+                        <div class="footer-card">
+                            <div style="align-self: flex-end;">${allegatoHtml}</div>
+                            ${bottoniAdminHtml}
+                        </div>
+                    `;
+                    difettiContainer.appendChild(card);
+                });
+
+                veicoloDiv.appendChild(veicoloTitolo);
+                veicoloDiv.appendChild(difettiContainer);
+                
+                listaDifettiDiv.appendChild(veicoloDiv);
+            }
+        }
+    </script>
+</body>
+</html>
