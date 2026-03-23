@@ -42,13 +42,15 @@
             color: var(--text-color);
             -webkit-font-smoothing: antialiased;
             padding-bottom: 120px; 
-            animation: fadeIn 0.4s ease-out forwards; 
+            /* L'animazione è stata rimossa da qui per far funzionare il bottone fluttuante! */
         }
 
         .container {
             max-width: 600px;
             margin: 0 auto;
             padding: 20px 15px;
+            /* Animazione spostata qui: */
+            animation: fadeIn 0.4s ease-out forwards; 
         }
 
         /* TASTO INDIETRO */
@@ -87,7 +89,6 @@
         }
         
         .app-logo {
-            /* LOGO RIPRISTINATO E RIMPICCIOLITO (150px) */
             max-width: 150px; 
             height: auto;
             margin-bottom: 15px; 
