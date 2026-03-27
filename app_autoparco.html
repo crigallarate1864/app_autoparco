@@ -51,7 +51,6 @@
             animation: fadeIn 0.4s ease-out forwards; 
         }
 
-        /* TASTO INDIETRO */
         .top-nav {
             margin-bottom: 15px;
             display: flex;
@@ -79,7 +78,6 @@
             color: #0f172a;
         }
 
-        /* HEADER */
         .app-header {
             text-align: center;
             margin-bottom: 15px; 
@@ -130,7 +128,6 @@
             background: #e2e8f0;
         }
 
-        /* PULSANTE FLUTTUANTE */
         .fab-container {
             position: fixed !important;
             bottom: 35px !important; 
@@ -194,7 +191,6 @@
             font-family: inherit;
         }
 
-        /* CARD VEICOLO */
         .veicolo-group {
             background: #ffffff;
             border-radius: 16px;
@@ -252,7 +248,6 @@
         }
         .difetti-container.mostra { display: block; }
 
-        /* NUOVA UI: MACRO-CARD TIPOLOGIA */
         .tipologia-card {
             background: #ffffff;
             border-radius: 12px;
@@ -260,12 +255,10 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             border: 1px solid #e2e8f0;
             overflow: hidden;
-            border-left: 5px solid #ccc; /* Sovrascritto via JS */
+            border-left: 5px solid #ccc; 
         }
         
-        .tipologia-card:last-child {
-            margin-bottom: 0;
-        }
+        .tipologia-card:last-child { margin-bottom: 0; }
 
         .tipologia-header {
             background: #f8fafc;
@@ -288,9 +281,8 @@
             border-radius: 20px;
         }
 
-        /* SCROLL INTERNO PER RAGGRUPPAMENTI */
         .tipologia-body {
-            max-height: 380px; /* Altezza massima prima che compaia lo scroll */
+            max-height: 380px; 
             overflow-y: auto;
             padding: 12px;
             display: flex;
@@ -299,16 +291,12 @@
             background: #ffffff;
         }
 
-        /* Stile barra di scorrimento interna per estetica App */
-        .tipologia-body::-webkit-scrollbar {
-            width: 6px;
-        }
+        .tipologia-body::-webkit-scrollbar { width: 6px; }
         .tipologia-body::-webkit-scrollbar-thumb {
             background-color: #cbd5e1; 
             border-radius: 10px;
         }
 
-        /* MICRO CARD DEL SINGOLO DIFETTO */
         .difetto-micro {
             background: #f8fafc;
             border: 1px solid #f1f5f9;
@@ -386,7 +374,42 @@
             padding-top: 10px;
             border-top: 1px dashed #cbd5e1;
         }
+
+        /* ---------------------------------
+           NUOVI STILI GALLERIA IMMAGINI
+           --------------------------------- */
+        .gallery-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            margin-top: 5px;
+            align-items: center;
+        }
         
+        .gallery-container::-webkit-scrollbar { height: 6px; }
+        .gallery-container::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1; 
+            border-radius: 10px;
+        }
+
+        .gallery-img {
+            height: 70px; /* Altezza miniatura */
+            width: 70px;
+            object-fit: cover; /* Taglia l'immagine a quadrato in modo elegante */
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            background-color: #ffffff;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+        
+        .gallery-img:hover {
+            transform: scale(1.05);
+            border-color: var(--cri-red);
+        }
+
         .allegato-link {
             color: #2563eb;
             text-decoration: none;
@@ -511,7 +534,6 @@
     </div>
 
     <script>
-        // --- CONFIGURAZIONE ---
         const PIN_SEGRETO = "V3icoli-"; 
         const URL_API_GOOGLE = "https://script.google.com/macros/s/AKfycbyuZ0BDEIg4gJwCNyIrI52ggwj3mrsi5601ulvJ5HdQF4iSQygkxoWHyi-0aoQy9yjmkg/exec";
         
@@ -526,7 +548,20 @@
             }
         });
 
-        // --- AGGIORNAMENTO DB VIA SCRIPT GOOGLE ---
+        // --- FUNZIONE EXTRA: Trasforma i link Google Drive in immagini dirette ---
+        function estraiLinkImmagineDrive(url) {
+            let fileId = null;
+            if (url.includes('id=')) {
+                fileId = url.split('id=')[1].split('&')[0];
+            } else if (url.includes('/d/')) {
+                fileId = url.split('/d/')[1].split('/')[0];
+            }
+            if (fileId) {
+                return `https://drive.google.com/uc?export=view&id=${fileId}`;
+            }
+            return null;
+        }
+
         async function aggiornaStatoDb(timestamp, nuovoStato) {
             if (!confirm(`Vuoi segnare questo difetto come "${nuovoStato}"?`)) return;
 
@@ -558,7 +593,6 @@
             }
         }
 
-        // --- GESTIONE LOGIN ---
         document.getElementById('btn-login').addEventListener('click', () => {
             if (!isAdmin) {
                 const pinInserito = prompt("🔒 Inserisci il PIN Responsabile:");
@@ -596,13 +630,11 @@
             renderizzaInterfaccia();
         });
 
-        // --- RECUPERO DATI ---
         const linkBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?output=csv';
         const csvUrl = linkBase + '&t=' + new Date().getTime(); 
 
         const listaDifettiDiv = document.getElementById('listaDifetti');
 
-        // Mappa colori per categoria
         const paletteTipologie = {
             'Elettrico': '#1976D2',      
             'Meccanica': '#F57C00',      
@@ -612,7 +644,6 @@
             'Generico': '#64748b'        
         };
 
-        // Icone per categoria per rendere l'UI più leggibile
         const iconTipologie = {
             'Elettrico': '⚡',      
             'Meccanica': '⚙️',      
@@ -634,7 +665,6 @@
             }
         });
 
-        // --- RENDER INTERFACCIA A MACRO-GRUPPI ---
         function renderizzaInterfaccia() {
             listaDifettiDiv.innerHTML = ''; 
             
@@ -659,7 +689,6 @@
                 return;
             }
 
-            // 1. Raggruppa per Veicolo
             const raggruppatiPerMezzo = {};
             difettiValidi.reverse().forEach(difetto => {
                 const colonnaSigla = difetto['Sigla radio'] || difetto['Sigla Radio'] || '';
@@ -675,7 +704,6 @@
             for (const sigla of sigleOrdinate) {
                 const listaDifettiMezzo = raggruppatiPerMezzo[sigla];
                 
-                // Crea il contenitore del veicolo
                 const veicoloDiv = document.createElement('div');
                 veicoloDiv.className = 'veicolo-group';
                 
@@ -700,7 +728,6 @@
                     freccia.classList.toggle('ruotata');
                 });
 
-                // 2. Raggruppa per TIPOLOGIA all'interno del veicolo
                 const difettiPerTipologia = {};
                 listaDifettiMezzo.forEach(difetto => {
                     const tipologiaRaw = difetto['Tipologia Difetto'] || 'Generico';
@@ -715,7 +742,6 @@
                     difettiPerTipologia[tipologiaKey].difetti.push(difetto);
                 });
 
-                // 3. Renderizza le Macro-Card per Tipologia
                 for (const [tipoKey, datiTipo] of Object.entries(difettiPerTipologia)) {
                     const coloreTipologia = paletteTipologie[tipoKey];
                     const icona = iconTipologie[tipoKey];
@@ -724,7 +750,6 @@
                     macroCard.className = 'tipologia-card';
                     macroCard.style.borderLeftColor = visualizzaSoloRisolti ? '#ccc' : coloreTipologia;
                     
-                    // Header della Tipologia
                     const testoConteggio = datiTipo.difetti.length === 1 ? '1 Segnalazione' : `${datiTipo.difetti.length} Segnalazioni`;
                     macroCard.innerHTML = `
                         <div class="tipologia-header">
@@ -733,11 +758,9 @@
                         </div>
                     `;
 
-                    // Area di scorrimento interna
                     const scrollArea = document.createElement('div');
                     scrollArea.className = 'tipologia-body';
 
-                    // 4. Inserisce le micro-card dentro l'area di scorrimento
                     datiTipo.difetti.forEach(difetto => {
                         const inCarico = Object.values(difetto).some(val => typeof val === 'string' && (val.trim().toLowerCase() === 'in carico' || val.trim().toLowerCase() === 'preso in carico'));
                         const dataInserimento = difetto['Informazioni cronologiche'] || '';
@@ -746,15 +769,41 @@
                         microCard.className = 'difetto-micro';
                         if (visualizzaSoloRisolti) microCard.classList.add('risolto');
 
-                        // Gestione Allegati
-                        const allegato = difetto['Foto o file'] || difetto['Foto'] || difetto['Allegato'] || difetto['Allegati'] || difetto['Foto o PDF'] || difetto['Documento'] || difetto['File'] || '';
+                        // ==========================================
+                        // NUOVA GESTIONE ALLEGATI A CAROSELLO (GALLERIA)
+                        // ==========================================
+                        const allegatoRaw = difetto['Foto o file'] || difetto['Foto'] || difetto['Allegato'] || difetto['Allegati'] || difetto['Foto o PDF'] || difetto['Documento'] || difetto['File'] || '';
                         let allegatoHtml = '';
-                        if (allegato && allegato.trim() !== '') {
-                            const linkPulito = allegato.split(',')[0].trim();
-                            allegatoHtml = `<a href="${linkPulito}" target="_blank" class="allegato-link">📎 Foto/File</a>`;
-                        }
+                        
+                        if (allegatoRaw && allegatoRaw.trim() !== '') {
+                            // Divide i link nel caso ce ne sia più di uno separato da virgola
+                            const urls = allegatoRaw.split(',').map(u => u.trim()).filter(u => u);
+                            let imgTags = '';
+                            let fileLinks = '';
 
-                        // Costruzione Descrizione Pulita
+                            urls.forEach(url => {
+                                const directImgLink = estraiLinkImmagineDrive(url);
+                                if (directImgLink) {
+                                    // Se capisce che è un'immagine, crea la miniatura. 
+                                    // Se si rompe (es. cartella non pubblica o è un PDF), si auto-sostituisce con un bottone di testo!
+                                    imgTags += `
+                                        <a href="${url}" target="_blank" style="display:inline-block; flex-shrink:0;">
+                                            <img src="${directImgLink}" class="gallery-img" alt="Allegato" onerror="this.outerHTML='<span class=\\'allegato-link\\'>📎 Apri File</span>'">
+                                        </a>`;
+                                } else {
+                                    // Se non è un link Drive riconoscibile, mette il bottone classico
+                                    fileLinks += `<a href="${url}" target="_blank" class="allegato-link" style="margin-right: 5px;">📎 Apri File</a>`;
+                                }
+                            });
+
+                            if (imgTags !== '') {
+                                allegatoHtml = `<div class="gallery-container">${imgTags}</div>${fileLinks}`;
+                            } else if (fileLinks !== '') {
+                                allegatoHtml = `<div>${fileLinks}</div>`;
+                            }
+                        }
+                        // ==========================================
+
                         let problemi = [];
                         if (difetto['Difetto motore e meccanica ⚙️']) problemi.push(`<div class="problema-item"><strong>Motore:</strong> ${difetto['Difetto motore e meccanica ⚙️']}</div>`);
                         if (difetto['Elettrico e Dispositivi di Emergenza 🚑']) problemi.push(`<div class="problema-item"><strong>Elettrico:</strong> ${difetto['Elettrico e Dispositivi di Emergenza 🚑']}</div>`);
@@ -774,7 +823,6 @@
                         if (noteAggiuntiveText.length > 0) descrizioneFinale += `<div class="note-aggiuntive">📝 Note: ${noteAggiuntiveText.join(' - ')}</div>`;
                         if (descrizioneFinale === '') descrizioneFinale = '<div class="problema-item italic" style="color:#94a3b8;">Nessun dettaglio aggiuntivo.</div>';
 
-                        // Badge di Stato
                         let statusBadgeHtml = '';
                         if (visualizzaSoloRisolti) {
                             statusBadgeHtml = `<span class="status-badge-risolto">✅ RISOLTO</span>`;
@@ -782,7 +830,6 @@
                             statusBadgeHtml = `<span class="status-badge-carico">🟡 PRESO IN CARICO</span>`;
                         }
 
-                        // Bottoni Admin (Risolto/In Carico)
                         let bottoniAdminHtml = '';
                         if (isAdmin) {
                             bottoniAdminHtml = `
