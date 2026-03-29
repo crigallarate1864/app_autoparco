@@ -7,7 +7,7 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#d64545">
-    <link rel="apple-touch-icon" href="Icona_app.png">
+    <link rel="apple-touch-icon" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -20,7 +20,7 @@
         :root {
             --cri-red: #d64545;
             --cri-red-dark: #ba2525;
-            --bg-color: #f4f7f6;
+            --bg-color: #f8fafc;
             --text-color: #1e293b;
             --text-muted: #64748b;
             --font-main: 'Montserrat', sans-serif;
@@ -35,7 +35,7 @@
 
         body {
             font-family: var(--font-main);
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            background: var(--bg-color);
             background-attachment: fixed;
             margin: 0;
             padding: 0; 
@@ -51,6 +51,7 @@
             animation: fadeIn 0.4s ease-out forwards; 
         }
 
+        /* TASTO INDIETRO */
         .top-nav {
             margin-bottom: 15px;
             display: flex;
@@ -66,29 +67,31 @@
             align-items: center;
             gap: 6px;
             padding: 8px 14px;
-            background: rgba(255,255,255,0.6);
-            backdrop-filter: blur(8px);
+            background: #ffffff;
             border-radius: 12px;
-            border: 1px solid #cbd5e1;
+            border: 1px solid #e2e8f0;
             transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
         .btn-back:hover, .btn-back:active {
-            background: rgba(255,255,255,0.9);
+            background: #f1f5f9;
             color: #0f172a;
         }
 
+        /* HEADER */
         .app-header {
             text-align: center;
-            margin-bottom: 15px; 
-            padding-top: 10px;
+            margin-bottom: 20px; 
+            padding-top: 5px;
         }
         
         .app-logo {
             max-width: 150px; 
             height: auto;
-            margin-bottom: 15px; 
+            margin-bottom: 10px; 
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+            cursor: pointer; /* Fa capire che è cliccabile (per il trucco admin) */
         }
 
         h1 {
@@ -96,41 +99,20 @@
             font-size: 1.6rem; 
             margin: 0 0 5px 0; 
             font-weight: 800;
-            line-height: 1.2;
             letter-spacing: -0.5px; 
         }
 
         .subtitle {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin: 0;
             font-weight: 500; 
         }
 
-        .login-container {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .btn-login-discreet {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid #cbd5e1;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            font-weight: 600;
-            border-radius: 20px;
-            cursor: pointer;
-            padding: 8px 16px;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-        .btn-login-discreet:active {
-            background: #e2e8f0;
-        }
-
+        /* PULSANTE FLUTTUANTE (FAB) */
         .fab-container {
             position: fixed !important;
-            bottom: 35px !important; 
+            bottom: 30px !important; 
             left: 50% !important;
             transform: translateX(-50%) !important;
             width: 90% !important;
@@ -148,9 +130,9 @@
             font-size: 1.05rem !important;
             font-weight: 700 !important;
             border-radius: 50px !important; 
-            box-shadow: 0 8px 25px rgba(214, 69, 69, 0.5) !important;
-            border: 2px solid rgba(255,255,255,0.3) !important;
-            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+            box-shadow: 0 8px 25px rgba(214, 69, 69, 0.4) !important;
+            border: 2px solid rgba(255,255,255,0.2) !important;
+            transition: transform 0.2s ease !important;
             backdrop-filter: blur(4px) !important;
             font-family: var(--font-main) !important;
         }
@@ -159,22 +141,22 @@
             transform: scale(0.96) !important;
         }
 
+        /* PANNELLO ADMIN */
         #admin-panel {
             display: none;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            background: #ffffff;
+            border: 2px solid var(--cri-red);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 25px;
             text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 25px rgba(214, 69, 69, 0.1);
         }
 
         #admin-panel h3 {
             margin-top: 0;
             color: #0f172a;
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             margin-bottom: 15px;
             font-weight: 700;
         }
@@ -191,13 +173,14 @@
             font-family: inherit;
         }
 
+        /* CARD VEICOLO */
         .veicolo-group {
             background: #ffffff;
             border-radius: 16px;
             margin-bottom: 15px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-            border: 1px solid rgba(0,0,0,0.04);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
             transition: all 0.3s ease;
         }
 
@@ -213,7 +196,7 @@
         
         .veicolo-titolo.aperto {
             background-color: #f8fafc;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px dashed #e2e8f0;
         }
 
         .titolo-sinistra {
@@ -221,7 +204,7 @@
             align-items: center;
             gap: 12px;
             font-size: 1.15rem;
-            font-weight: 700;
+            font-weight: 800;
             color: #0f172a;
         }
         
@@ -235,96 +218,80 @@
         .badge-conteggio {
             background-color: var(--cri-red);
             color: white;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             padding: 4px 10px;
             border-radius: 12px;
             font-weight: 700;
         }
 
+        /* CONTENITORE INTERNO (PULITO E FLAT) */
         .difetti-container {
             display: none; 
-            padding: 15px;
-            background: #f8fafc;
+            padding: 15px 15px 25px 15px;
+            background: #ffffff;
         }
         .difetti-container.mostra { display: block; }
 
-        .tipologia-card {
-            background: #ffffff;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
-            border-left: 5px solid #ccc; 
+        /* MACRO-CATEGORIA (SOLO TITOLO, NESSUN BOX) */
+        .tipologia-section {
+            margin-bottom: 25px;
         }
         
-        .tipologia-card:last-child { margin-bottom: 0; }
+        .tipologia-section:last-child { margin-bottom: 0; }
 
         .tipologia-header {
-            background: #f8fafc;
-            padding: 12px 15px;
-            font-size: 1rem;
-            font-weight: 800;
-            color: #1e293b;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #475569;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e2e8f0;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #f1f5f9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .tipologia-badge-count {
-            font-size: 0.75rem;
-            font-weight: 700;
-            background: #e2e8f0;
-            color: #475569;
-            padding: 3px 8px;
+            font-size: 0.7rem;
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 2px 8px;
             border-radius: 20px;
+            margin-left: auto;
         }
 
-        .tipologia-body {
-            max-height: 380px; 
-            overflow-y: auto;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: #ffffff;
-        }
-
-        .tipologia-body::-webkit-scrollbar { width: 6px; }
-        .tipologia-body::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1; 
-            border-radius: 10px;
-        }
-
+        /* MICRO CARD DEL SINGOLO DIFETTO (PIÙ SNELLA) */
         .difetto-micro {
-            background: #f8fafc;
-            border: 1px solid #f1f5f9;
-            border-radius: 8px;
-            padding: 12px;
-            position: relative;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            border-left: 4px solid #ccc; /* Sovrascritto via JS col colore categoria */
         }
         
+        .difetto-micro:last-child { margin-bottom: 0; }
+
         .difetto-micro.risolto {
-            opacity: 0.65;
-            background-color: #f1f5f9;
+            opacity: 0.6;
+            background-color: #f8fafc;
+            border-left-color: #10b981 !important;
         }
 
         .difetto-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 8px;
+            align-items: center;
             margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #e2e8f0;
         }
         
         .status-badge-carico {
             background-color: #fef08a;
             color: #854d0e;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 800;
             padding: 3px 6px;
             border-radius: 6px;
@@ -334,7 +301,7 @@
         .status-badge-risolto {
             background-color: #d1fae5;
             color: #047857;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 800;
             padding: 3px 6px;
             border-radius: 6px;
@@ -342,9 +309,9 @@
         }
 
         .data-segnalazione {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: #94a3b8;
-            font-weight: 700;
+            font-weight: 600;
         }
 
         .descrizione {
@@ -360,95 +327,73 @@
             font-size: 0.8rem;
             color: #64748b;
             margin-top: 8px;
-            padding: 8px;
-            background-color: #e2e8f0;
+            padding: 8px 10px;
+            background-color: #f8fafc;
             border-radius: 6px;
-            border-left: 2px solid #94a3b8;
+            border-left: 2px solid #cbd5e1;
+            font-style: italic;
         }
 
-        .footer-card {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed #cbd5e1;
-        }
-
-        /* ---------------------------------
-           NUOVI STILI GALLERIA IMMAGINI
-           --------------------------------- */
+        /* GALLERIA IMMAGINI */
         .gallery-container {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             overflow-x: auto;
             padding-bottom: 5px;
-            margin-top: 5px;
+            margin-top: 10px;
             align-items: center;
         }
         
-        .gallery-container::-webkit-scrollbar { height: 6px; }
+        .gallery-container::-webkit-scrollbar { height: 4px; }
         .gallery-container::-webkit-scrollbar-thumb {
             background-color: #cbd5e1; 
             border-radius: 10px;
         }
 
         .gallery-img {
-            height: 70px; /* Altezza miniatura */
-            width: 70px;
-            object-fit: cover; /* Taglia l'immagine a quadrato in modo elegante */
+            height: 60px; 
+            width: 60px;
+            object-fit: cover; 
             border-radius: 8px;
-            border: 2px solid #e2e8f0;
-            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
             cursor: pointer;
             flex-shrink: 0;
-            transition: transform 0.2s;
-        }
-        
-        .gallery-img:hover {
-            transform: scale(1.05);
-            border-color: var(--cri-red);
         }
 
         .allegato-link {
             color: #2563eb;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             display: inline-block;
             padding: 6px 12px;
             background-color: #eff6ff;
             border-radius: 6px;
-            text-align: center;
+            margin-top: 10px;
         }
 
+        /* BOTTONI ADMIN */
         .admin-controls {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 6px;
-            width: 100%;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #e2e8f0;
         }
 
         .btn-db-carico, .btn-db-risolto {
             padding: 8px;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
             border: none;
             cursor: pointer;
             font-family: inherit;
         }
         
-        .btn-db-carico {
-            background-color: #fef08a;
-            color: #854d0e;
-            border: 1px solid #facc15;
-        }
-
-        .btn-db-risolto {
-            background-color: #10b981;
-            color: white;
-        }
+        .btn-db-carico { background-color: #fef08a; color: #854d0e; border: 1px solid #facc15; }
+        .btn-db-risolto { background-color: #10b981; color: white; }
 
         .loading, .errore, .nessun-difetto {
             text-align: center;
@@ -457,13 +402,14 @@
             background-color: #ffffff;
             border-radius: 16px;
             font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
         }
         
         .nessun-difetto {
             color: #059669; 
             background-color: #ecfdf5;
-            border: 1px dashed #34d399;
+            border: 1px solid #a7f3d0;
         }
 
         #loading-overlay {
@@ -480,7 +426,6 @@
             color: #0f172a;
             font-weight: 700;
             text-align: center;
-            padding: 20px;
         }
     </style>
 </head>
@@ -488,7 +433,7 @@
 
     <div id="loading-overlay">
         <div style="font-size: 2rem; margin-bottom: 10px;">⏳</div>
-        <div>Aggiornamento in corso...</div>
+        <div>Sincronizzazione...</div>
     </div>
 
     <div class="fab-container">
@@ -503,28 +448,20 @@
         </div>
 
         <header class="app-header">
-            <img src="logo.png" alt="Logo CRI Gallarate" class="app-logo">
+            <img src="logo.png" alt="Logo CRI Gallarate" class="app-logo" id="secret-logo">
             <h1>Segnalazioni</h1>
-            <p class="subtitle">Dati aggiornati in tempo reale</p>
+            <p class="subtitle" id="titolo-sezione">Dati aggiornati in tempo reale</p>
         </header>
 
-        <div class="login-container">
-            <button id="btn-login" class="btn-login-discreet">
-                🔒 Accesso Responsabili
-            </button>
-        </div>
-        
         <div id="admin-panel">
             <h3>🛠️ Area Gestione Autoparco</h3>
-            <button id="btn-toggle-risolti" class="btn-admin-action">
+            <button id="btn-toggle-risolti" class="btn-admin-action" style="margin-bottom: 10px;">
                 📂 Visualizza Log Risolti
             </button>
-            <p style="font-size: 0.8rem; color: #64748b; margin-top: 12px; line-height: 1.4;">
-                I bottoni per aggiornare lo stato sono attivi sotto ogni segnalazione.
-            </p>
+            <button id="btn-logout" class="btn-admin-action" style="background-color: #d64545;">
+                🔒 Esci da Modalità Admin
+            </button>
         </div>
-
-        <h3 id="titolo-sezione" style="color: #334155; margin-top: 10px; margin-bottom: 15px; text-align: center; font-size: 1.1rem;">Segnalazioni Attive</h3>
 
         <div id="listaDifetti">
             <div class="loading">
@@ -544,11 +481,48 @@
         document.addEventListener("DOMContentLoaded", () => {
             if (isAdmin) {
                 document.getElementById('admin-panel').style.display = 'block';
-                document.getElementById('btn-login').innerHTML = '🔓 Esci da Area Responsabili';
             }
         });
 
-        // --- FUNZIONE EXTRA: Trasforma i link Google Drive in immagini dirette ---
+        // ==========================================
+        // TRUCCO ADMIN: 5 TAP SUL LOGO PER ACCEDERE
+        // ==========================================
+        let tapCount = 0;
+        let tapTimer;
+        document.getElementById('secret-logo').addEventListener('click', () => {
+            if (isAdmin) return; // Se già admin, non fare nulla
+            
+            tapCount++;
+            clearTimeout(tapTimer);
+            
+            // Se non fa 5 tap entro 2 secondi, azzera il contatore
+            tapTimer = setTimeout(() => { tapCount = 0; }, 2000);
+
+            if (tapCount === 5) {
+                tapCount = 0;
+                const pinInserito = prompt("Area Riservata Responsabili.\nInserisci il PIN:");
+                if (pinInserito === PIN_SEGRETO) {
+                    isAdmin = true;
+                    sessionStorage.setItem('adminLogged', 'true'); 
+                    document.getElementById('admin-panel').style.display = 'block';
+                    renderizzaInterfaccia();
+                } else if (pinInserito !== null && pinInserito !== "") {
+                    alert("❌ PIN Errato.");
+                }
+            }
+        });
+
+        // Tasto Logout
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            isAdmin = false;
+            visualizzaSoloRisolti = false;
+            sessionStorage.removeItem('adminLogged'); 
+            document.getElementById('admin-panel').style.display = 'none';
+            document.getElementById('btn-toggle-risolti').innerHTML = '📂 Visualizza Log Risolti';
+            document.getElementById('btn-toggle-risolti').style.backgroundColor = '#1e293b';
+            renderizzaInterfaccia();
+        });
+
         function estraiLinkImmagineDrive(url) {
             let fileId = null;
             if (url.includes('id=')) {
@@ -564,62 +538,27 @@
 
         async function aggiornaStatoDb(timestamp, nuovoStato) {
             if (!confirm(`Vuoi segnare questo difetto come "${nuovoStato}"?`)) return;
-
             document.getElementById('loading-overlay').style.display = 'flex';
-
             try {
                 const formData = new URLSearchParams();
                 formData.append('timestamp', timestamp);
                 formData.append('stato', nuovoStato);
-
-                fetch(URL_API_GOOGLE, {
-                    method: 'POST',
-                    body: formData,
-                    mode: 'no-cors' 
-                });
-                
+                fetch(URL_API_GOOGLE, { method: 'POST', body: formData, mode: 'no-cors' });
                 setTimeout(() => {
                     document.getElementById('loading-overlay').style.display = 'none';
                     let difettoDaAggiornare = datiGlobali.find(d => d['Informazioni cronologiche'] === timestamp);
-                    if(difettoDaAggiornare) {
-                        difettoDaAggiornare['STATUS'] = nuovoStato;
-                    }
+                    if(difettoDaAggiornare) difettoDaAggiornare['STATUS'] = nuovoStato;
                     renderizzaInterfaccia(); 
                 }, 1200);
-
             } catch (error) {
                 document.getElementById('loading-overlay').style.display = 'none';
                 alert("❌ Errore. Controlla la connessione.");
             }
         }
 
-        document.getElementById('btn-login').addEventListener('click', () => {
-            if (!isAdmin) {
-                const pinInserito = prompt("🔒 Inserisci il PIN Responsabile:");
-                if (pinInserito === PIN_SEGRETO) {
-                    isAdmin = true;
-                    sessionStorage.setItem('adminLogged', 'true'); 
-                    document.getElementById('admin-panel').style.display = 'block';
-                    document.getElementById('btn-login').innerHTML = '🔓 Esci da Area Responsabili';
-                    renderizzaInterfaccia();
-                } else if (pinInserito !== null) {
-                    alert("❌ PIN Errato.");
-                }
-            } else {
-                isAdmin = false;
-                visualizzaSoloRisolti = false;
-                sessionStorage.removeItem('adminLogged'); 
-                document.getElementById('admin-panel').style.display = 'none';
-                document.getElementById('btn-login').innerHTML = '🔒 Accesso Responsabili';
-                document.getElementById('btn-toggle-risolti').innerHTML = '📂 Visualizza Log Risolti';
-                renderizzaInterfaccia();
-            }
-        });
-
         document.getElementById('btn-toggle-risolti').addEventListener('click', () => {
             visualizzaSoloRisolti = !visualizzaSoloRisolti;
             const btnToggle = document.getElementById('btn-toggle-risolti');
-            
             if (visualizzaSoloRisolti) {
                 btnToggle.innerHTML = '🔙 Torna alle Segnalazioni Attive';
                 btnToggle.style.backgroundColor = '#d64545';
@@ -636,21 +575,17 @@
         const listaDifettiDiv = document.getElementById('listaDifetti');
 
         const paletteTipologie = {
-            'Elettrico': '#1976D2',      
-            'Meccanica': '#F57C00',      
-            'Carrozzeria': '#D32F2F',    
-            'Interni': '#388E3C',        
-            'Dotazioni': '#7B1FA2',      
+            'Elettrico': '#3b82f6',      
+            'Meccanica': '#f97316',      
+            'Carrozzeria': '#ef4444',    
+            'Interni': '#10b981',        
+            'Dotazioni': '#8b5cf6',      
             'Generico': '#64748b'        
         };
 
         const iconTipologie = {
-            'Elettrico': '⚡',      
-            'Meccanica': '⚙️',      
-            'Carrozzeria': '🚙',    
-            'Interni': '🚑',        
-            'Dotazioni': '🎒',      
-            'Generico': '📝'        
+            'Elettrico': '⚡', 'Meccanica': '⚙️', 'Carrozzeria': '🚙',    
+            'Interni': '🚑', 'Dotazioni': '🎒', 'Generico': '📝'        
         };
 
         Papa.parse(csvUrl, {
@@ -669,18 +604,14 @@
             listaDifettiDiv.innerHTML = ''; 
             
             const titoloSezione = document.getElementById('titolo-sezione');
-            titoloSezione.innerHTML = visualizzaSoloRisolti ? '📂 Log Segnalazioni Risolte' : 'Segnalazioni Attive';
+            titoloSezione.innerHTML = visualizzaSoloRisolti ? 'Visualizzazione: Log Risolti 📂' : 'Dati aggiornati in tempo reale';
 
             const difettiValidi = datiGlobali.filter(riga => {
                 const colonnaSigla = riga['Sigla radio'] || riga['Sigla Radio'] || '';
                 const haSigla = colonnaSigla.trim() !== '';
                 const eRisolto = Object.values(riga).some(val => typeof val === 'string' && val.trim().toLowerCase() === 'risolto');
                 
-                if (visualizzaSoloRisolti) {
-                    return haSigla && eRisolto; 
-                } else {
-                    return haSigla && !eRisolto; 
-                }
+                return visualizzaSoloRisolti ? (haSigla && eRisolto) : (haSigla && !eRisolto);
             });
 
             if (difettiValidi.length === 0) {
@@ -693,9 +624,7 @@
             difettiValidi.reverse().forEach(difetto => {
                 const colonnaSigla = difetto['Sigla radio'] || difetto['Sigla Radio'] || '';
                 const siglaCorta = colonnaSigla.trim().substring(0, 7);
-                if (!raggruppatiPerMezzo[siglaCorta]) {
-                    raggruppatiPerMezzo[siglaCorta] = [];
-                }
+                if (!raggruppatiPerMezzo[siglaCorta]) raggruppatiPerMezzo[siglaCorta] = [];
                 raggruppatiPerMezzo[siglaCorta].push(difetto);
             });
 
@@ -709,7 +638,6 @@
                 
                 const veicoloTitolo = document.createElement('div');
                 veicoloTitolo.className = 'veicolo-titolo';
-                
                 veicoloTitolo.innerHTML = `
                     <div class="titolo-sinistra">
                         <span class="icona-freccia">▼</span>
@@ -724,8 +652,7 @@
                 veicoloTitolo.addEventListener('click', () => {
                     difettiContainer.classList.toggle('mostra');
                     veicoloTitolo.classList.toggle('aperto');
-                    const freccia = veicoloTitolo.querySelector('.icona-freccia');
-                    freccia.classList.toggle('ruotata');
+                    veicoloTitolo.querySelector('.icona-freccia').classList.toggle('ruotata');
                 });
 
                 const difettiPerTipologia = {};
@@ -734,32 +661,26 @@
                     const tipologiaKey = Object.keys(paletteTipologie).find(key => tipologiaRaw.includes(key)) || 'Generico';
                     
                     if(!difettiPerTipologia[tipologiaKey]) {
-                        difettiPerTipologia[tipologiaKey] = {
-                            nomeReale: tipologiaRaw,
-                            difetti: []
-                        };
+                        difettiPerTipologia[tipologiaKey] = { nomeReale: tipologiaRaw, difetti: [] };
                     }
                     difettiPerTipologia[tipologiaKey].difetti.push(difetto);
                 });
 
+                // RENDER FLAT (Senza Scatole)
                 for (const [tipoKey, datiTipo] of Object.entries(difettiPerTipologia)) {
                     const coloreTipologia = paletteTipologie[tipoKey];
                     const icona = iconTipologie[tipoKey];
                     
-                    const macroCard = document.createElement('div');
-                    macroCard.className = 'tipologia-card';
-                    macroCard.style.borderLeftColor = visualizzaSoloRisolti ? '#ccc' : coloreTipologia;
+                    const macroSection = document.createElement('div');
+                    macroSection.className = 'tipologia-section';
                     
-                    const testoConteggio = datiTipo.difetti.length === 1 ? '1 Segnalazione' : `${datiTipo.difetti.length} Segnalazioni`;
-                    macroCard.innerHTML = `
+                    const testoConteggio = datiTipo.difetti.length === 1 ? '1' : `${datiTipo.difetti.length}`;
+                    macroSection.innerHTML = `
                         <div class="tipologia-header">
-                            <span>${icona} ${datiTipo.nomeReale}</span>
+                            <span style="color:${coloreTipologia}">${icona}</span> ${datiTipo.nomeReale}
                             <span class="tipologia-badge-count">${testoConteggio}</span>
                         </div>
                     `;
-
-                    const scrollArea = document.createElement('div');
-                    scrollArea.className = 'tipologia-body';
 
                     datiTipo.difetti.forEach(difetto => {
                         const inCarico = Object.values(difetto).some(val => typeof val === 'string' && (val.trim().toLowerCase() === 'in carico' || val.trim().toLowerCase() === 'preso in carico'));
@@ -767,97 +688,68 @@
 
                         const microCard = document.createElement('div');
                         microCard.className = 'difetto-micro';
+                        microCard.style.borderLeftColor = coloreTipologia;
                         if (visualizzaSoloRisolti) microCard.classList.add('risolto');
 
-                        // ==========================================
-                        // NUOVA GESTIONE ALLEGATI A CAROSELLO (GALLERIA)
-                        // ==========================================
                         const allegatoRaw = difetto['Foto o file'] || difetto['Foto'] || difetto['Allegato'] || difetto['Allegati'] || difetto['Foto o PDF'] || difetto['Documento'] || difetto['File'] || '';
                         let allegatoHtml = '';
-                        
                         if (allegatoRaw && allegatoRaw.trim() !== '') {
-                            // Divide i link nel caso ce ne sia più di uno separato da virgola
                             const urls = allegatoRaw.split(',').map(u => u.trim()).filter(u => u);
-                            let imgTags = '';
-                            let fileLinks = '';
-
+                            let imgTags = ''; let fileLinks = '';
                             urls.forEach(url => {
                                 const directImgLink = estraiLinkImmagineDrive(url);
                                 if (directImgLink) {
-                                    // Se capisce che è un'immagine, crea la miniatura. 
-                                    // Se si rompe (es. cartella non pubblica o è un PDF), si auto-sostituisce con un bottone di testo!
-                                    imgTags += `
-                                        <a href="${url}" target="_blank" style="display:inline-block; flex-shrink:0;">
-                                            <img src="${directImgLink}" class="gallery-img" alt="Allegato" onerror="this.outerHTML='<span class=\\'allegato-link\\'>📎 Apri File</span>'">
-                                        </a>`;
+                                    imgTags += `<a href="${url}" target="_blank" style="display:inline-block; flex-shrink:0;"><img src="${directImgLink}" class="gallery-img" alt="Foto" onerror="this.outerHTML='<span class=\\'allegato-link\\'>📎 File</span>'"></a>`;
                                 } else {
-                                    // Se non è un link Drive riconoscibile, mette il bottone classico
                                     fileLinks += `<a href="${url}" target="_blank" class="allegato-link" style="margin-right: 5px;">📎 Apri File</a>`;
                                 }
                             });
-
-                            if (imgTags !== '') {
-                                allegatoHtml = `<div class="gallery-container">${imgTags}</div>${fileLinks}`;
-                            } else if (fileLinks !== '') {
-                                allegatoHtml = `<div>${fileLinks}</div>`;
-                            }
+                            if (imgTags !== '') allegatoHtml = `<div class="gallery-container">${imgTags}</div>${fileLinks}`;
+                            else if (fileLinks !== '') allegatoHtml = `<div>${fileLinks}</div>`;
                         }
-                        // ==========================================
 
                         let problemi = [];
-                        if (difetto['Difetto motore e meccanica ⚙️']) problemi.push(`<div class="problema-item"><strong>Motore:</strong> ${difetto['Difetto motore e meccanica ⚙️']}</div>`);
-                        if (difetto['Elettrico e Dispositivi di Emergenza 🚑']) problemi.push(`<div class="problema-item"><strong>Elettrico:</strong> ${difetto['Elettrico e Dispositivi di Emergenza 🚑']}</div>`);
+                        if (difetto['Difetto motore e meccanica ⚙️']) problemi.push(`<div class="problema-item"><strong>Problema:</strong> ${difetto['Difetto motore e meccanica ⚙️']}</div>`);
+                        if (difetto['Elettrico e Dispositivi di Emergenza 🚑']) problemi.push(`<div class="problema-item"><strong>Problema:</strong> ${difetto['Elettrico e Dispositivi di Emergenza 🚑']}</div>`);
                         if (difetto['Carrozzeria e vetri']) problemi.push(`<div class="problema-item"><strong>Danno:</strong> ${difetto['Carrozzeria e vetri']}</div>`);
-                        if (difetto['Vano Sanitario e Interni']) problemi.push(`<div class="problema-item"><strong>Vano:</strong> ${difetto['Vano Sanitario e Interni']}</div>`);
-                        if (difetto['Dotazioni di Bordo e Documenti']) problemi.push(`<div class="problema-item"><strong>Dotazioni:</strong> ${difetto['Dotazioni di Bordo e Documenti']}</div>`);
+                        if (difetto['Vano Sanitario e Interni']) problemi.push(`<div class="problema-item"><strong>Problema:</strong> ${difetto['Vano Sanitario e Interni']}</div>`);
+                        if (difetto['Dotazioni di Bordo e Documenti']) problemi.push(`<div class="problema-item"><strong>Problema:</strong> ${difetto['Dotazioni di Bordo e Documenti']}</div>`);
                         if (difetto['Descrizione difetto']) problemi.push(`<div class="problema-item"><strong>Dettagli:</strong> ${difetto['Descrizione difetto']}</div>`); 
                         
                         let noteAggiuntiveText = [];
                         for (const key in difetto) {
-                            if (key.toLowerCase().includes('dettagli') && difetto[key].trim() !== '') {
-                                noteAggiuntiveText.push(difetto[key].trim());
-                            }
+                            if (key.toLowerCase().includes('dettagli') && difetto[key].trim() !== '') noteAggiuntiveText.push(difetto[key].trim());
                         }
 
                         let descrizioneFinale = problemi.join('');
-                        if (noteAggiuntiveText.length > 0) descrizioneFinale += `<div class="note-aggiuntive">📝 Note: ${noteAggiuntiveText.join(' - ')}</div>`;
-                        if (descrizioneFinale === '') descrizioneFinale = '<div class="problema-item italic" style="color:#94a3b8;">Nessun dettaglio aggiuntivo.</div>';
+                        if (noteAggiuntiveText.length > 0) descrizioneFinale += `<div class="note-aggiuntive">📝 ${noteAggiuntiveText.join(' - ')}</div>`;
 
                         let statusBadgeHtml = '';
-                        if (visualizzaSoloRisolti) {
-                            statusBadgeHtml = `<span class="status-badge-risolto">✅ RISOLTO</span>`;
-                        } else if (inCarico) {
-                            statusBadgeHtml = `<span class="status-badge-carico">🟡 PRESO IN CARICO</span>`;
-                        }
+                        if (visualizzaSoloRisolti) statusBadgeHtml = `<span class="status-badge-risolto">✅ RISOLTO</span>`;
+                        else if (inCarico) statusBadgeHtml = `<span class="status-badge-carico">🟡 IN CARICO</span>`;
 
                         let bottoniAdminHtml = '';
-                        if (isAdmin) {
-                            bottoniAdminHtml = `
-                                <div class="admin-controls">
-                                    ${!visualizzaSoloRisolti && !inCarico ? `<button onclick="aggiornaStatoDb('${dataInserimento}', 'In carico')" class="btn-db-carico">🟡 Prendi in Carico</button>` : ''}
-                                    ${!visualizzaSoloRisolti ? `<button onclick="aggiornaStatoDb('${dataInserimento}', 'Risolto')" class="btn-db-risolto">✅ Segna Risolto</button>` : ''}
-                                </div>
-                            `;
+                        if (isAdmin && !visualizzaSoloRisolti) {
+                            bottoniAdminHtml = `<div class="admin-controls">
+                                ${!inCarico ? `<button onclick="aggiornaStatoDb('${dataInserimento}', 'In carico')" class="btn-db-carico">🟡 Prendi in Carico</button>` : '<div></div>'}
+                                <button onclick="aggiornaStatoDb('${dataInserimento}', 'Risolto')" class="btn-db-risolto">✅ Segna Risolto</button>
+                            </div>`;
                         }
 
                         microCard.innerHTML = `
                             <div class="difetto-header">
-                                <span class="data-segnalazione">📅 ${dataInserimento}</span>
+                                <span class="data-segnalazione">${dataInserimento.split(' ')[0]}</span>
                                 ${statusBadgeHtml}
                             </div>
                             <div class="descrizione">${descrizioneFinale}</div>
-                            
-                            <div class="footer-card">
-                                ${allegatoHtml ? `<div>${allegatoHtml}</div>` : ''}
-                                ${bottoniAdminHtml}
-                            </div>
+                            ${allegatoHtml}
+                            ${bottoniAdminHtml}
                         `;
                         
-                        scrollArea.appendChild(microCard);
+                        macroSection.appendChild(microCard);
                     });
 
-                    macroCard.appendChild(scrollArea);
-                    difettiContainer.appendChild(macroCard);
+                    difettiContainer.appendChild(macroSection);
                 }
 
                 veicoloDiv.appendChild(veicoloTitolo);
