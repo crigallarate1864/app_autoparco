@@ -515,12 +515,19 @@
             renderizzaInterfaccia();
         });
 
+        // ==========================================
+        // NUOVO MOTORE ESTRAZIONE MINIATURE
+        // Usa le API Thumbnail di Google Drive per evitare blocchi
+        // ==========================================
         function estraiLinkImmagineDrive(url) {
             let fileId = null;
             if (url.includes('id=')) fileId = url.split('id=')[1].split('&')[0];
             else if (url.includes('/d/')) fileId = url.split('/d/')[1].split('/')[0];
             
-            if (fileId) return `https://drive.google.com/uc?export=view&id=${fileId}`;
+            if (fileId) {
+                // Richiede a Google Drive una miniatura quadrata di 200px. Molto più stabile!
+                return `https://drive.google.com/thumbnail?id=${fileId}&sz=w200-h200`;
+            }
             return null;
         }
 
@@ -688,7 +695,8 @@
                             urls.forEach(url => {
                                 const directImgLink = estraiLinkImmagineDrive(url);
                                 if (directImgLink) {
-                                    imgTags += `<a href="${url}" target="_blank" style="display:inline-block; flex-shrink:0;"><img src="${directImgLink}" class="gallery-img" alt="Foto" onerror="this.outerHTML='<span class=\\'allegato-link\\'>📎 File PDF</span>'"></a>`;
+                                    // Se fallisce la miniatura, si trasforma nel testo "Apri Foto"
+                                    imgTags += `<a href="${url}" target="_blank" style="display:inline-block; flex-shrink:0;"><img src="${directImgLink}" class="gallery-img" alt="Foto" onerror="this.outerHTML='<span class=\\'allegato-link\\' style=\\'margin-right:5px;\\'>📎 Apri Foto</span>'"></a>`;
                                 } else {
                                     fileLinksHtml += `<a href="${url}" target="_blank" class="allegato-link" style="margin-right: 5px;">📎 File Allegato</a>`;
                                 }
