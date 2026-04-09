@@ -7,7 +7,7 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#d64545">
-    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="apple-touch-icon" href="Icona_app.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -91,7 +91,7 @@
             height: auto;
             margin-bottom: 10px; 
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
-            cursor: pointer; /* Fa capire che è cliccabile (per il trucco admin) */
+            cursor: pointer; 
         }
 
         h1 {
@@ -224,7 +224,7 @@
             font-weight: 700;
         }
 
-        /* CONTENITORE INTERNO (PULITO E FLAT) */
+        /* CONTENITORE INTERNO */
         .difetti-container {
             display: none; 
             padding: 15px 15px 25px 15px;
@@ -232,11 +232,10 @@
         }
         .difetti-container.mostra { display: block; }
 
-        /* MACRO-CATEGORIA (SOLO TITOLO, NESSUN BOX) */
+        /* SEZIONE CATEGORIA */
         .tipologia-section {
             margin-bottom: 25px;
         }
-        
         .tipologia-section:last-child { margin-bottom: 0; }
 
         .tipologia-header {
@@ -262,18 +261,15 @@
             margin-left: auto;
         }
 
-        /* MICRO CARD DEL SINGOLO DIFETTO (PIÙ SNELLA) */
+        /* CARD UNIFICATA */
         .difetto-micro {
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 10px;
             padding: 14px;
-            margin-bottom: 10px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-            border-left: 4px solid #ccc; /* Sovrascritto via JS col colore categoria */
+            border-left: 4px solid #ccc; 
         }
-        
-        .difetto-micro:last-child { margin-bottom: 0; }
 
         .difetto-micro.risolto {
             opacity: 0.6;
@@ -281,37 +277,59 @@
             border-left-color: #10b981 !important;
         }
 
-        .difetto-header {
+        /* GALLERIA UNIFICATA */
+        .gallery-container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            align-items: center;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        
+        .gallery-container::-webkit-scrollbar { height: 4px; }
+        .gallery-container::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+
+        .gallery-img {
+            height: 70px; 
+            width: 70px;
+            object-fit: cover; 
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+        .gallery-img:active { transform: scale(0.95); }
+
+        /* LISTA STORICO SEGNALAZIONI */
+        .storico-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .storico-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
+            align-items: flex-start;
+            gap: 10px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
         }
-        
-        .status-badge-carico {
-            background-color: #fef08a;
-            color: #854d0e;
-            font-size: 0.65rem;
-            font-weight: 800;
-            padding: 3px 6px;
-            border-radius: 6px;
-            text-transform: uppercase;
-        }
-        
-        .status-badge-risolto {
-            background-color: #d1fae5;
-            color: #047857;
-            font-size: 0.65rem;
-            font-weight: 800;
-            padding: 3px 6px;
-            border-radius: 6px;
-            text-transform: uppercase;
+        .storico-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+        .storico-content {
+            flex-grow: 1;
         }
 
         .data-segnalazione {
             font-size: 0.75rem;
             color: #94a3b8;
-            font-weight: 600;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
         }
 
         .descrizione {
@@ -319,46 +337,47 @@
             color: #334155;
             line-height: 1.4;
         }
-        
-        .problema-item { margin-bottom: 4px; }
-        .problema-item strong { color: #0f172a; font-weight: 600; }
-        
+
         .note-aggiuntive {
             font-size: 0.8rem;
             color: #64748b;
-            margin-top: 8px;
-            padding: 8px 10px;
-            background-color: #f8fafc;
-            border-radius: 6px;
-            border-left: 2px solid #cbd5e1;
+            margin-top: 4px;
             font-style: italic;
         }
 
-        /* GALLERIA IMMAGINI */
-        .gallery-container {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-            margin-top: 10px;
-            align-items: center;
-        }
-        
-        .gallery-container::-webkit-scrollbar { height: 4px; }
-        .gallery-container::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1; 
-            border-radius: 10px;
+        .status-badge-carico {
+            display: inline-block;
+            background-color: #fef08a;
+            color: #854d0e;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 3px 6px;
+            border-radius: 6px;
+            margin-left: 5px;
+            vertical-align: middle;
         }
 
-        .gallery-img {
-            height: 60px; 
-            width: 60px;
-            object-fit: cover; 
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            cursor: pointer;
+        /* BOTTONI ADMIN INLINE */
+        .admin-inline-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
             flex-shrink: 0;
         }
+
+        .btn-mini-admin {
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .btn-carico-mini { background-color: #fef08a; color: #854d0e; border: 1px solid #facc15; }
+        .btn-risolto-mini { background-color: #10b981; color: white; }
 
         .allegato-link {
             color: #2563eb;
@@ -366,34 +385,12 @@
             font-weight: 600;
             font-size: 0.8rem;
             display: inline-block;
-            padding: 6px 12px;
+            padding: 4px 8px;
             background-color: #eff6ff;
             border-radius: 6px;
-            margin-top: 10px;
+            margin-top: 5px;
+            border: 1px solid #bfdbfe;
         }
-
-        /* BOTTONI ADMIN */
-        .admin-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px dashed #e2e8f0;
-        }
-
-        .btn-db-carico, .btn-db-risolto {
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            font-family: inherit;
-        }
-        
-        .btn-db-carico { background-color: #fef08a; color: #854d0e; border: 1px solid #facc15; }
-        .btn-db-risolto { background-color: #10b981; color: white; }
 
         .loading, .errore, .nessun-difetto {
             text-align: center;
@@ -484,18 +481,14 @@
             }
         });
 
-        // ==========================================
-        // TRUCCO ADMIN: 5 TAP SUL LOGO PER ACCEDERE
-        // ==========================================
+        // 5 TAP SUL LOGO PER ACCEDERE
         let tapCount = 0;
         let tapTimer;
         document.getElementById('secret-logo').addEventListener('click', () => {
-            if (isAdmin) return; // Se già admin, non fare nulla
+            if (isAdmin) return; 
             
             tapCount++;
             clearTimeout(tapTimer);
-            
-            // Se non fa 5 tap entro 2 secondi, azzera il contatore
             tapTimer = setTimeout(() => { tapCount = 0; }, 2000);
 
             if (tapCount === 5) {
@@ -512,7 +505,6 @@
             }
         });
 
-        // Tasto Logout
         document.getElementById('btn-logout').addEventListener('click', () => {
             isAdmin = false;
             visualizzaSoloRisolti = false;
@@ -525,19 +517,15 @@
 
         function estraiLinkImmagineDrive(url) {
             let fileId = null;
-            if (url.includes('id=')) {
-                fileId = url.split('id=')[1].split('&')[0];
-            } else if (url.includes('/d/')) {
-                fileId = url.split('/d/')[1].split('/')[0];
-            }
-            if (fileId) {
-                return `https://drive.google.com/uc?export=view&id=${fileId}`;
-            }
+            if (url.includes('id=')) fileId = url.split('id=')[1].split('&')[0];
+            else if (url.includes('/d/')) fileId = url.split('/d/')[1].split('/')[0];
+            
+            if (fileId) return `https://drive.google.com/uc?export=view&id=${fileId}`;
             return null;
         }
 
         async function aggiornaStatoDb(timestamp, nuovoStato) {
-            if (!confirm(`Vuoi segnare questo difetto come "${nuovoStato}"?`)) return;
+            if (!confirm(`Confermi l'operazione?`)) return;
             document.getElementById('loading-overlay').style.display = 'flex';
             try {
                 const formData = new URLSearchParams();
@@ -655,6 +643,7 @@
                     veicoloTitolo.querySelector('.icona-freccia').classList.toggle('ruotata');
                 });
 
+                // Raggruppamento per Tipologia
                 const difettiPerTipologia = {};
                 listaDifettiMezzo.forEach(difetto => {
                     const tipologiaRaw = difetto['Tipologia Difetto'] || 'Generico';
@@ -666,7 +655,7 @@
                     difettiPerTipologia[tipologiaKey].difetti.push(difetto);
                 });
 
-                // RENDER FLAT (Senza Scatole)
+                // RENDER DELLA CARD UNIFICATA
                 for (const [tipoKey, datiTipo] of Object.entries(difettiPerTipologia)) {
                     const coloreTipologia = paletteTipologie[tipoKey];
                     const icona = iconTipologie[tipoKey];
@@ -682,73 +671,90 @@
                         </div>
                     `;
 
+                    // Creazione della "Super-Card"
+                    const microCard = document.createElement('div');
+                    microCard.className = 'difetto-micro';
+                    microCard.style.borderLeftColor = coloreTipologia;
+                    if (visualizzaSoloRisolti) microCard.classList.add('risolto');
+
+                    // 1. Estrazione Unificata Immagini
+                    let imgTags = ''; 
+                    let fileLinksHtml = '';
+                    
+                    datiTipo.difetti.forEach(difetto => {
+                        const allegatoRaw = difetto['Foto o file'] || difetto['Foto'] || difetto['Allegato'] || difetto['Allegati'] || difetto['Foto o PDF'] || difetto['Documento'] || difetto['File'] || '';
+                        if (allegatoRaw && allegatoRaw.trim() !== '') {
+                            const urls = allegatoRaw.split(',').map(u => u.trim()).filter(u => u);
+                            urls.forEach(url => {
+                                const directImgLink = estraiLinkImmagineDrive(url);
+                                if (directImgLink) {
+                                    imgTags += `<a href="${url}" target="_blank" style="display:inline-block; flex-shrink:0;"><img src="${directImgLink}" class="gallery-img" alt="Foto" onerror="this.outerHTML='<span class=\\'allegato-link\\'>📎 File PDF</span>'"></a>`;
+                                } else {
+                                    fileLinksHtml += `<a href="${url}" target="_blank" class="allegato-link" style="margin-right: 5px;">📎 File Allegato</a>`;
+                                }
+                            });
+                        }
+                    });
+
+                    // Inserimento Galleria Unificata
+                    let htmlGalleria = '';
+                    if (imgTags !== '') {
+                        htmlGalleria = `<div class="gallery-container">${imgTags}</div>`;
+                    }
+                    if (fileLinksHtml !== '') {
+                        htmlGalleria += `<div>${fileLinksHtml}</div>`;
+                    }
+
+                    // 2. Costruzione della Lista Storico
+                    let htmlStorico = `<div class="storico-list">`;
+                    
                     datiTipo.difetti.forEach(difetto => {
                         const inCarico = Object.values(difetto).some(val => typeof val === 'string' && (val.trim().toLowerCase() === 'in carico' || val.trim().toLowerCase() === 'preso in carico'));
                         const dataInserimento = difetto['Informazioni cronologiche'] || '';
 
-                        const microCard = document.createElement('div');
-                        microCard.className = 'difetto-micro';
-                        microCard.style.borderLeftColor = coloreTipologia;
-                        if (visualizzaSoloRisolti) microCard.classList.add('risolto');
-
-                        const allegatoRaw = difetto['Foto o file'] || difetto['Foto'] || difetto['Allegato'] || difetto['Allegati'] || difetto['Foto o PDF'] || difetto['Documento'] || difetto['File'] || '';
-                        let allegatoHtml = '';
-                        if (allegatoRaw && allegatoRaw.trim() !== '') {
-                            const urls = allegatoRaw.split(',').map(u => u.trim()).filter(u => u);
-                            let imgTags = ''; let fileLinks = '';
-                            urls.forEach(url => {
-                                const directImgLink = estraiLinkImmagineDrive(url);
-                                if (directImgLink) {
-                                    imgTags += `<a href="${url}" target="_blank" style="display:inline-block; flex-shrink:0;"><img src="${directImgLink}" class="gallery-img" alt="Foto" onerror="this.outerHTML='<span class=\\'allegato-link\\'>📎 File</span>'"></a>`;
-                                } else {
-                                    fileLinks += `<a href="${url}" target="_blank" class="allegato-link" style="margin-right: 5px;">📎 Apri File</a>`;
-                                }
-                            });
-                            if (imgTags !== '') allegatoHtml = `<div class="gallery-container">${imgTags}</div>${fileLinks}`;
-                            else if (fileLinks !== '') allegatoHtml = `<div>${fileLinks}</div>`;
-                        }
-
                         let problemi = [];
-                        if (difetto['Difetto motore e meccanica ⚙️']) problemi.push(`<div class="problema-item"><strong>Problema:</strong> ${difetto['Difetto motore e meccanica ⚙️']}</div>`);
-                        if (difetto['Elettrico e Dispositivi di Emergenza 🚑']) problemi.push(`<div class="problema-item"><strong>Problema:</strong> ${difetto['Elettrico e Dispositivi di Emergenza 🚑']}</div>`);
-                        if (difetto['Carrozzeria e vetri']) problemi.push(`<div class="problema-item"><strong>Danno:</strong> ${difetto['Carrozzeria e vetri']}</div>`);
-                        if (difetto['Vano Sanitario e Interni']) problemi.push(`<div class="problema-item"><strong>Problema:</strong> ${difetto['Vano Sanitario e Interni']}</div>`);
-                        if (difetto['Dotazioni di Bordo e Documenti']) problemi.push(`<div class="problema-item"><strong>Problema:</strong> ${difetto['Dotazioni di Bordo e Documenti']}</div>`);
-                        if (difetto['Descrizione difetto']) problemi.push(`<div class="problema-item"><strong>Dettagli:</strong> ${difetto['Descrizione difetto']}</div>`); 
+                        if (difetto['Difetto motore e meccanica ⚙️']) problemi.push(difetto['Difetto motore e meccanica ⚙️']);
+                        if (difetto['Elettrico e Dispositivi di Emergenza 🚑']) problemi.push(difetto['Elettrico e Dispositivi di Emergenza 🚑']);
+                        if (difetto['Carrozzeria e vetri']) problemi.push(difetto['Carrozzeria e vetri']);
+                        if (difetto['Vano Sanitario e Interni']) problemi.push(difetto['Vano Sanitario e Interni']);
+                        if (difetto['Dotazioni di Bordo e Documenti']) problemi.push(difetto['Dotazioni di Bordo e Documenti']);
+                        if (difetto['Descrizione difetto']) problemi.push(`Dettagli: ${difetto['Descrizione difetto']}`); 
                         
                         let noteAggiuntiveText = [];
                         for (const key in difetto) {
                             if (key.toLowerCase().includes('dettagli') && difetto[key].trim() !== '') noteAggiuntiveText.push(difetto[key].trim());
                         }
 
-                        let descrizioneFinale = problemi.join('');
+                        let descrizioneFinale = problemi.join(' | ');
                         if (noteAggiuntiveText.length > 0) descrizioneFinale += `<div class="note-aggiuntive">📝 ${noteAggiuntiveText.join(' - ')}</div>`;
 
-                        let statusBadgeHtml = '';
-                        if (visualizzaSoloRisolti) statusBadgeHtml = `<span class="status-badge-risolto">✅ RISOLTO</span>`;
-                        else if (inCarico) statusBadgeHtml = `<span class="status-badge-carico">🟡 IN CARICO</span>`;
+                        let badgeCaricoHtml = inCarico && !visualizzaSoloRisolti ? `<span class="status-badge-carico">🟡 IN CARICO</span>` : '';
 
                         let bottoniAdminHtml = '';
                         if (isAdmin && !visualizzaSoloRisolti) {
-                            bottoniAdminHtml = `<div class="admin-controls">
-                                ${!inCarico ? `<button onclick="aggiornaStatoDb('${dataInserimento}', 'In carico')" class="btn-db-carico">🟡 Prendi in Carico</button>` : '<div></div>'}
-                                <button onclick="aggiornaStatoDb('${dataInserimento}', 'Risolto')" class="btn-db-risolto">✅ Segna Risolto</button>
+                            bottoniAdminHtml = `
+                            <div class="admin-inline-controls">
+                                ${!inCarico ? `<button onclick="aggiornaStatoDb('${dataInserimento}', 'In carico')" class="btn-mini-admin btn-carico-mini">🟡 Carico</button>` : ''}
+                                <button onclick="aggiornaStatoDb('${dataInserimento}', 'Risolto')" class="btn-mini-admin btn-risolto-mini">✅ Risolvi</button>
                             </div>`;
                         }
 
-                        microCard.innerHTML = `
-                            <div class="difetto-header">
-                                <span class="data-segnalazione">${dataInserimento.split(' ')[0]}</span>
-                                ${statusBadgeHtml}
+                        htmlStorico += `
+                            <div class="storico-item">
+                                <div class="storico-content">
+                                    <span class="data-segnalazione">${dataInserimento.split(' ')[0]} ${badgeCaricoHtml}</span>
+                                    <div class="descrizione">${descrizioneFinale}</div>
+                                </div>
+                                ${bottoniAdminHtml}
                             </div>
-                            <div class="descrizione">${descrizioneFinale}</div>
-                            ${allegatoHtml}
-                            ${bottoniAdminHtml}
                         `;
-                        
-                        macroSection.appendChild(microCard);
                     });
 
+                    htmlStorico += `</div>`;
+
+                    // Assemblaggio Finale Super-Card
+                    microCard.innerHTML = htmlGalleria + htmlStorico;
+                    macroSection.appendChild(microCard);
                     difettiContainer.appendChild(macroSection);
                 }
 
