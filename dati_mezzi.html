@@ -88,7 +88,6 @@
         }
         
         .app-logo {
-            /* MODIFICA: Allargato il logo mezzi a 200px */
             max-width: 200px; 
             height: auto;
             margin-bottom: 15px; 
@@ -144,7 +143,7 @@
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             border: 1px solid #f1f5f9;
-            border-left: 5px solid #facc15; /* Linea gialla distintiva */
+            border-left: 5px solid #facc15;
             transition: all 0.3s ease;
         }
 
@@ -346,37 +345,62 @@
 
     <script>
         const URL_CSV_MEZZI = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS62rMPUxxmT0xicMLhQClYoh6uq0U3yqEt6-lzwfBxWC1bvbe1ygrZuqpblxeNbmuRBlYlIN6pPINw/pub?output=csv';
-        const csvUrl = URL_CSV_MEZZI + '&t=' + new Date().getTime(); 
-
+        
         const listaMezziDiv = document.getElementById('listaMezzi');
         const searchInput = document.getElementById('searchInput');
         let tuttiIMezzi = [];
 
-        Papa.parse(csvUrl, {
-            download: true,
-            header: true, 
-            complete: function(results) {
-                // MODIFICA: Rimossa logica flessibile per blindare la lettura dei dati specifici
-                
-                // Filtro e pulizia dei dati
-                tuttiIMezzi = results.data.filter(riga => {
-                    const sigla = riga['Sigla Radio'] && riga['Sigla Radio'].trim() !== '';
-                    return sigla;
-                });
+        function caricaDati() {
+            const cacheKey = 'dati_mezzi_cri';
+            const cacheTimeKey = 'tempo_mezzi_cri';
+            const scadeDopo = 1000 * 60 * 60; // 1 ora di validità in millisecondi
 
-                // ORDINAMENTO ALFABETICO / NUMERICO
-                tuttiIMezzi.sort((a, b) => {
-                    const siglaA = a['Sigla Radio'] || 'Z';
-                    const siglaB = b['Sigla Radio'] || 'Z';
-                    return siglaA.localeCompare(siglaB, undefined, {numeric: true, sensitivity: 'base'});
-                });
+            const datiSalvati = localStorage.getItem(cacheKey);
+            const tempoSalvato = localStorage.getItem(cacheTimeKey);
+            const oraAttuale = new Date().getTime();
 
+            // 1. Controllo se ho i dati in memoria e sono recenti (meno di 1 ora)
+            if (datiSalvati && tempoSalvato && (oraAttuale - tempoSalvato < scadeDopo)) {
+                console.log("Caricamento ISTANTANEO dalla memoria del telefono");
+                tuttiIMezzi = JSON.parse(datiSalvati);
                 mostraMezzi(tuttiIMezzi);
-            },
-            error: function(err) {
-                listaMezziDiv.innerHTML = '<div class="errore">Errore di connessione. Verifica che il CSV sia pubblico.</div>';
+            } else {
+                // 2. Se non li ho o sono vecchi, scarico da Google
+                console.log("Scaricamento da Google Sheets...");
+                // Usiamo oraAttuale per forzare il ricaricamento da Google solo questa volta
+                const csvUrl = URL_CSV_MEZZI + '&t=' + oraAttuale; 
+                
+                Papa.parse(csvUrl, {
+                    download: true,
+                    header: true,
+                    complete: function(results) {
+                        tuttiIMezzi = results.data.filter(riga => {
+                            const sigla = riga['Sigla Radio'] && riga['Sigla Radio'].trim() !== '';
+                            return sigla;
+                        });
+
+                        // Ordinamento alfanumerico
+                        tuttiIMezzi.sort((a, b) => {
+                            const siglaA = a['Sigla Radio'] || 'Z';
+                            const siglaB = b['Sigla Radio'] || 'Z';
+                            return siglaA.localeCompare(siglaB, undefined, {numeric: true, sensitivity: 'base'});
+                        });
+
+                        // 3. Salvo i dati puliti e ordinati nel telefono per la prossima volta
+                        localStorage.setItem(cacheKey, JSON.stringify(tuttiIMezzi));
+                        localStorage.setItem(cacheTimeKey, oraAttuale);
+
+                        mostraMezzi(tuttiIMezzi);
+                    },
+                    error: function(err) {
+                        listaMezziDiv.innerHTML = '<div class="errore">Errore di connessione. Verifica che il CSV sia pubblico.</div>';
+                    }
+                });
             }
-        });
+        }
+
+        // Avvia il processo al caricamento
+        caricaDati();
 
         function mostraMezzi(mezzi) {
             listaMezziDiv.innerHTML = ''; 
@@ -387,9 +411,6 @@
             }
 
             mezzi.forEach(mezzo => {
-                // MODIFICA: Lettura diretta delle colonne specificate nel foglio Google
-                // Se una colonna non esiste o è vuota, userà 'N/D'
-                
                 const getStr = (val) => (val && val.trim() !== '') ? val.trim() : 'N/D';
 
                 const sigla = getStr(mezzo['Sigla Radio']);
@@ -407,18 +428,14 @@
                 
                 const intestatario = getStr(mezzo['Intestatario']);
                 
-                // FIX: Lettura diretta della colonna 'P.IVA'
                 let piva_cf_text = getStr(mezzo['P.IVA']);
-                // Se P.IVA è vuota o 'N/D', mostriamo il default del comitato
                 if (piva_cf_text === 'N/D') {
                     piva_cf_text = '01625710123'; 
                 }
 
-                // CONTENITORE PRINCIPALE (Fisarmonica)
                 const veicoloDiv = document.createElement('div');
                 veicoloDiv.className = 'mezzo-group';
                 
-                // HEADER CLICCABILE
                 const veicoloTitolo = document.createElement('div');
                 veicoloTitolo.className = 'mezzo-titolo';
                 
@@ -430,11 +447,9 @@
                     <div class="mezzo-targa-badge">${targa}</div>
                 `;
 
-                // CONTENITORE NASCOSTO
                 const dettagliContainer = document.createElement('div');
                 dettagliContainer.className = 'mezzo-dettagli-container';
 
-                // Testo pronto per la copia (Non toccato, email rimane)
                 const testoDaCopiare = `Mezzo: ${sigla} - ${modello}\nTarga: ${targa}\nStato Immatricolazione: ${statoImmatricolazione}\nN. Telaio: ${telaio}\nCarburante: ${carburante}\nAssicurazione: ${compagnia}\nAgenzia: ${agenzia} (Email: ${emailAgenzia})\nPolizza N°: ${polizza}\nScadenza: ${scadenza}\nIntestatario: ${intestatario}\nCod.Fiscale/P.IVA: ${piva_cf_text}`;
 
                 dettagliContainer.innerHTML = `
@@ -484,7 +499,6 @@
                     </div>
                 `;
                 
-                // Bottone copia
                 const btnCopia = document.createElement('button');
                 btnCopia.className = 'btn-copia';
                 btnCopia.innerHTML = '📄 Copia Dati per CID';
@@ -495,14 +509,12 @@
                 
                 dettagliContainer.appendChild(btnCopia);
 
-                // LOGICA CLICK FISARMONICA
                 veicoloTitolo.addEventListener('click', () => {
                     dettagliContainer.classList.toggle('mostra');
                     veicoloTitolo.classList.toggle('aperto');
                     veicoloTitolo.querySelector('.icona-freccia').classList.toggle('ruotata');
                 });
 
-                // ASSEMBLAGGIO
                 veicoloDiv.appendChild(veicoloTitolo);
                 veicoloDiv.appendChild(dettagliContainer);
                 
