@@ -470,6 +470,8 @@
     <script>
         const PIN_SEGRETO = "V3icoli-"; 
         const URL_API_GOOGLE = "https://script.google.com/macros/s/AKfycbyuZ0BDEIg4gJwCNyIrI52ggwj3mrsi5601ulvJ5HdQF4iSQygkxoWHyi-0aoQy9yjmkg/exec";
+        const linkBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?output=csv';
+        const CACHE_KEY = 'dati_autoparco_cri';
         
         let isAdmin = sessionStorage.getItem('adminLogged') === 'true';
         let visualizzaSoloRisolti = false;
@@ -516,8 +518,7 @@
         });
 
         // ==========================================
-        // NUOVO MOTORE ESTRAZIONE MINIATURE
-        // Usa le API Thumbnail di Google Drive per evitare blocchi
+        // MOTORE ESTRAZIONE MINIATURE
         // ==========================================
         function estraiLinkImmagineDrive(url) {
             let fileId = null;
@@ -525,7 +526,6 @@
             else if (url.includes('/d/')) fileId = url.split('/d/')[1].split('/')[0];
             
             if (fileId) {
-                // Richiede a Google Drive una miniatura quadrata di 200px. Molto più stabile!
                 return `https://drive.google.com/thumbnail?id=${fileId}&sz=w200-h200`;
             }
             return null;
@@ -542,7 +542,11 @@
                 setTimeout(() => {
                     document.getElementById('loading-overlay').style.display = 'none';
                     let difettoDaAggiornare = datiGlobali.find(d => d['Informazioni cronologiche'] === timestamp);
-                    if(difettoDaAggiornare) difettoDaAggiornare['STATUS'] = nuovoStato;
+                    if(difettoDaAggiornare) {
+                        difettoDaAggiornare['STATUS'] = nuovoStato;
+                        // Salviamo il cambiamento in memoria così l'app è subito reattiva al prossimo riavvio
+                        localStorage.setItem(CACHE_KEY, JSON.stringify(datiGlobali));
+                    }
                     renderizzaInterfaccia(); 
                 }, 1200);
             } catch (error) {
@@ -564,9 +568,6 @@
             renderizzaInterfaccia();
         });
 
-        const linkBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT8wQ0jGLsUvO8VqP8SnyuLlar0zApUn1maRLMEWMFL2EFrv2LFcxGkLJ6X3vf4ilsDWPRAzHjcub-l/pub?output=csv';
-        const csvUrl = linkBase + '&t=' + new Date().getTime(); 
-
         const listaDifettiDiv = document.getElementById('listaDifetti');
 
         const paletteTipologie = {
@@ -583,17 +584,40 @@
             'Interni': '🚑', 'Dotazioni': '🎒', 'Generico': '📝'        
         };
 
-        Papa.parse(csvUrl, {
-            download: true,
-            header: true, 
-            complete: function(results) {
-                datiGlobali = results.data;
+        // ==========================================
+        // NUOVO MOTORE DI CARICAMENTO (Stale-while-revalidate)
+        // ==========================================
+        function caricaDatiAutoparco() {
+            const datiSalvati = localStorage.getItem(CACHE_KEY);
+
+            // 1. MOSTRA SUBITO I DATI IN MEMORIA (Istantaneo)
+            if (datiSalvati) {
+                console.log("Caricamento ISTANTANEO dalla memoria locale.");
+                datiGlobali = JSON.parse(datiSalvati);
                 renderizzaInterfaccia();
-            },
-            error: function(err) {
-                listaDifettiDiv.innerHTML = '<div class="errore">Errore di connessione al database. Riprova.</div>';
             }
-        });
+
+            // 2. CERCA NOVITA' IN BACKGROUND (Tempo reale)
+            const csvUrl = linkBase + '&t=' + new Date().getTime(); 
+            Papa.parse(csvUrl, {
+                download: true,
+                header: true, 
+                complete: function(results) {
+                    // Aggiorna silenziosamente il database e l'interfaccia
+                    datiGlobali = results.data;
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(datiGlobali));
+                    renderizzaInterfaccia();
+                },
+                error: function(err) {
+                    if (!datiSalvati) {
+                        listaDifettiDiv.innerHTML = '<div class="errore">Errore di connessione al database. Riprova.</div>';
+                    }
+                }
+            });
+        }
+
+        // Avvio procedura di caricamento combinato
+        caricaDatiAutoparco();
 
         function renderizzaInterfaccia() {
             listaDifettiDiv.innerHTML = ''; 
