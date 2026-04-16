@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INFO VIABILITÀ</title>
+
+<style>
+
+:root{
+--bg-main:#020617;
+--bg-card:rgba(30,41,59,0.7);
+--border:rgba(51,65,85,0.5);
+--accent:#38bdf8;
+--text-bright:#f8fafc;
+--text-dim:#94a3b8;
+--danger:#f43f5e;
+--warning:#fbbf24;
+--success:#22c55e;
+--header-bg:rgba(15,23,42,0.9);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+background:var(--bg-main);
+color:var(--text-bright);
+font-family:system-ui,-apple-system,sans-serif;
+height:100vh;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+}
+
+header{
+display:grid;
+grid-template-columns:1fr auto 1fr;
+align-items:center;
+background:var(--header-bg);
+border-bottom:2px solid var(--accent);
+padding:10px 30px;
+}
+
+.header-center{
+grid-column:2;
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.header-center h1{
+font-size:2.5rem;
+font-weight:900;
+letter-spacing:2px;
+}
+
+.separator{
+font-size:2rem;
+color:var(--accent);
+}
+
+.header-center img{
+height:75px;
+}
+
+.header-right{
+grid-column:3;
+text-align:right;
+}
+
+#date-box{
+font-size:1rem;
+font-weight:700;
+text-transform:uppercase;
+color:var(--text-dim);
+}
+
+#clock{
+font-size:3.8rem;
+font-weight:900;
+color:var(--warning);
+}
+
+main{
+display:grid;
+grid-template-columns:450px 1fr;
+gap:20px;
+padding:20px;
+flex-grow:1;
+overflow:hidden;
+}
+
+.panel{
+background:var(--bg-card);
+border:1px solid var(--border);
+border-radius:20px;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+}
+
+.panel-header{
+padding:15px 20px;
+font-size:1.1rem;
+font-weight:900;
+text-transform:uppercase;
+border-bottom:2px solid var(--border);
+background:rgba(0,0,0,0.2);
+}
+
+.header-permanente{color:var(--danger);}
+.header-bollettino{color:var(--warning);}
+
+.fixed-content{
+padding:25px;
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+.alert-box{
+padding:20px;
+background:rgba(244,63,94,0.1);
+border-radius:15px;
+border-left:8px solid var(--danger);
+}
+
+.alert-box .title{
+color:var(--danger);
+font-size:2.2rem;
+font-weight:900;
+margin-bottom:10px;
+}
+
+.alert-box .body-text{
+font-size:1.3rem;
+line-height:1.4;
+font-weight:600;
+}
+
+.highlight{
+color:var(--warning);
+font-weight:800;
+}
+
+.detour-section{
+background:rgba(255,255,255,0.05);
+padding:20px;
+border-radius:15px;
+border:1px dashed var(--accent);
+}
+
+.detour-label{
+font-size:0.85rem;
+text-transform:uppercase;
+color:var(--text-dim);
+font-weight:700;
+}
+
+.detour-value{
+font-size:2.5rem;
+font-weight:900;
+color:var(--accent);
+}
+
+.feed-container{
+padding:20px;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:15px;
+scrollbar-width: none;
+-ms-overflow-style: none;
+}
+.feed-container::-webkit-scrollbar {
+display: none;
+}
+
+.feed-item{
+background:rgba(255,255,255,0.03);
+border-left:10px solid var(--warning);
+border-radius:10px;
+padding:20px;
+}
+
+.item-title{
+color:var(--warning);
+font-weight:900;
+font-size:1.4rem;
+margin-bottom:8px;
+text-transform:uppercase;
+}
+
+.item-desc{
+font-size:1.2rem;
+line-height:1.5;
+font-weight:500;
+}
+
+.status-msg{
+display:flex;
+justify-content:center;
+align-items:center;
+height:100%;
+font-size:1.5rem;
+font-weight:800;
+color:var(--success);
+text-align:center;
+padding:20px;
+}
+
+/* ==================================================== */
+/* ADATTAMENTO SMARTPHONE (MOBILE FRIENDLY) */
+/* ==================================================== */
+@media (max-width: 900px) {
+    body {
+        height: auto; /* Permette lo scroll naturale della pagina */
+        overflow: auto;
+    }
+
+    header {
+        grid-template-columns: 1fr; /* Mette tutto in colonna */
+        text-align: center;
+        gap: 15px;
+        padding: 20px 15px;
+    }
+
+    .header-center {
+        grid-column: 1;
+        justify-content: center;
+        flex-direction: column-reverse; /* Logo sopra, titolo sotto */
+        gap: 10px;
+    }
+
+    .separator { display: none; } /* Nasconde la barra verticale */
+
+    .header-right {
+        grid-column: 1;
+        text-align: center;
+    }
+
+    .header-center h1 { font-size: 1.8rem; }
+    #clock { font-size: 3rem; }
+
+    main {
+        grid-template-columns: 1fr; /* I due blocchi si mettono uno sopra l'altro */
+        height: auto;
+        overflow: visible;
+        padding: 10px;
+    }
+
+    .panel {
+        margin-bottom: 20px;
+    }
+
+    .alert-box .title { font-size: 1.6rem; }
+    .alert-box .body-text { font-size: 1.1rem; }
+    .detour-value { font-size: 1.8rem; }
+    
+    .feed-container {
+        max-height: 500px; /* Limita l'altezza su mobile per permettere l'autoscroll */
+    }
+
+    .item-title { font-size: 1.2rem; }
+    .item-desc { font-size: 1.1rem; }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div></div>
+
+<div class="header-center">
+<h1>INFO VIABILITÀ</h1>
+<span class="separator">|</span>
+<img src="logo.png" onerror="this.style.display='none'">
+</div>
+
+<div class="header-right">
+<div id="date-box">DATA...</div>
+<div id="clock">00:00</div>
+</div>
+
+</header>
+
+<main>
+
+<div class="panel">
+
+<div class="panel-header header-permanente">
+Segnalazione Permanente
+</div>
+
+<div class="fixed-content">
+
+<div class="alert-box">
+<div class="title">A8 GALLARATE</div>
+
+<div class="body-text">
+ENTRATA CHIUSA dalle ore
+<span class="highlight">21:00</span>
+del
+<span class="highlight">23/02/2026</span>
+alle ore
+<span class="highlight">05:00</span>
+del
+<span class="highlight">24/06/2026</span>
+in direzione MILANO.
+<br><br>
+Entrata consigliata verso Milano: <span class="highlight">BUSTO ARSIZIO</span>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="panel">
+
+<div class="panel-header header-bollettino">
+BOLLETTINO VIABILITÀ
+</div>
+
+<div id="feed" class="feed-container">
+<div class="status-msg">
+SINCRONIZZAZIONE DATI...
+</div>
+</div>
+
+</div>
+
+</main>
+
+<script>
+
+const CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vTQD7mYVjhrw9Ma3t_av071IGSDcaLoyojD55ZoOc-LuMIkT5OHWKwS93LQhVJCOGVHBJsG9Kyd2sXK/pub?output=csv";
+
+function updateClock(){
+const now=new Date();
+
+const optionsDate={
+weekday:'long',
+day:'numeric',
+month:'long',
+year:'numeric'
+};
+
+document.getElementById('date-box').textContent=
+now.toLocaleDateString('it-IT',optionsDate);
+
+document.getElementById('clock').textContent=
+now.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+}
+
+setInterval(updateClock,1000);
+updateClock();
+
+async function fetchCSV(){
+
+const container=document.getElementById("feed");
+
+try{
+
+const response=await fetch(CSV_URL+"&t="+Date.now());
+const text=await response.text();
+
+const rows=text.split("\n");
+
+let html="";
+let count=0;
+
+rows.forEach(row=>{
+
+const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+
+const colA=cols[0]?cols[0].replace(/^"|"$/g, '').trim():"";
+const colC=cols[2]?cols[2].replace(/^"|"$/g, '').trim():"";
+
+if(colA!=="" && colC!==""){
+
+html+=`
+<div class="feed-item">
+<div class="item-title">${colA}</div>
+<div class="item-desc">${colC}</div>
+</div>
+`;
+
+count++;
+
+}
+
+});
+
+container.innerHTML=
+count>0
+?html
+:'<div class="status-msg">✅ NESSUNA SEGNALAZIONE</div>';
+
+}
+
+catch(err){
+
+console.error(err);
+
+container.innerHTML=
+'<div class="status-msg">⚠️ ERRORE LETTURA CSV</div>';
+
+}
+
+}
+
+fetchCSV();
+setInterval(fetchCSV,60000);
+
+setInterval(() => {
+    const feed = document.getElementById("feed");
+    if (feed.scrollHeight > feed.clientHeight) {
+        feed.scrollTop += 1;
+        if (Math.ceil(feed.scrollTop) + feed.clientHeight >= feed.scrollHeight) {
+            feed.scrollTop = 0;
+        }
+    }
+}, 50);
+
+</script>
+
+</body>
+</html>
